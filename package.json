@@ -1,0 +1,34 @@
+{
+  "name": "app-name",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "@aragon/apps-token-manager": "^1.0.0",
+    "@aragon/apps-voting": "^1.0.0",
+    "@aragon/client": "^1.0.0-beta.8",
+    "@aragon/os": "3.1.9",
+    "@aragon/ui": "^0.11.0",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "styled-components": "^3.2.6"
+  },
+  "devDependencies": {
+    "@aragon/cli": "^4.1.1",
+    "babel-plugin-styled-components": "^1.5.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "lerna": "^2.11.0",
+    "parcel-bundler": "^1.8.1",
+    "truffle": "4.0.5"
+  },
+  "scripts": {
+    "start": "aragon run",
+    "start:kit": "aragon run --kit Kit --kit-init @ARAGON_ENS",
+    "test": "aragon contracts test",
+    "compile": "aragon contracts compile",
+    "publish": "aragon publish"
+  },
+  "keywords": [],
+  "license": "GPL-3.0"
+}
