@@ -58,21 +58,19 @@ contract Kit is KitBase {
 
 		address root = msg.sender;
 		bytes32 votingAppId = apmNamehash("voting");
-
-		bytes32 p2pId = apmNamehash("p2p-rewards");
-		bytes32 wetonomyTokenManagerId = apmNamehash("wetonomy-token-manager");		
+		bytes32 tokenManagerId = apmNamehash("wetonomy-token-manager");		
+		bytes32 p2pId = apmNamehash("p2p-rewards");		
 
 		P2PRewards p2p = P2PRewards(dao.newAppInstance(p2pId, latestVersionAppBase(p2pId)));
-
-		Voting voting = Voting(dao.newAppInstance(votingAppId, latestVersionAppBase(votingAppId)));
-		TokenManager tokenManager = WetonomyTokenManager(
-			dao.newAppInstance(wetonomyTokenManagerId, latestVersionAppBase(wetonomyTokenManagerId)));
+		Voting voting = Voting(dao.newAppInstance(votingAppId, latestVersionAppBase(votingAppId)));		
+		WetonomyTokenManager tokenManager = WetonomyTokenManager(
+			dao.newAppInstance(tokenManagerId, latestVersionAppBase(tokenManagerId)));
 
 		MiniMeToken token = tokenFactory.createCloneToken(address(0), 0, "App token", 0, "APP", true);
 		token.changeController(tokenManager);
-
-		tokenManager.initialize(token, true, 0, true);
+		
 		// Initialize apps
+		tokenManager.initialize(token, true, 0, true);		
 		voting.initialize(token, 50 * PCT, 20 * PCT, 1 days);
 
 		acl.createPermission(this, tokenManager, tokenManager.MINT_ROLE(), this);
