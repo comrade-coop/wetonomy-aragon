@@ -23,11 +23,14 @@
     "truffle": "4.0.5"
   },
   "scripts": {
-    "start": "aragon run",
+    "start:dummy": "aragon run",
     "start:kit": "aragon run --kit Kit --kit-init @ARAGON_ENS",
     "test": "aragon contracts test",
     "compile": "aragon contracts compile",
-    "publish": "aragon publish"
+    "publish:dummy": "aragon publish",
+    "publish:apps": "lerna run publish",
+    "start": "npm run publish:apps && npm run start:kit",
+    "devchain": "./scripts/devchain-logs.sh"
   },
   "keywords": [],
   "license": "GPL-3.0"
