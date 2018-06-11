@@ -13,24 +13,30 @@ const TextInputLarge = styled(TextInput)`
   min-width: 300px;
 `
 
+const RewardsContainer = styled.div`
+  
+`
+
 class DashboardHeader extends React.Component {
   render() {
     return (
       <CardFullWidth>
         <Title>You have {this.props.tokenCount} more tokens to give this month.</Title>
-          <Field label="Enter Recipient">
-            <TextInputLarge type="text" />
-          </Field> 
+        <Field label="Enter Recipient">
+          <TextInputLarge type="text" />
+        </Field> 
 
-          <Field label="Enter reason">
-            <TextInputLarge wide />
-          </Field>
+        <Field label="Enter reason">
+          <TextInputLarge wide />
+        </Field>
 
-          <Field label="Enter Amount">
-            <TextInputLarge.Number />
-          </Field>
+        <Field label="Enter Amount">
+          <TextInputLarge.Number />
+        </Field>
 
-          <RewardBtn mode="strong">Give Reward</RewardBtn>
+        <RewardBtn mode="strong">Give Reward</RewardBtn>
+
+        <RewardsContainer />
           
       </CardFullWidth>
     )
