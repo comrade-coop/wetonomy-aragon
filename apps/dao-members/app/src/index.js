@@ -15,8 +15,6 @@ class ConnectedApp extends React.Component {
   componentWillUnmount() {
     window.removeEventListener('message', this.handleWrapperMessage)
   }
-  // handshake between Aragon Core and the iframe,
-  // since iframes can lose messages that were sent before they were ready
   handleWrapperMessage = ({ data }) => {
     if (data.from !== 'wrapper') {
       return
@@ -24,13 +22,9 @@ class ConnectedApp extends React.Component {
     if (data.name === 'ready') {
       const { app } = this.state
       this.sendMessageToWrapper('ready', true)
-      this.setState({
-        observable: app.state(),
-      })
-      app.accounts().subscribe(accounts => {
-        this.setState({
-          userAccount: accounts[0],
-        })
+      this.setState({ observable: app.state() })
+      app.accounts().subscribe(([userAccount]) => {
+        this.setState({ userAccount })
       })
     }
   }
@@ -41,7 +35,5 @@ class ConnectedApp extends React.Component {
     return <App {...this.state} />
   }
 }
-ReactDOM.render(
-  <ConnectedApp />,
-  document.getElementById('root')
-)
+
+ReactDOM.render(<ConnectedApp />, document.getElementById('root'))
