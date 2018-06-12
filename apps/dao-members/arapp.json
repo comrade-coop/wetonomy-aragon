@@ -2,7 +2,22 @@
   "appName": "dao-members.aragonpm.eth",
   "version": "1.0.0",
   "roles": [
-  
+    {
+      "name": "Add a Member to the organisation",
+      "id": "ADD_MEMBERS_ROLE"
+    },
+    {
+      "name": "Remove a Member from the organisation",
+      "id": "REMOVE_MEMBERS_ROLE"
+    },
+    {
+      "name": "Change the level of a Member",
+      "id": "CHANGE_LEVEL_ROLE"
+    },
+    {
+      "name": "Change the Address of a Member from the organisation",
+      "id": "CHANGE_ADDRESS_ROLE"
+    }    
   ],
   "path": "contracts/DAOMembers.sol"
 }

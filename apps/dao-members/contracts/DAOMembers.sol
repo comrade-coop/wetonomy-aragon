@@ -6,76 +6,91 @@ import "../node_modules/@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
 contract DAOMembers is AragonApp {
     using SafeMath for uint256;
     
-    event NewMember(address indexed wallet, string name, Level level);
-    event MemberRemoved(uint indexed index, address indexed wallet, string name, Level level);
+    event NewMember(address indexed accountAddress, string name, Level level);
+    event MemberRemoved(uint indexed index, address indexed accountAddress, string name, Level level);
     
     enum Level { BEGINNER, INTERMEDIATE, EXPERT }
     
-    bytes32 PERMISSION_MANAGE_MEMBERS = keccak256("PERMISSION_MANAGE_MEMBERS");
+    bytes32 ADD_MEMBERS_ROLE = keccak256("ADD_MEMBERS_ROLE");
+    bytes32 REMOVE_MEMBERS_ROLE = keccak256("REMOVE_MEMBERS_ROLE");
+    bytes32 CHANGE_LEVEL_ROLE = keccak256("CHANGE_LEVEL_ROLE");
+    bytes32 CHANGE_ADDRESS_ROLE = keccak256("CHANGE_ADDRESS_ROLE");
 
     struct Member {
-        address wallet;
+        address accountAddress;
         string name;
         Level level;
     }
     
     Member[] members;
+    mapping(address => bool) memberExists;
     
-    function addMember(address _wallet, string _name, Level _level) auth(PERMISSION_MANAGE_MEMBERS) public {
-        _addMember(_wallet, _name, _level);
+    function addMember(address _accountAddress, string _name, Level _level) auth(ADD_MEMBERS_ROLE) public {
+        _addMember(_accountAddress, _name, _level);
     }
     
-    function removeMember(uint _index) auth(PERMISSION_MANAGE_MEMBERS) public {
-        _removeMember(_index);
+    function removeMember(uint _id) auth(REMOVE_MEMBERS_ROLE) public {
+        _removeMember(_id);
     }
     
     function getMemberCount() public view returns(uint256) {
         return members.length;
     }
     
-    function getMember(uint _index) public view returns(address wallet, string name, Level level) {
-        Member memory member = members[_index];
-        wallet = member.wallet;
+    function getMember(uint _id) public view returns(address accountAddress, string name, Level level) {
+        Member memory member = members[_id];
+        accountAddress = member.accountAddress;
         name = member.name;
         level = member.level;
     }
     
-    // function changeMemberWallet() auth(PERMISSION_MANAGE_MEMBERS) public {
+    function changeMemberAddress(uint _id, address _newAddress) auth(CHANGE_ADDRESS_ROLE) public {
+        Member storage member = members[_id];
         
-    // }
-    
-    // function changeMemberName() auth(PERMISSION_MANAGE_MEMBERS) {
+        require(_newAddress != address(0) && !memberExists[_newAddress]);
+        require(member.accountAddress != address(0));
         
-    // }
-    
-    // function changeMemberLevel() auth(PERMISSION_MANAGE_MEMBERS) {
-        
-    // }
-    
-    function _addMember(address _wallet, string _name, Level _level) internal {
-        Member memory newMember = Member(_wallet, _name, _level);
-        members.push(newMember);
-        
-        emit NewMember(_wallet, _name, _level);
+        member.accountAddress = _newAddress;
     }
     
-    function _removeMember(uint _index) internal {
+    function changeMemberLevel(uint _id, Level _newLevel) auth(CHANGE_LEVEL_ROLE) public {
+        Member storage member = members[_id];
+        
+        require(member.accountAddress != address(0));
+        
+        member.level = _newLevel;
+    }
+    
+    function _addMember(address _accountAddress, string _name, Level _level) internal {
+        require(_accountAddress != address(0));
+        require(!memberExists[_accountAddress]);
+        
+        Member memory newMember = Member(_accountAddress, _name, _level);
+        members.push(newMember);
+        memberExists[_accountAddress] = true;
+        
+        emit NewMember(_accountAddress, _name, _level);
+    }
+    
+    function _removeMember(uint _id) internal {
         uint count = members.length;
-        require(_index < count);
+        require(_id < count);
         
-        Member memory memberToRemove = members[_index];
+        Member memory memberToRemove = members[_id];
         
-        if (_index != count - 1) {
-            members[_index] = members[count - 1];
-            _index = count - 1;
+        if (_id != count - 1) {
+            members[_id] = members[count - 1];
+            _id = count - 1;
         }
         
-        delete members[_index];
+        delete members[_id];
         members.length--;
         
+        memberExists[memberToRemove.accountAddress] = true;
+        
         emit MemberRemoved(
-            _index, 
-            memberToRemove.wallet,
+            _id, 
+            memberToRemove.accountAddress,
             memberToRemove.name,
             memberToRemove.level
         );
