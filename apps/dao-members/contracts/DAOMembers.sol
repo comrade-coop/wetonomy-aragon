@@ -95,4 +95,8 @@ contract DAOMembers is AragonApp {
             memberToRemove.level
         );
     }
+
+    function isMember(address _member) public view returns(bool) {
+        return memberExists[_member];
+    }
 }
