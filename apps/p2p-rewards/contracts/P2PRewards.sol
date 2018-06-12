@@ -1,37 +1,57 @@
 pragma solidity ^0.4.4;
 
-import "@aragon/os/contracts/apps/AragonApp.sol";
-import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
+import "../../dao-members/contracts/DAOMembers.sol";
+
 
 contract P2PRewards is AragonApp {
     using SafeMath for uint256;
-
-    /// Events
-    event Increment(address indexed entity, uint256 step);
-    event Decrement(address indexed entity, uint256 step);
-
-    /// State
-    uint256 public value;
-
-    /// ACL
-    bytes32 constant public INCREMENT_ROLE = keccak256("INCREMENT_ROLE");
-    bytes32 constant public DECREMENT_ROLE = keccak256("DECREMENT_ROLE");
-
-    /**
-     * @notice Increment the counter by `step`
-     * @param step Amount to increment by
-     */
-    function increment(uint256 step) auth(INCREMENT_ROLE) external {
-        value = value.add(step);
-        Increment(msg.sender, step);
+    
+    event RewardGiven(address _from, address _to, uint _amount, string _reason);
+    
+    DAOMembers members;
+    
+    struct RewardHistoryItem {
+        address from;
+        address to;
+        address amount;
+        address reason;
     }
-
-    /**
-     * @notice Decrement the counter by `step`
-     * @param step Amount to decrement by
-     */
-    function decrement(uint256 step) auth(DECREMENT_ROLE) external {
-        value = value.sub(step);
-        Decrement(msg.sender, step);
+    
+    modifier isMember(address _address) {
+        // TODO: implement isMember modifier
+        _;
     }
+    
+    mapping(address => uint) rewardPointsBalance;
+    RewardHistoryItem[] rewardHistory;
+    
+    uint lastRewardIssueTimestamp;
+    
+    function reloadRewardBalances() public {
+        _reloadRewardBalances();
+    }
+    
+    function giveReward(address _to, uint _amount, string _reason) isMember(msg.sender) isMember(_to) public {
+        
+    }
+    
+    function getRewardHistoryIndexesForMember(address _member) public view returns(uint[] rewardIndexes) {
+        // Traverse over rewardHistory
+        // return indexes
+    }
+    
+    function getRewardHistoryItem(uint _index) public view
+        returns(address from, address to, address amount, address reason) {
+        return rewardHistory[_index];
+    }
+    
+    function pointsBalanceOf(address _member) public view {
+        return rewardPointsBalance[_member];
+    }
+    
+    function _reloadRewardBalances() internal {
+        
+    }
+    
+    function _giveReward
 }
