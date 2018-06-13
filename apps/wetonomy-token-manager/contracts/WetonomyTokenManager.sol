@@ -1,15 +1,15 @@
-pragma solidity 0.4.18;
+pragma solidity ^0.4.18;
 
-import "@aragon/os/contracts/apps/AragonApp.sol";
+import "../node_modules/@aragon/os/contracts/apps/AragonApp.sol";
 
-import "@aragon/os/contracts/lib/minime/ITokenController.sol";
-import "@aragon/os/contracts/lib/minime/MiniMeToken.sol";
-import "@aragon/os/contracts/common/IForwarder.sol";
+import "../node_modules/@aragon/os/contracts/lib/minime/ITokenController.sol";
+import "../node_modules/@aragon/os/contracts/lib/minime/MiniMeToken.sol";
+import "../node_modules/@aragon/os/contracts/common/IForwarder.sol";
 
-import "@aragon/os/contracts/lib/zeppelin/token/ERC20.sol";
-import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
+import "../node_modules/@aragon/os/contracts/lib/zeppelin/token/ERC20.sol";
+import "../node_modules/@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
 
-import "@aragon/os/contracts/lib/misc/Migrations.sol";
+import "../node_modules/@aragon/os/contracts/lib/misc/Migrations.sol";
 
 
 contract WetonomyTokenManager is ITokenController, AragonApp, IForwarder {

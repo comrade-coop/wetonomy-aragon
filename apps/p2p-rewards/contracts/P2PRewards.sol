@@ -1,13 +1,23 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.18;
 
 import "../../dao-members/contracts/DAOMembers.sol";
-import "../node_modules/@aragon/os/contracts/lib/minime/MiniMeToken.sol";
 
+// TODO: Import real TokenManager
+// This is a mock TokenManager
+contract TokenManager {
+    function mint(address _receiver, uint _amount) public {
+        // Mint tokens...
+    }
+}
 
 contract P2PRewards is AragonApp {
     using SafeMath for uint256;
     
-    event RewardGiven(address _from, address _to, uint _amount, string _reason);
+    event PointsRefresh(address member, uint timestamp);
+    event RewardGiven(address from, address to, uint amount, string reason);
+    
+    bytes32 REFRESH_POINTS_ROLE = keccak256("REFRESH_POINTS_ROLE");
+    bytes32 GIVE_REWARD_ROLE = keccak256("GIVE_REWARD_ROLE");
     
     uint DEFAULT_REFRESH_RATE = 4 weeks;
     uint MAX_REASON_LENGTH = 50;
@@ -20,43 +30,48 @@ contract P2PRewards is AragonApp {
     }
     
     DAOMembers members;
-    MiniMeToken token;
+    TokenManager tokenManager;
     uint refreshRate;
     uint initialPoints;
     mapping(address => uint) rewardPointsBalance;
     mapping(address => uint) memberToLastRefreshTimestamp;
-    RewardHistoryItem[] rewardHistory;
     
+    RewardHistoryItem[] rewardHistory;
+    mapping(address => uint[]) memberToHistoryItems;
+
     modifier onlyMember(address _address) {
         require(members.isMember(_address));
         _;
     }
     
-    function initialize(MiniMeToken _token, uint _refreshRate, uint _initialPoints) onlyInit external {
+    function initialize(TokenManager _tokenManager, uint _refreshRate, uint _initialPoints) onlyInit external {
         require(_initialPoints > 0);
         
-        token = _token;
+        tokenManager = _tokenManager;
         refreshRate = _refreshRate > 0 ? _refreshRate : DEFAULT_REFRESH_RATE;
         initialPoints = _initialPoints;
         
         initialized();
     }
     
-    function refreshBalance(address _address) onlyMember(_address) external {
-        _refreshBalance(_address);
+    function refreshPoints(address _member) auth(REFRESH_POINTS_ROLE) public {
+        require(shouldRefreshPoints(_member));
+        
+        memberToLastRefreshTimestamp[_member] = now;
+        rewardPointsBalance[_member] = initialPoints;
+        
+        emit PointsRefresh(_member, now);
     }
     
-    function giveReward(address _to, uint _amount, string _reason) onlyMember(msg.sender) onlyMember(_to) public {
+    function giveReward(address _to, uint _amount, string _reason) auth(GIVE_REWARD_ROLE) public {
         _giveReward(_to, _amount, _reason);
     }
     
-    function getRewardHistoryIndexesForMember(address _member) public view returns(uint[] rewardIndexes) {
-        for (uint i = 0; i < rewardHistory.length; i++) {
-            RewardHistoryItem storage historyItem = rewardHistory[i];
-            if (historyItem.from == _member || historyItem.to == _member) {
-                // rewardIndexes.push(i);
-            }
-        }
+    function getRewardHistoryIndexesForMember(address _member) 
+        public 
+        view 
+        returns(uint[]) {
+        return memberToHistoryItems[_member];
     }
     
     function getRewardHistoryItem(uint _index) public view
@@ -78,11 +93,23 @@ contract P2PRewards is AragonApp {
     
     function _giveReward(address _to, uint _amount, string _reason) internal {
         require(!shouldRefreshPoints(msg.sender));
+        require(_to != msg.sender);
+        
         require(_amount > 0);
         require(bytes(_reason).length < MAX_REASON_LENGTH);
         
         _burnPoints(msg.sender, _amount);
-        token.generateTokens(_to, _amount);
+        tokenManager.mint(_to, _amount);
+        
+        RewardHistoryItem memory historyItem = RewardHistoryItem(
+            msg.sender,
+            _to,
+            _amount,
+            _reason
+        );
+        uint historyItemIndex = rewardHistory.push(historyItem) - 1;
+        memberToHistoryItems[msg.sender].push(historyItemIndex);
+        memberToHistoryItems[_to].push(historyItemIndex);
         
         emit RewardGiven(msg.sender, _to, _amount, _reason);
     }
@@ -91,10 +118,5 @@ contract P2PRewards is AragonApp {
         require(rewardPointsBalance[_owner] > _amount && _amount > 0);
         
         rewardPointsBalance[_owner] = rewardPointsBalance[_owner].sub(_amount);
-    }
-    
-    function _refreshBalance(address _address) onlyMember(_address) internal {
-        require(shouldRefreshPoints(_address));
-        rewardPointsBalance[_address] = initialPoints;
     }
 }
