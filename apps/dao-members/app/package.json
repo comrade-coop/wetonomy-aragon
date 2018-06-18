@@ -1,5 +1,5 @@
 {
-  "name": "dao-members",
+  "name": "dao-members-client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

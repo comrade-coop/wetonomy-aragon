@@ -30,6 +30,7 @@
     "compile": "aragon contracts compile",
     "publish:dummy": "aragon publish",
     "publish:apps": "lerna run --concurrency=1 --stream publish",
+    "build:apps": "lerna run --concurrency=1 --stream build",
     "start": "npm run publish:apps && npm run start:kit",
     "devchain": "ganache-cli --db ~/.aragon/ganache-db-8545 --mnemonic \"explain tackle mirror kit van hammer degree position ginger unfair soup bonus\" --gasLimit 50000000"
   },
