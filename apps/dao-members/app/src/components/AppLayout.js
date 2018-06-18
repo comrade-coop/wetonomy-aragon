@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-const AppLayout = styled.div `
+const AppLayout = styled.div`
   display: flex;
   height: 100vh;
   flex-direction: column;
@@ -8,11 +8,11 @@ const AppLayout = styled.div `
   justify-content: stretch;
 `
 
-AppLayout.Header = styled.div `
+AppLayout.Header = styled.div`
   flex-shrink: 0;
 `
 
-AppLayout.ScrollWrapper = styled.div `
+AppLayout.ScrollWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: stretch;
@@ -20,7 +20,7 @@ AppLayout.ScrollWrapper = styled.div `
   flex-grow: 1;
 `
 
-AppLayout.Content = styled.div `
+AppLayout.Content = styled.div`
   display: flex;
   flex-direction: column;
   padding: 30px;

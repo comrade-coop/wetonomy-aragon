@@ -1,12 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { AragonApp, AppBar, Button, Badge, SidePanel, observe, } from '@aragon/ui'
+import {
+  AragonApp,
+  AppBar,
+  Button,
+  Badge,
+  SidePanel,
+  observe,
+} from '@aragon/ui'
 import EmptyState from './screens/EmptyState'
 import Holders from './screens/Holders'
 import AppLayout from './components/AppLayout'
 import AssignVotePanelContent from './components/Panels/AssignVotePanelContent'
-// import { hasLoadedTokenSettings } from './token-settings'
+import { hasLoadedTokenSettings } from './token-settings'
 
 class App extends React.Component {
   static propTypes = {
@@ -27,26 +34,26 @@ class App extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { tokenSettingsLoaded } = this.state
     // Is this the first time we've loaded the token settings?
-    // if (!tokenSettingsLoaded && hasLoadedTokenSettings(nextProps)) {
-    //   this.setState({
-    //     tokenDecimalsBase: Math.pow(10, nextProps.tokenDecimals),
-    //     tokenSettingsLoaded: true,
-    //   })
-    // }
+    if (!tokenSettingsLoaded && hasLoadedTokenSettings(nextProps)) {
+      this.setState({
+        tokenDecimalsBase: Math.pow(10, nextProps.tokenDecimals),
+        tokenSettingsLoaded: true,
+      })
+    }
   }
-  // handleAssignTokens = ({ amount, recipient }) => {
-  //   const { app } = this.props
-  //   const { tokenDecimalsBase } = this.state
-  //   app.mint(recipient, amount * tokenDecimalsBase)
-  //   this.handleSidepanelClose()
-  // }
+  handleAssignTokens = ({ amount, recipient }) => {
+    const { app } = this.props
+    const { tokenDecimalsBase } = this.state
+    app.mint(recipient, amount * tokenDecimalsBase)
+    this.handleSidepanelClose()
+  }
   handleAppBarLaunchAssignTokens = () => this.handleLaunchAssignTokens()
-  // handleLaunchAssignTokens = recipient => {
-  //   this.setState({
-  //     assignTokensConfig: { recipient },
-  //     sidepanelOpened: true,
-  //   })
-  // }
+  handleLaunchAssignTokens = recipient => {
+    this.setState({
+      assignTokensConfig: { recipient },
+      sidepanelOpened: true,
+    })
+  }
   handleSidepanelClose = () => {
     this.setState({
       assignTokensConfig: {},

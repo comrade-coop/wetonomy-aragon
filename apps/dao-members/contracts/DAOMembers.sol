@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 
-import "../node_modules/@aragon/os/contracts/apps/AragonApp.sol";
-import "../node_modules/@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
+import "@aragon/os/contracts/apps/AragonApp.sol";
+import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
 
 contract DAOMembers is AragonApp {
     using SafeMath for uint256;
@@ -23,7 +23,7 @@ contract DAOMembers is AragonApp {
     }
     
     Member[] members;
-    mapping(address => bool) memberExists;
+    mapping(address => Member) addressToMember;
     
     function addMember(address _accountAddress, string _name, Level _level) auth(ADD_MEMBERS_ROLE) public {
         _addMember(_accountAddress, _name, _level);
@@ -47,7 +47,7 @@ contract DAOMembers is AragonApp {
     function changeMemberAddress(uint _id, address _newAddress) auth(CHANGE_ADDRESS_ROLE) public {
         Member storage member = members[_id];
         
-        require(_newAddress != address(0) && !memberExists[_newAddress]);
+        // require(_newAddress != address(0) && !memberExists[_newAddress]);
         require(member.accountAddress != address(0));
         
         member.accountAddress = _newAddress;
@@ -63,13 +63,13 @@ contract DAOMembers is AragonApp {
     
     function _addMember(address _accountAddress, string _name, Level _level) internal {
         require(_accountAddress != address(0));
-        require(!memberExists[_accountAddress]);
+        // require(!memberExists[_accountAddress]);
         
         Member memory newMember = Member(_accountAddress, _name, _level);
         members.push(newMember);
-        memberExists[_accountAddress] = true;
+        // memberExists[_accountAddress] = true;
         
-        emit NewMember(_accountAddress, _name, _level);
+        NewMember(_accountAddress, _name, _level);
     }
     
     function _removeMember(uint _id) internal {
@@ -86,9 +86,9 @@ contract DAOMembers is AragonApp {
         delete members[_id];
         members.length--;
         
-        memberExists[memberToRemove.accountAddress] = true;
+        // memberExists[memberToRemove.accountAddress] = true;
         
-        emit MemberRemoved(
+        MemberRemoved(
             _id, 
             memberToRemove.accountAddress,
             memberToRemove.name,
@@ -97,6 +97,7 @@ contract DAOMembers is AragonApp {
     }
 
     function isMember(address _member) public view returns(bool) {
-        return memberExists[_member];
+        // return memberExists[_member];
+        return true;
     }
 }

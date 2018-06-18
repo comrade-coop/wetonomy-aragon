@@ -1,6 +1,8 @@
 pragma solidity ^0.4.18;
 
-import "../../dao-members/contracts/DAOMembers.sol";
+import "@aragon/os/contracts/apps/AragonApp.sol";
+import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
+// import "../../dao-members/contracts/DAOMembers.sol";
 
 // TODO: Import real TokenManager
 // This is a mock TokenManager
@@ -16,8 +18,8 @@ contract P2PRewards is AragonApp {
     event PointsRefresh(address member, uint timestamp);
     event RewardGiven(address from, address to, uint amount, string reason);
     
-    bytes32 REFRESH_POINTS_ROLE = keccak256("REFRESH_POINTS_ROLE");
-    bytes32 GIVE_REWARD_ROLE = keccak256("GIVE_REWARD_ROLE");
+    bytes32 constant public REFRESH_POINTS_ROLE = keccak256("REFRESH_POINTS_ROLE");
+    bytes32 constant public GIVE_REWARD_ROLE = keccak256("GIVE_REWARD_ROLE");
     
     uint DEFAULT_REFRESH_RATE = 4 weeks;
     uint MAX_REASON_LENGTH = 50;
@@ -29,7 +31,7 @@ contract P2PRewards is AragonApp {
         string reason;
     }
     
-    DAOMembers members;
+    // DAOMembers members;
     TokenManager tokenManager;
     uint refreshRate;
     uint initialPoints;
@@ -40,7 +42,7 @@ contract P2PRewards is AragonApp {
     mapping(address => uint[]) memberToHistoryItems;
 
     modifier onlyMember(address _address) {
-        require(members.isMember(_address));
+        // require(members.isMember(_address));
         _;
     }
     
@@ -60,7 +62,7 @@ contract P2PRewards is AragonApp {
         memberToLastRefreshTimestamp[_member] = now;
         rewardPointsBalance[_member] = initialPoints;
         
-        emit PointsRefresh(_member, now);
+        PointsRefresh(_member, now);
     }
     
     function giveReward(address _to, uint _amount, string _reason) auth(GIVE_REWARD_ROLE) public {
@@ -111,7 +113,7 @@ contract P2PRewards is AragonApp {
         memberToHistoryItems[msg.sender].push(historyItemIndex);
         memberToHistoryItems[_to].push(historyItemIndex);
         
-        emit RewardGiven(msg.sender, _to, _amount, _reason);
+        RewardGiven(msg.sender, _to, _amount, _reason);
     }
     
     function _burnPoints(address _owner, uint _amount) internal {

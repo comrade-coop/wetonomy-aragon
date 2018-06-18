@@ -78,8 +78,7 @@ contract Kit is KitBase {
 
 		acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root);
 
-		acl.createPermission(voting, p2p, p2p.INCREMENT_ROLE(), voting);
-		acl.createPermission(ANY_ENTITY, p2p, p2p.DECREMENT_ROLE(), root);
+		acl.createPermission(ANY_ENTITY, p2p, p2p.REFRESH_POINTS_ROLE(), voting);
 
 		acl.grantPermission(voting, tokenManager, tokenManager.MINT_ROLE());
 
