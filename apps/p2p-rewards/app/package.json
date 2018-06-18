@@ -8,7 +8,6 @@
     "prop-types": "^15.6.1",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
-    "react-scripts": "1.1.4",
     "styled-components": "^3.3.2",
     "web3-utils": "^1.0.0-beta.34"
   },
@@ -40,5 +39,18 @@
     "eslint-plugin-standard": "^3.0.1",
     "parcel-bundler": "^1.7.0",
     "prettier": "^1.8.2"
+  },
+  "browserslist": {
+    "development": [
+      "last 2 chrome versions",
+      "last 2 firefox versions",
+      "last 2 edge versions"
+    ],
+    "production": [
+      ">1%",
+      "last 4 versions",
+      "Firefox ESR",
+      "not ie < 11"
+    ]
   }
 }
