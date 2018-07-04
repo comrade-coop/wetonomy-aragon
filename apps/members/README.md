@@ -1,16 +1,11 @@
-# Aragon React Boilerplate
+# Wetonomy Members app
 
-> 🕵️ [Find more boilerplates using GitHub](https://github.com/search?q=topic:aragon-boilerplate) | 
-> ✨ [Official boilerplates](https://github.com/search?q=topic:aragon-boilerplate+org:aragon)
-
-React boilerplate for Aragon applications.
-
-This boilerplate also includes a fully working example app, complete with a background worker and a front-end in React (with Aragon UI).
+Aragon application to manage members in an organisation.
 
 ## Usage
 
 ```sh
-aragon init foo.aragonpm.test react
+aragon run
 ```
 
 ## Prerequisites
