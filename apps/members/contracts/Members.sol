@@ -2,7 +2,7 @@ pragma solidity ^0.4.24;
 
 import "./baseContracts/MembersBase.sol";
 import "../node_modules/@aragon/os/contracts/apps/AragonApp.sol";
-import "github.com/willitscale/solidity-util/lib/Strings.sol";
+import "./lib/Strings.sol";
 
 contract Members is MembersBase, AragonApp {
     using Strings for string;
