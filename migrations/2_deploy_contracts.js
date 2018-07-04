@@ -1,5 +1,5 @@
-var DummyApp = artifacts.require('./misc/DummyApp.sol')
+var App = artifacts.require('./App.sol')
 
 module.exports = function (deployer) {
-  deployer.deploy(DummyApp)
+  deployer.deploy(App)
 }
