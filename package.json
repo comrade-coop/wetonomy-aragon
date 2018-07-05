@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
-    "@aragon/os": "3.1.9",
     "@aragon/client": "^1.0.0-beta.8",
+    "@aragon/os": "3.1.9",
     "@aragon/ui": "^0.11.0",
+    "ethereumjs-testrpc": "^6.0.3",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "styled-components": "^3.2.6"
