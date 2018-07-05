@@ -10,5 +10,5 @@ contract MembersBase {
     function addMember(address _address, string _name) external;
     function removeMember(uint _id) external;
     
-    function getMemberCount() public view returns (uint);
+    function getMembersCount() public view returns (uint);
 }

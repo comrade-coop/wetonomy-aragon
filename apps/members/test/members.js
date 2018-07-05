@@ -5,13 +5,14 @@ const MEMBER_INDEX_ADDRESS = 0
 const MEMBER_INDEX_NAME = 1
 const MEMBER_MIN_NAME_LENGTH = 3
 const MEMBER_MAX_NAME_LENGTH = 30
-const REVERT_MSG = /VM Exception while processing transaction: revert/
+const REVERT_MSG = /revert/
+const INVALID_OPCODE_MSG = /invalid opcode/
 
 contract('Members', async (accounts) => {
 
   it('should add a new member correctly', async () => {
     const instance = await Members.deployed()
-    const memberCount = await instance.getMemberCount.call()
+    const memberCount = await instance.getMembersCount.call()
     const newMemberAddress = '0x969f8a3667987823b84c4f22a4cdfea3ae724e86'
     const newMemberName = 'Pesho'
 
@@ -23,7 +24,7 @@ contract('Members', async (accounts) => {
     assert.equal(newMemberName, member[MEMBER_INDEX_NAME],
       'Member wasn\'t added with the correct name')
 
-    const newCount = await instance.getMemberCount.call()
+    const newCount = await instance.getMembersCount.call()
     assert.equal(memberCount + 1, newCount.toNumber(),
       'Member count didn\'t increase')
   })
@@ -59,11 +60,14 @@ contract('Members', async (accounts) => {
 
   it('should remove a member correctly', async () => {
     const instance = await Members.deployed()
-    const memberCount = (await instance.getMemberCount.call()).toNumber()
+    const memberCount = (await instance.getMembersCount.call()).toNumber()
 
-    const tx = await instance.removeMember(memberCount - 1)
+    const memberToRemoveId = memberCount - 1
+    const tx = await instance.removeMember(memberToRemoveId)
     
-    const newMemberCount = (await instance.getMemberCount.call()).toNumber()
+    const newMemberCount = (await instance.getMembersCount.call()).toNumber()
     assert.equal(newMemberCount + 1, memberCount, 'Member wasn\'t removed correctly')
+
+    await assertThrowsAsync(instance.members(memberToRemoveId), INVALID_OPCODE_MSG)
   })
 })

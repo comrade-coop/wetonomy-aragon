@@ -27,7 +27,7 @@ contract Members is MembersBase, AragonApp {
         _removeMember(_id);
     }
     
-    function getMemberCount() public view returns (uint) {
+    function getMembersCount() public view returns (uint) {
         return members.length;
     }
     
