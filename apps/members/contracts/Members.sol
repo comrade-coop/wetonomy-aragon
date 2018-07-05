@@ -11,7 +11,7 @@ contract Members is MembersBase, AragonApp {
     event MemberRemoved(address indexed accountAddress, string name);
     
     uint8 MIN_NAME_LENGTH = 3;
-    uint8 MAX_NAME_LENGTH = 20;
+    uint8 MAX_NAME_LENGTH = 30;
     
     mapping(address => bool) public memberExists;
     Member[] public members;

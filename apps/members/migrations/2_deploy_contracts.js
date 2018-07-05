@@ -1,5 +1,5 @@
-var App = artifacts.require('./App.sol')
+var Members = artifacts.require('./Members.sol')
 
 module.exports = function (deployer) {
-  deployer.deploy(App)
+  deployer.deploy(Members)
 }
