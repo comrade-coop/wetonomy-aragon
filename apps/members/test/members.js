@@ -65,9 +65,18 @@ contract('Members', async (accounts) => {
     const memberToRemoveId = memberCount - 1
     const tx = await instance.removeMember(memberToRemoveId)
     
-    const newMemberCount = (await instance.getMembersCount.call()).toNumber()
+    let newMemberCount = (await instance.getMembersCount.call()).toNumber()
     assert.equal(newMemberCount + 1, memberCount, 'Member wasn\'t removed correctly')
 
     await assertThrowsAsync(instance.members(memberToRemoveId), INVALID_OPCODE_MSG)
+
+    const secondMemberToRemoveId = 0
+    const txSecond = await instance.removeMember(secondMemberToRemoveId)
+
+    newMemberCount = (await instance.getMembersCount.call()).toNumber()
+    assert.equal(newMemberCount + 2, memberCount, 'Second member wasn\'t removed correctly')
+
+    await assertThrowsAsync(instance.members(memberCount - 1), INVALID_OPCODE_MSG)
   })
+
 })
