@@ -1,6 +1,4 @@
-const {
-  assertThrowsAsync
-} = require("./helpers/util")
+const { assertThrowsAsync } = require("./helpers/util")
 const Members = artifacts.require('Members')
 
 const MEMBER_INDEX_ADDRESS = 0
@@ -17,9 +15,7 @@ contract('Members', async (accounts) => {
     const newMemberAddress = '0x969f8a3667987823b84c4f22a4cdfea3ae724e86'
     const newMemberName = 'Pesho'
 
-    const tx = await instance.addMember(newMemberAddress, newMemberName, {
-      from: accounts[0]
-    })
+    const tx = await instance.addMember(newMemberAddress, newMemberName, { from: accounts[0] })
 
     const member = await instance.members.call(memberCount)
     assert.equal(newMemberAddress, member[MEMBER_INDEX_ADDRESS],
