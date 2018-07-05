@@ -9,6 +9,7 @@
     "ethereumjs-testrpc": "^6.0.3",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
+    "solhint": "^1.2.1",
     "styled-components": "^3.2.6"
   },
   "devDependencies": {
@@ -23,7 +24,8 @@
   "scripts": {
     "start": "aragon run",
     "test": "aragon contracts test",
-    "compile": "aragon contracts compile",
+    "lint": "solhint apps/**/contracts/*.sol",
+    "compile": "aragon contracts compile && npm run lint",
     "sync-assets": "mkdir -p dist; rsync -rtu \"$(dirname $(node -p 'require.resolve(\"@aragon/ui\")'))/\" dist/aragon-ui",
     "build:app": "parcel build app/index.html -d dist/ --public-url '.'",
     "build:script": "parcel build app/script.js -d dist/",
