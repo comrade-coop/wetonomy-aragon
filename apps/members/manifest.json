@@ -1,6 +1,6 @@
 {
-  "name": "Counter",
-  "description": "An application for Aragon",
+  "name": "Members",
+  "description": "Aragon application to manage members in an organisation.",
   "icons": [{
     "src": "/dist/images/icon.png",
     "sizes": "22x22"
