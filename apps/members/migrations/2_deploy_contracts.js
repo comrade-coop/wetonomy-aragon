@@ -1,5 +1,5 @@
-var Members = artifacts.require('./Members.sol')
+const Members = artifacts.require('./Members.sol')
 
-module.exports = function (deployer) {
-  deployer.deploy(Members)
+module.exports = async (deployer) => {  
+  await deployer.deploy(Members)
 }
