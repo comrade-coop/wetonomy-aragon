@@ -10,7 +10,6 @@
     "react-dom": "^16.4.1",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.4",
     "styled-components": "^3.3.3",
     "styled-normalize": "^8.0.0",
     "web3-utils": "^1.0.0-beta.34"
@@ -24,10 +23,24 @@
   },
   "devDependencies": {
     "@aragon/react-scripts": "^1.1.0-aragon.6",
-    "eslint": "^5.0.1",
+    "eslint": "4.15.0",
     "eslint-plugin-react": "^7.10.0",
     "parcel-bundler": "^1.9.4",
     "prettier": "^1.13.7",
     "prettier-eslint": "^8.8.2"
-  }
+  },
+  "browserslist": {
+    "development": [
+      "last 2 chrome versions",
+      "last 2 firefox versions",
+      "last 2 edge versions"
+    ],
+    "production": [
+      ">1%",
+      "last 4 versions",
+      "Firefox ESR",
+      "not ie < 11"
+    ]
+  },
+  "homepage": "."
 }
