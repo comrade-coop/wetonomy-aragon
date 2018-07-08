@@ -1,5 +1,5 @@
 {
-  "name": "app-name",
+  "name": "wetonomy",
   "version": "1.0.0",
   "description": "",
   "dependencies": {
@@ -18,18 +18,23 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
+    "lerna": "^2.11.0",
     "parcel-bundler": "^1.8.1",
     "truffle": "^4.1.13"
   },
   "scripts": {
+    "bootstrap": "lerna bootstrap --hoist",
+    "clean": "git clean -fdxi",
     "start": "aragon run",
-    "test": "aragon contracts test",
+    "test": "lerna run test",
     "lint": "solhint apps/**/contracts/*.sol",
     "compile": "aragon contracts compile && npm run lint",
     "sync-assets": "mkdir -p dist; rsync -rtu \"$(dirname $(node -p 'require.resolve(\"@aragon/ui\")'))/\" dist/aragon-ui",
     "build:app": "parcel build app/index.html -d dist/ --public-url '.'",
     "build:script": "parcel build app/script.js -d dist/",
     "build": "npm run compile && npm run sync-assets && npm run build:app && npm run build:script",
+    "build:apps": "npm run compile && lerna run --concurrency=1 --stream build",
+    "publish:apps": "lerna run --concurrency=1 --stream publish",
     "publish": "aragon publish"
   },
   "keywords": [],
