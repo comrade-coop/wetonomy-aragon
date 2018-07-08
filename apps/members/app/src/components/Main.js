@@ -34,7 +34,6 @@ const MemberCount = styled(Text)`
   margin-right: 20px;
 `
 
-
 export default class Main extends React.Component {
   render() {
     return (
