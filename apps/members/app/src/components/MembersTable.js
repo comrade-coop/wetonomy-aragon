@@ -1,33 +1,42 @@
 import React from 'react'
-import {Table, TableHeader, TableRow} from '@aragon/ui'
+import {Table, TableRow, TableCell, Text, theme} from '@aragon/ui'
 import TableRowMember from './TableRowMember'
+import PropTypes from 'prop-types'
 
-const Header = (
-  <TableRow>    
-    <TableHeader title="Name"/>
-    <TableHeader title="Account Address"/>
-    <TableHeader title="Experience Level"/>
-    <TableHeader title="Reputation"/>
-    <TableHeader title="Pay Rate"/>
-    <TableHeader title="Actions"/>
+class MembersTable extends React.Component { 
+ 
+  render() {
+    const Members = this.props.members.map(member => 
+      <TableRowMember key={member.accountAddress} {...member} />)
+
+    return (
+      <Table>
+        <TableHeader /> 
+        {Members}
+      </Table>
+    )
+  }
+}
+
+MembersTable.propTypes = {
+  members: PropTypes.array.isRequired
+}
+
+const TableHeader = () => (
+  <TableRow>
+    <LargeDimmedTextCell>Name</LargeDimmedTextCell>
+    <LargeDimmedTextCell>Account Address</LargeDimmedTextCell>
+    <LargeDimmedTextCell>Experience Level</LargeDimmedTextCell>
+    <LargeDimmedTextCell>Reputation</LargeDimmedTextCell>
+    <LargeDimmedTextCell>Pay Rate</LargeDimmedTextCell>
+    <LargeDimmedTextCell>Actions</LargeDimmedTextCell>
   </TableRow>
 )
 
-const members = [
-  { name: 'John Smith', accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724E86', level: 'Senior', reputation: 324, payRate: '$24/hr' },
-  { name: 'John Smith', accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724C86', level: 'Senior', reputation: 324, payRate: '$24/hr' },
-  { name: 'John Smith', accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724D86', level: 'Senior', reputation: 324, payRate: '$24/hr' },
-  { name: 'John Smith', accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724F86', level: 'Senior', reputation: 324, payRate: '$24/hr' },
-  { name: 'John Smith', accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724G86', level: 'Senior', reputation: 324, payRate: '$24/hr' },
-  { name: 'John Smith', accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724T86', level: 'Senior', reputation: 324, payRate: '$24/hr' },
-] 
+const LargeDimmedTextCell = (props) => (
+  <TableCell>
+    <Text size="large" weight="bold" color={theme.textDimmed}>{props.children}</Text>
+  </TableCell>
+)
 
-export default () => {
-  const Members = members.map(member => <TableRowMember key={member.accountAddress} {...member} />)
-
-  return (
-    <Table header={Header}>
-      {Members}
-    </Table>
-  )
-}
+export default MembersTable

@@ -33,6 +33,7 @@
         ],
         "react/jsx-uses-vars": 1,
         "object-curly-spacing": "off",
-        "space-before-blocks": "error"
+        "space-before-blocks": "error",
+        "no-console": "off"
     }
 }
