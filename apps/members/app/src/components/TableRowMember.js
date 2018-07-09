@@ -5,7 +5,10 @@ import PropTypes from 'prop-types'
 import Avatar from './Avatar'
 import logo from '../assets/logo.svg'
 import styled from 'styled-components'
+import Icon from './Icon'
 
+import editLogo from '../assets/edit.svg'
+import removeLogo from '../assets/delete.svg'
 
 const TableRowMember = (props) => {
   return (
@@ -26,9 +29,10 @@ const TableRowMember = (props) => {
       <TableCell>
         <Text size="large" color={theme.textDimmed}>${props.payRate}/hr</Text>
       </TableCell>
-      <TableCell>
-        <Text size="large" color={theme.textDimmed}>{props.actions}</Text>
-      </TableCell>
+      <ActionsCell>
+        <Icon src={editLogo} alt="Edit Member" />        
+        <Icon src={removeLogo} alt="Remove Member" />
+      </ActionsCell>
     </TableRow>
   )
 }
@@ -47,5 +51,12 @@ const NameCell = styled(TableCell)`
     justify-content: flex-start;
   }
 `
+
+const ActionsCell = styled(TableCell)`
+  & > div {
+    justify-content: flex-end;
+  }
+`
+
 
 export default TableRowMember

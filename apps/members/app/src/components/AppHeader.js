@@ -3,7 +3,7 @@ import {AppBar, Text, theme} from '@aragon/ui'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Avatar from './Avatar'
-
+import Icon from './Icon'
 import debtLogo from '../assets/debt.svg'
 import rewardLogo from '../assets/reward-token.svg'
 
@@ -36,22 +36,19 @@ const MemberInfoContainer = styled.span`
   cursor: pointer;
 `
 
-const InfoLogo = styled.img`
-  margin: 0px 10px;
-`
 
-const BlueInfoLogo = styled(InfoLogo)`
+const BlueIcon = styled(Icon)`
   fill: ${theme.accent};  
 `
 
 const MemberProfile = (props) => (
   <ProfileRoot>
     <MemberInfoContainer>
-      <BlueInfoLogo src={debtLogo} alt="Debt:" />
+      <BlueIcon src={debtLogo} alt="Debt:" />
       <Text size="large" weight="bold" color={theme.accent}>${props.debt}</Text>
     </MemberInfoContainer>
     <MemberInfoContainer>
-      <InfoLogo src={rewardLogo} alt="Reward Tokens:" />
+      <Icon src={rewardLogo} alt="Reward Tokens:" />
       <Text size="large" weight="bold" color={theme.textDimmed}>{props.rewardTokens}</Text>
     </MemberInfoContainer>
     <MemberAvatar/>
