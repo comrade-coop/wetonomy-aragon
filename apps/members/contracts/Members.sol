@@ -1,7 +1,8 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.18;
 
 import "./interfaces/IMembers.sol";
 import "../node_modules/@aragon/os/contracts/apps/AragonApp.sol";
+
 
 contract Members is IMembers, AragonApp {
     
@@ -34,9 +35,9 @@ contract Members is IMembers, AragonApp {
     }
     
     function setMemberLevel(uint _id, Level _level) 
+        external
         isMemberById(_id) 
-        auth(MANAGE_MEMBERS_ROLE) 
-        external 
+        auth(MANAGE_MEMBERS_ROLE)          
     {
         address memberAddress = memberAddresses[_id];
         Member storage member = addressToMember[memberAddress];
@@ -44,9 +45,9 @@ contract Members is IMembers, AragonApp {
     }
     
     function setMemberAddress(uint _id, address _address)
-        auth(MANAGE_MEMBERS_ROLE)
-        isMemberById(_id)
         external
+        auth(MANAGE_MEMBERS_ROLE)
+        isMemberById(_id)        
     {
         address memberAddress = memberAddresses[_id];
         Member storage member = addressToMember[memberAddress];
@@ -54,9 +55,9 @@ contract Members is IMembers, AragonApp {
     }
     
     function setMemberName(uint _id, string _name) 
-        auth(MANAGE_MEMBERS_ROLE)
-        isMemberById(_id)
         external
+        auth(MANAGE_MEMBERS_ROLE)
+        isMemberById(_id)        
     {
         address memberAddress = memberAddresses[_id];
         Member storage member = addressToMember[memberAddress];
@@ -81,7 +82,8 @@ contract Members is IMembers, AragonApp {
     function getMember(uint _id)
         external
         view 
-        returns (address accountAddress, string name, Level level) {
+        returns (address accountAddress, string name, Level level) 
+    {
         address memberAddress = memberAddresses[_id];
         Member storage member = addressToMember[memberAddress];
         accountAddress = member.accountAddress;
@@ -90,8 +92,8 @@ contract Members is IMembers, AragonApp {
     }
     
     function _addMember(address _address, string _name, Level _level) 
-        auth(MANAGE_MEMBERS_ROLE)
         internal
+        auth(MANAGE_MEMBERS_ROLE)        
     {
         require(addressToMember[_address].accountAddress == address(0));
         require(isValidMember(_address, _name));
@@ -103,9 +105,9 @@ contract Members is IMembers, AragonApp {
     }
     
     function _removeMember(uint _id) 
-        auth(MANAGE_MEMBERS_ROLE)
-        isMemberById(_id)
         internal
+        auth(MANAGE_MEMBERS_ROLE)
+        isMemberById(_id)        
     {
         address memberAddress = memberAddresses[_id];
         Member memory member = addressToMember[memberAddress];
