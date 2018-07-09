@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import MembersTable from './MembersTable'
 import {Button, Text, theme} from '@aragon/ui'
 import Avatar from './Avatar'
-import logo from '../assets/logo.svg'
 import PropTypes from 'prop-types'
 
 class Main extends React.Component {
@@ -17,7 +16,7 @@ class Main extends React.Component {
       <MainRoot>
         <MainTop>
           <OrgInfo>
-            <Avatar src={logo} alt={this.props.name}/>
+            <Avatar />
             <OrgName size="xlarge" color={theme.textDimmed}>{this.props.organizationName}</OrgName>
             <MemberCount size="xlarge" color={theme.textSecondary}>Total Member count: {this.props.members.length}</MemberCount>
           </OrgInfo>

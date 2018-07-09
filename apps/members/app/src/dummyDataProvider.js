@@ -38,6 +38,8 @@ const members = [
     payRate: 24
   }
 ]
+const memberDebt = 1230.53
+const rewardTokens = 320
 
 export const getMembers = () => {
   return new Promise((resolve) => {
@@ -48,5 +50,17 @@ export const getMembers = () => {
 export const getOrganizationName = () => {
   return new Promise((resolve) => {
     resolve(organizationName)
+  })
+}
+
+export const getMemberDebt = () => {
+  return new Promise((resolve) => {
+    resolve(memberDebt)
+  })
+}
+
+export const getRewardTokens = () => {
+  return new Promise((resolve) => {
+    resolve(rewardTokens)
   })
 }
