@@ -45,5 +45,6 @@ This repository contains the following apps:
  	- ```ipfs init```
 - Start IPFS if not started
 	- ```ipfs daemon```
-- Run ```aragon run```
-	-- 
+- Run 
+	- ```aragon run```
+
