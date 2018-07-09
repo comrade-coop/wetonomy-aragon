@@ -1,7 +1,7 @@
 pragma solidity 0.4.18;
 
+import "@aragon/os/contracts/apps/AragonApp.sol";
 import "./interfaces/IMembers.sol";
-import "../node_modules/@aragon/os/contracts/apps/AragonApp.sol";
 
 
 contract Members is IMembers, AragonApp {

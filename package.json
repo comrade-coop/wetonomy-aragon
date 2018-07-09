@@ -5,11 +5,7 @@
   "dependencies": {
     "@aragon/client": "^1.0.0-beta.8",
     "@aragon/os": "3.1.9",
-    "@aragon/ui": "^0.11.0",
-    "react": "^16.3.2",
-    "react-dom": "^16.3.2",
-    "solhint": "^1.2.1",
-    "styled-components": "^3.2.6"
+    "@aragon/ui": "^0.11.0"    
   },
   "devDependencies": {
     "@aragon/cli": "^4.0.6",
@@ -17,24 +13,24 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
+    "ganache-cli": "^6.1.5",
+    "solhint": "^1.2.1",
     "lerna": "^2.11.0",
     "parcel-bundler": "^1.8.1",
-    "truffle": "^4.1.13"
+    "truffle": "4.0.5"
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist",
     "clean": "git clean -fdxi",
-    "start": "aragon run",
+    "start:dummy": "aragon run",
+    "start:kit": "aragon run --kit Kit --kit-init @ARAGON_ENS",
     "test": "lerna run test",
-    "lint": "solhint apps/**/contracts/*.sol",
+    "lint": "solhint apps/**/contracts/*.sol contracts/*.sol",
     "compile": "aragon contracts compile && npm run lint",
-    "sync-assets": "mkdir -p dist; rsync -rtu \"$(dirname $(node -p 'require.resolve(\"@aragon/ui\")'))/\" dist/aragon-ui",
-    "build:app": "parcel build app/index.html -d dist/ --public-url '.'",
-    "build:script": "parcel build app/script.js -d dist/",
-    "build": "npm run compile && npm run sync-assets && npm run build:app && npm run build:script",
-    "build:apps": "npm run compile && lerna run --concurrency=1 --stream build",
+    "build:apps": "lerna run --concurrency=1 --stream build",
     "publish:apps": "lerna run --concurrency=1 --stream publish",
-    "publish": "aragon publish"
+    "publish": "aragon publish",
+    "devchain": "ganache-cli --db ~/.aragon/ganache-db-8545 --mnemonic \"explain tackle mirror kit van hammer degree position ginger unfair soup bonus\" --gasLimit 50000000"
   },
   "keywords": [],
   "license": "GPL-3.0"
