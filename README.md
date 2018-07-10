@@ -1,40 +1,40 @@
 # Wetonomy
-An opinionated DAO framework on top of aragonOS
+An opinionated DAO framework on top of AragonOS
 
 ## Apps
 This repository contains the following apps:
-- Members - Manages the members in an organization
+- **Members**: Manages the members in an organization
 
 ## Prerequisites
 
-- [**aragon**](https://aragon.one/): Aragon dapp to create and manage decentralized organizations on Ethereum.
-- [**lerna**](https://lernajs.io/): A tool for managing JavaScript projects with multiple packages.  
-- [**solhint**](https://www.npmjs.com/package/solhint): Open source project for linting Solidity code.
-- [**truffle**](https://github.com/trufflesuite/truffle): Used to build and test the contracts 
+- [**Aragon**](https://aragon.one/): Aragon Dapp to create and manage decentralized organizations on Ethereum.
+- [**Lerna**](https://lernajs.io/): A tool for managing JavaScript projects with multiple packages.  
+- [**Solhint**](https://www.npmjs.com/package/solhint): Open source project for linting Solidity code.
+- [**Truffle**](https://github.com/trufflesuite/truffle): Used to build and test the contracts 
 
 ## Developing
 
 ## Kit Usage
 These are the steps required to build and run the Wetonomy Kit as a whole.
 
-First install the seperate package dependencies through Lerna:
+First, install the separate package dependencies through Lerna:
 ```sh
 npm run bootstrap
 ```
 
-The start a local Devchain with:
+Then start a local Devchain with:
 ```sh
 npm run devchain
 ```
 
-Then in a seperate Terminal run the following in order to build the seperate apps and run them as a Kit:
+Then in a separate Terminal run the following in order to build the separate apps and run them as a Kit:
 ```sh
 npm run start:kit
 ```
 
 ## Run tests
 ```sh
-trufle develop
+truffle develop
 test
 ```
 
@@ -43,10 +43,10 @@ test
 - **bootstrap**: Use lerna to bootstrap the apps into packages
 - **build**: Compiles the contracts and builds the front-end
 - **build:apps**: Build only the apps
-- **compile**: Use solhint to lint the smart contracts
+- **compile**: Use Solhint to lint the smart contracts
 - **lint**: Run lint on contracts
 - **publish**: Builds the apps and the contracts and publishes them to IPFS and APM
-- **publish:apps**: Publishes the seperate apps  
+- **publish:apps**: Publishes the separate apps  
 - **start:kit**: Run the whole Kit locally
 - **test**: Runs tests for the contracts
 - **devchain**: Starts a local Ganache-CLI devchain
