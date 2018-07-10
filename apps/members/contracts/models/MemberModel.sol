@@ -1,6 +1,7 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.18;
 
 import "../libs/Strings.sol";
+
 
 contract MemberModel {
     using Strings for string;
@@ -26,9 +27,9 @@ contract MemberModel {
     }
     
     function isValidMember(address _address, string _name) 
-        validName(_name) 
         public
         pure
+        validName(_name)        
         returns (bool)
     {
         return _address != address(0);

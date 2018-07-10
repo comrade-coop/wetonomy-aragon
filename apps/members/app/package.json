@@ -19,7 +19,7 @@
     "start": "npm run sync-assets && react-scripts start",
     "build": "npm run sync-assets && react-scripts build",
     "sync-assets": "copy-aragon-ui-assets ./public",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts test --coverage --env=jsdom",
     "eject": "react-scripts eject"
   },
   "devDependencies": {

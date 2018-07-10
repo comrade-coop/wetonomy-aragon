@@ -17,7 +17,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
     "parcel-bundler": "^1.8.1",
-    "truffle": "^4.1.13"
+    "truffle": "4.0.5"
   },
   "scripts": {
     "start": "aragon run",
@@ -25,7 +25,7 @@
     "compile": "aragon contracts compile",
     "sync-assets": "mkdir -p dist; rsync -rtu \"$(dirname $(node -p 'require.resolve(\"@aragon/ui\")'))/\" dist/aragon-ui",
     "build": "npm run compile",
-    "publish": "aragon publish"
+    "publish": "aragon apm publish"
   },
   "keywords": [],
   "license": "GPL-3.0"
