@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom'
 import Aragon, { providers } from '@aragon/client'
 import App from './App'
 
+import IPFSActions from './actions/IPFSActions'
+import DBStore from './stores/DBStore'
+
 class ConnectedApp extends React.Component {
   state = {
     app: new Aragon(new providers.WindowMessage(window.parent)),
@@ -12,7 +15,11 @@ class ConnectedApp extends React.Component {
 
   componentDidMount() {
     window.addEventListener('message', this.handleWrapperMessage)
+
+    IPFSActions.start()
+    DBStore.init()
   }
+
   componentWillUnmount() {
     window.removeEventListener('message', this.handleWrapperMessage)
   }
@@ -21,19 +28,23 @@ class ConnectedApp extends React.Component {
     if (data.from !== 'wrapper') {
       return
     }
-    
+
     if (data.name === 'ready') {
       const { app } = this.state
       this.sendMessageToWrapper('ready', true)
       this.setState({
         observable: app.state(),
       })
-      
+
       app.accounts().subscribe(accounts => {
         this.setState({
           userAccount: accounts[0],
         })
       })
+
+      console.log('SHOSHSOHSOHSOSHOSHOS')
+      IPFSActions.start(this.state.userAccount)
+      //IPFSActions.start()
     }
   }
 

@@ -10,6 +10,7 @@ import MemberPanel, { PanelMode } from './components/Panels/MemberPanel'
 
 // import Member from './models/Member'
 import { isMember } from './utils/utility'
+import MembersStore from './stores/MembersStore'
 
 class App extends React.Component {
   static propTypes = {
@@ -34,6 +35,10 @@ class App extends React.Component {
   state = {
     isPanelOpened: false,
     panelMode: PanelMode.ADD
+  }
+
+  componentWillMount() {
+    MembersStore.init()
   }
 
   handlePanelToggle = (mode = PanelMode.ADD) => {

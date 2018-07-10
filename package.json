@@ -5,7 +5,10 @@
   "dependencies": {
     "@aragon/client": "^1.0.0-beta.8",
     "@aragon/os": "3.1.9",
-    "@aragon/ui": "^0.11.0"
+    "@aragon/ui": "^0.11.0",
+    "ipfs": "^0.30.1",
+    "orbit-db": "^0.19.9",
+    "reflux": "^6.4.1"
   },
   "devDependencies": {
     "@aragon/cli": "^4.0.6",
