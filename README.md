@@ -1,4 +1,5 @@
 # Wetonomy
+An opinionated DAO framework on top of aragonOS
 
 ## Apps
 This repository contains the following apps:
@@ -11,9 +12,33 @@ This repository contains the following apps:
 - [**solhint**](https://www.npmjs.com/package/solhint): Open source project for linting Solidity code.
 - [**truffle**](https://github.com/trufflesuite/truffle): Used to build and test the contracts 
 
-## What's in the box?
+## Developing
 
-### npm Scripts
+## Kit Usage
+These are the steps required to build and run the Wetonomy Kit as a whole.
+
+First install the seperate package dependencies through Lerna:
+```sh
+npm run bootstrap
+```
+
+The start a local Devchain with:
+```sh
+npm run devchain
+```
+
+Then in a seperate Terminal run the following in order to build the seperate apps and run them as a Kit:
+```sh
+npm run start:kit
+```
+
+## Run tests
+```sh
+trufle develop
+test
+```
+
+### NPM Scripts
 
 - **bootstrap**: Use lerna to bootstrap the apps into packages
 - **build**: Compiles the contracts and builds the front-end
@@ -21,40 +46,13 @@ This repository contains the following apps:
 - **compile**: Use solhint to lint the smart contracts
 - **lint**: Run lint on contracts
 - **publish**: Builds the apps and the contracts and publishes them to IPFS and APM
-- **publish:apps**: Publishes only the apps  
-- **start**: Run the app locally
-- **sycn-assets**: Sync the assets into dist folder
+- **publish:apps**: Publishes the seperate apps  
+- **start:kit**: Run the whole Kit locally
 - **test**: Runs tests for the contracts
+- **devchain**: Starts a local Ganache-CLI devchain
+
 
 ### Libraries
-
 - [**@aragon/os**](https://github.com/aragon/aragonos): Aragon interfaces
 - [**@aragon/client**](https://github.com/aragon/aragon.js/tree/master/packages/aragon-client): Wrapper for Aragon application RPC
 - [**@aragon/ui**](https://github.com/aragon/aragon-ui): Aragon UI components (in React)
-
-
-## Develop
-
-### Run tests
-- Run ```trufle develop```
-- Run ```test```
-
-
-### Run app
-- Init IPFS if not already initialized:
- 	- ```ipfs init```
-- Start IPFS if not started
-	- ```ipfs daemon```
-- Run 
-	- ```aragon run```
-
-## Kit Usage
-```sh
-npm run devchain # Starts a local devchain
-
-npm run bootstrap # Bootstraps dependencies of the seperate projects inside apps/
-
-npm run build:apps # Builds the Front-end of the apps
-npm run publish:apps # Publishes the seperate apps to the devchain and IPFS
-npm run start:kit # Finally, creates a new DAO, given the kit file in contracts/
-```

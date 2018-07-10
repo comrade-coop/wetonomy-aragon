@@ -20,14 +20,14 @@
     "truffle": "4.0.5"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap --hoist",
+    "bootstrap": "lerna bootstrap --no-hoist=@aragon/os",
     "clean": "git clean -fdxi",
     "start:dummy": "aragon run",
-    "start:kit": "aragon run --kit Kit --kit-init @ARAGON_ENS",
+    "start:kit": "npm run build:apps && npm run publish:apps && aragon run --kit Kit --kit-init @ARAGON_ENS",
     "test": "lerna run test",
     "lint": "solhint apps/**/contracts/*.sol contracts/*.sol",
     "compile": "aragon contracts compile && npm run lint",
-    "build:apps": "lerna run --concurrency=1 --stream build",
+    "build:apps": "npm run compile && lerna run --concurrency=1 --stream build",
     "publish:apps": "lerna run --concurrency=1 --stream publish",
     "publish": "aragon publish",
     "devchain": "ganache-cli --db ~/.aragon/ganache-db-8545 --mnemonic \"explain tackle mirror kit van hammer degree position ginger unfair soup bonus\" --gasLimit 50000000"
