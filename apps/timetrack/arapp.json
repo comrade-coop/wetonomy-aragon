@@ -1,0 +1,12 @@
+{
+  "appName": "timetrack.aragonpm.eth",
+  "version": "1.0.0",
+  "roles": [
+    {
+      "name": "Manage task",
+      "id": "MANAGE_TASK_ROLE",
+      "params": []
+    }
+  ],
+  "path": "contracts/TimeTrack.sol"
+}

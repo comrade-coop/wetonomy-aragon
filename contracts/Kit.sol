@@ -11,6 +11,7 @@ import "@aragon/os/contracts/lib/minime/MiniMeToken.sol";
 import "../node_modules/@aragon/apps-token-manager/contracts/TokenManager.sol";
 
 import "../apps/members/contracts/Members.sol";
+import "../apps/timetrack/contracts/TimeTrack.sol";
 
 
 contract KitBase is APMNamehash {
@@ -60,8 +61,13 @@ contract Kit is KitBase {
         bytes32 votingAppId = apmNamehash("voting");
         bytes32 tokenManagerId = apmNamehash("token-manager");
         bytes32 membersId = apmNamehash("members");
+        bytes32 timeTrackId = apmNamehash("time-track");
 
+        // Wetonomy apps
         Members members = Members(dao.newAppInstance(membersId, latestVersionAppBase(membersId)));
+        TimeTrack timetrack = Members(dao.newAppInstance(timeTrackId, latestVersionAppBase(timeTrackId)));
+
+        // Aragon apps       
         Voting voting = Voting(dao.newAppInstance(votingAppId, latestVersionAppBase(votingAppId)));		
         TokenManager tokenManager = TokenManager(
             dao.newAppInstance(tokenManagerId, latestVersionAppBase(tokenManagerId)));  
@@ -77,6 +83,7 @@ contract Kit is KitBase {
         acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root);
 
         acl.createPermission(root, members, members.MANAGE_MEMBERS_ROLE(), root);
+        acl.createPermission(root, timetrack, timetrack.MANAGE_TASK_ROLE(), root);
 
         acl.grantPermission(voting, tokenManager, tokenManager.MINT_ROLE());
 
