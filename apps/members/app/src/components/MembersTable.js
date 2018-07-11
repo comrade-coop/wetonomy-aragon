@@ -1,33 +1,43 @@
 import React from 'react'
-import {Table, TableHeader, TableRow} from '@aragon/ui'
+import {Table, TableRow, TableHeader} from '@aragon/ui'
 import TableRowMember from './TableRowMember'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
-const Header = (
-  <TableRow>    
+class MembersTable extends React.Component {
+
+  render() {
+    const Members = this
+      .props
+      .members
+      .map(member => <TableRowMember key={member.accountAddress} {...member}/>)
+
+    return (
+      <Table>
+        <Header/> {Members}
+      </Table>
+    )
+  }
+}
+
+MembersTable.propTypes = {
+  members: PropTypes.array.isRequired
+}
+
+const Header = () => (
+  <TableRow>
     <TableHeader title="Name"/>
     <TableHeader title="Account Address"/>
     <TableHeader title="Experience Level"/>
     <TableHeader title="Reputation"/>
     <TableHeader title="Pay Rate"/>
-    <TableHeader title="Actions"/>
+    <TableHeaderEnd title="Actions"/>
   </TableRow>
 )
 
-const members = [
-  { name: 'John Smith', accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724E86', level: 'Senior', reputation: 324, payRate: '$24/hr' },
-  { name: 'John Smith', accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724C86', level: 'Senior', reputation: 324, payRate: '$24/hr' },
-  { name: 'John Smith', accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724D86', level: 'Senior', reputation: 324, payRate: '$24/hr' },
-  { name: 'John Smith', accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724F86', level: 'Senior', reputation: 324, payRate: '$24/hr' },
-  { name: 'John Smith', accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724G86', level: 'Senior', reputation: 324, payRate: '$24/hr' },
-  { name: 'John Smith', accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724T86', level: 'Senior', reputation: 324, payRate: '$24/hr' },
-] 
+const TableHeaderEnd = styled(TableHeader)`
+  padding: 0px 21px;
+  text-align: right;
+`
 
-export default () => {
-  const Members = members.map(member => <TableRowMember key={member.accountAddress} {...member} />)
-
-  return (
-    <Table header={Header}>
-      {Members}
-    </Table>
-  )
-}
+export default MembersTable
