@@ -2,7 +2,8 @@
   "lerna": "2.11.0",
   "packages": [
     "apps/*",
-    "apps/*/*"
+    "apps/*/*",
+    "shared/test-utilities"
   ],
   "version": "independent"
 }
