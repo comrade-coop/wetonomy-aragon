@@ -17,14 +17,17 @@
     "solhint": "^1.2.1",
     "lerna": "^2.11.0",
     "parcel-bundler": "^1.8.1",
-    "truffle": "4.0.5"
+    "truffle": "4.0.5",
+    "coveralls": "^3.0.1",
+    "lcov-result-merger": "^1.2.0"
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --no-hoist=@aragon/os",
     "clean": "git clean -fdxi",
     "start:dummy": "aragon run",
     "start:kit": "npm run build:apps && npm run publish:apps && aragon run --kit Kit --kit-init @ARAGON_ENS",
-    "test": "lerna run test",
+    "test": "lerna run --scope=wetonomy-* --concurrency=1 --stream test",
+    "coverage": "lerna run --scope=wetonomy-* --concurrency=1 --stream coverage",
     "lint": "solhint apps/**/contracts/*.sol contracts/*.sol",
     "compile": "aragon contracts compile && npm run lint",
     "build:apps": "npm run compile && lerna run --concurrency=1 --stream build",
