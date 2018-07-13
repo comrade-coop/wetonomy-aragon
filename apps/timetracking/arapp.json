@@ -1,5 +1,5 @@
 {
-  "appName": "timetrack.aragonpm.eth",
+  "appName": "timetracking.aragonpm.eth",
   "version": "1.0.0",
   "roles": [
     {
@@ -8,5 +8,5 @@
       "params": []
     }
   ],
-  "path": "contracts/TimeTrack.sol"
+  "path": "contracts/TimeTracking.sol"
 }

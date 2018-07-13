@@ -1,9 +1,9 @@
-const TimeTrack = artifacts.require('TimeTrack')
+const TimeTracking = artifacts.require('TimeTracking')
 
-contract('TimeTrack', async (accounts) => {
+contract('TimeTracking', async (accounts) => {
 
   it('should add first tracked hours', async () => {
-    const instance = await TimeTrack.deployed()
+    const instance = await TimeTracking.deployed()
     const owner = accounts[0];
 
     await instance.trackHours(3, {from:owner});
@@ -13,7 +13,7 @@ contract('TimeTrack', async (accounts) => {
   })
 
   it('should sum up tracked hours', async () => {
-    const instance = await TimeTrack.deployed()
+    const instance = await TimeTracking.deployed()
     const owner = accounts[1];
 
     await instance.trackHours(3, {from:owner})
