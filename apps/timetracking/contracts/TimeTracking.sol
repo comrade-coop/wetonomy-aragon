@@ -1,9 +1,9 @@
 pragma solidity 0.4.18;
 
-import "../node_modules/@aragon/os/contracts/apps/AragonApp.sol";
+import "@aragon/os/contracts/apps/AragonApp.sol";
 
 
-contract TimeTrack is AragonApp {
+contract TimeTracking is AragonApp {
 
     event HoursTracked(address indexed ownerAddress, uint64 trackedHours);
 
