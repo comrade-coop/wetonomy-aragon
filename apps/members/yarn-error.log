@@ -1,5 +1,5 @@
 Arguments: 
-  /home/ivanasen/.nvm/versions/node/v10.5.0/bin/node /usr/share/yarn/bin/yarn.js publish
+  /home/ivanasen/.nvm/versions/node/v10.5.0/bin/node /usr/share/yarn/bin/yarn.js
 
 PATH: 
   /opt/remix/remix-0.1.2/:/home/ivanasen/Android/Sdk/platform-tools/:/home/ivanasen/Android/Sdk/tools/:/home/ivanasen/.config/composer/vendor/bin:/home/ivanasen/.rvm/gems/ruby-2.5.0/bin:/home/ivanasen/.rvm/gems/ruby-2.5.0@global/bin:/home/ivanasen/.rvm/rubies/ruby-2.5.0/bin:/opt/remix/remix-0.1.2/:/home/ivanasen/Android/Sdk/platform-tools/:/home/ivanasen/Android/Sdk/tools/:/home/ivanasen/.nvm/versions/node/v10.5.0/bin:/home/ivanasen/.config/composer/vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/usr/local/go/bin:/home/ivanasen/.rvm/bin:/usr/local/go/bin:/home/ivanasen/Development/Tools/go/bin:/home/ivanasen/.rvm/bin:/usr/local/go/bin:/home/ivanasen/Development/Tools/go/bin
@@ -14,17 +14,12 @@ Platform:
   linux x64
 
 Trace: 
-  Error: canceled
-      at Interface.<anonymous> (/usr/share/yarn/lib/cli.js:131036:13)
-      at Interface.emit (events.js:182:13)
-      at Interface._ttyWrite (readline.js:783:16)
-      at ReadStream.onkeypress (readline.js:168:10)
-      at ReadStream.emit (events.js:182:13)
-      at emitKeys (internal/readline.js:422:14)
-      at emitKeys.next (<anonymous>)
-      at ReadStream.onData (readline.js:1022:36)
-      at ReadStream.emit (events.js:182:13)
-      at addChunk (_stream_readable.js:283:12)
+  SyntaxError: /home/ivanasen/Development/Code/Projects/wetonomy/apps/members/package.json: Unexpected token } in JSON at position 196
+      at JSON.parse (<anonymous>)
+      at /usr/share/yarn/lib/cli.js:1130:59
+      at Generator.next (<anonymous>)
+      at step (/usr/share/yarn/lib/cli.js:98:30)
+      at /usr/share/yarn/lib/cli.js:109:13
 
 npm manifest: 
   {
@@ -34,10 +29,7 @@ npm manifest:
     "dependencies": {
       "@aragon/os": "3.1.9",
       "@aragon/client": "^1.0.0-beta.8",
-      "@aragon/ui": "^0.11.0",
-      "react": "^16.3.2",
-      "react-dom": "^16.3.2",
-      "styled-components": "^3.2.6"
+      "@aragon/ui": "^0.11.0",    
     },
     "devDependencies": {
       "@aragon/cli": "^4.0.6",
@@ -46,7 +38,7 @@ npm manifest:
       "babel-preset-env": "^1.6.1",
       "babel-preset-stage-2": "^6.24.1",
       "parcel-bundler": "^1.8.1",
-      "truffle": "^4.1.13"
+      "truffle": "4.0.5"
     },
     "scripts": {
       "start": "aragon run",
@@ -54,7 +46,7 @@ npm manifest:
       "compile": "aragon contracts compile",
       "sync-assets": "mkdir -p dist; rsync -rtu \"$(dirname $(node -p 'require.resolve(\"@aragon/ui\")'))/\" dist/aragon-ui",
       "build": "npm run compile",
-      "publish": "aragon publish"
+      "publish": "aragon apm publish"
     },
     "keywords": [],
     "license": "GPL-3.0"
@@ -451,7 +443,7 @@ Lockfile:
     dependencies:
       async "^2.4.0"
   
-  "async-eventemitter@github:ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c":
+  async-eventemitter@ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c:
     version "0.2.3"
     resolved "https://codeload.github.com/ahultgren/async-eventemitter/tar.gz/fa06e39e56786ba541c180061dbf2c0a5bbf951c"
     dependencies:
@@ -1171,13 +1163,13 @@ Lockfile:
     version "7.2.1"
     resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-7.2.1.tgz#80c048759d826800807c4bfd521e50edbba57a5f"
   
+  "bignumber.js@git+https://github.com/debris/bignumber.js#master":
+    version "2.0.7"
+    resolved "git+https://github.com/debris/bignumber.js#c7a38de919ed75e6fb6ba38051986e294b328df9"
+  
   "bignumber.js@git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2":
     version "2.0.7"
     resolved "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2"
-  
-  "bignumber.js@git+https://github.com/debris/bignumber.js.git#master":
-    version "2.0.7"
-    resolved "git+https://github.com/debris/bignumber.js.git#c7a38de919ed75e6fb6ba38051986e294b328df9"
   
   "bignumber.js@git+https://github.com/frozeman/bignumber.js-nolookahead.git":
     version "2.0.7"

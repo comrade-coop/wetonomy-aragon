@@ -13,8 +13,8 @@ class MembersTable extends React.Component {
       .map(member => <TableRowMember key={member.accountAddress} {...member}/>)
 
     return (
-      <Table>
-        <Header/> {Members}
+      <Table header={<Header />}>
+        {Members}
       </Table>
     )
   }

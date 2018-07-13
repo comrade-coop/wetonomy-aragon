@@ -30,12 +30,6 @@ const members = [
     level: 'Senior',
     reputation: 324,
     payRate: 24
-  }, {
-    name: 'John Smith',
-    accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724T86',
-    level: 'Senior',
-    reputation: 324,
-    payRate: 24
   }
 ]
 const memberDebt = 1230.53

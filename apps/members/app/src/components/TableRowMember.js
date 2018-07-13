@@ -1,9 +1,8 @@
 import React from 'react'
-import {TableRow, TableCell, Text} from '@aragon/ui'
-import {theme} from '@aragon/ui'
+import { TableRow, TableCell, Text } from '@aragon/ui'
+import { theme } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import Avatar from './Avatar'
-import logo from '../assets/logo.svg'
 import styled from 'styled-components'
 import Icon from './Icon'
 
@@ -14,7 +13,7 @@ const TableRowMember = (props) => {
   return (
     <TableRow>
       <NameCell>
-        <Avatar src={logo} />
+        <Avatar />
         <Text size="large" color={theme.textDimmed}>{props.name}</Text>
       </NameCell>
       <TableCell>
@@ -42,8 +41,7 @@ TableRowMember.propTypes = {
   accountAddress: PropTypes.string.isRequired,
   level: PropTypes.string.isRequired,
   reputation: PropTypes.number.isRequired,
-  payRate: PropTypes.number.isRequired,
-  actions: PropTypes.arrayOf(PropTypes.func).isRequired
+  payRate: PropTypes.number.isRequired
 }
 
 const NameCell = styled(TableCell)`
