@@ -1,16 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import MembersTable from './MembersTable'
 import {Button, Text, theme} from '@aragon/ui'
-import Avatar from './Avatar'
 import PropTypes from 'prop-types'
 
+import MembersTable from '../components/MembersTable'
+import Avatar from '../components/Avatar'
+
 class Main extends React.Component {
-
-  handleNewMemberClick = (e) => {
-    console.log('Add a new Member')
-  }
-
   render() {
     return (
       <MainRoot>
@@ -20,7 +16,7 @@ class Main extends React.Component {
             <OrgName size="xlarge" color={theme.textDimmed}>{this.props.organizationName}</OrgName>
             <MemberCount size="xlarge" color={theme.textSecondary}>Total Member count: {this.props.members.length}</MemberCount>
           </OrgInfo>
-          <Button mode="strong" onClick={this.handleNewMemberClick}>Add a new Member</Button>          
+          <Button mode="strong" onClick={this.props.onNewMemberClick}>Add a new Member</Button>
         </MainTop>
 
         <MembersTable members={this.props.members} />

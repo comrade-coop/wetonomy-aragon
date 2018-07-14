@@ -1,23 +1,34 @@
 import React from 'react'
-import { getOrganizationName, getMembers, getMemberDebt, getRewardTokens } from './dummyDataProvider'
 import { AragonApp } from '@aragon/ui'
+
+import './utils/globalStyle'
 import AppHeader from './components/AppHeader'
-import Main from './components/Main'
+import Main from './screens/Main'
+import NewMemberPanel from './components/NewMemberPanel'
+import { getOrganizationName, getMembers, getMemberDebt, getRewardTokens } from './utils/dummyDataProvider'
+
+const initialState = {
+  organizationName: '',
+  members: [],
+  memberDebt: 0,
+  rewardTokens: 0,
+  isNewMemberPanelOpened: false
+}
 
 class App extends React.Component {
 
   constructor(props) {
     super(props)
-
     this.state = {
-      organizationName: '',
-      members: [],
-      memberDebt: 0,
-      rewardTokens: 0
+      ...initialState
     }
   }
 
   componentWillMount() {
+    this.loadDummyData()
+  }
+
+  loadDummyData() {
     getOrganizationName().then(organizationName => {
       this.setState({ organizationName })
     }).catch(err => {
@@ -43,15 +54,25 @@ class App extends React.Component {
     })
   }
 
+  handleNewMemberPanelToggle = () => {
+    this.setState({ isNewMemberPanelOpened: !this.state.isNewMemberPanelOpened })
+  }
+
   render() {
     return (
       <AragonApp>
         <AppHeader
           memberDebt={this.state.memberDebt}
           rewardTokens={this.state.rewardTokens} />
+
         <Main
           organizationName={this.state.organizationName}
-          members={this.state.members} />
+          members={this.state.members}
+          onNewMemberClick={this.handleNewMemberPanelToggle} />
+
+        <NewMemberPanel 
+          opened={this.state.isNewMemberPanelOpened}
+          onClose={this.handleNewMemberPanelToggle} />
       </AragonApp>
     )
   }
