@@ -1,10 +1,11 @@
-# Wetonomy
+# Wetonomy [![Build Status](https://travis-ci.com/comrade-coop/wetonomy.svg?branch=master)](https://travis-ci.com/comrade-coop/wetonomy)
+
 Toolkit built on top of AragonOS that will give teams, companies, and organizations the ability to collaborate, share profits, finance ideas and award contributions, all governed by smart contracts on the blockchain.
 
 Wetonomy implements an innovative solution called High-Risk Automated Debt, allowing for a proper incentivizing system for contributors to the future success of the DAO.
 
 
-## Apps
+## Apps (In progress)
 This repository contains the following apps:
 - **Tasks**: The assembly point of the tasks in the organization. This is the place where each member can follow the activities inside the DAO, get a task or reward it. The dashboard contains separate screens:
     - **News Feed**: the place to follow all recent activities and act on them:        
