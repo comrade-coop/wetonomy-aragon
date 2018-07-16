@@ -25,6 +25,7 @@
     "test": "../shared/test-utilities/truffle-test.sh",
     "compile": "aragon contracts compile",
     "sync-assets": "mkdir -p dist; rsync -rtu \"$(dirname $(node -p 'require.resolve(\"@aragon/ui\")'))/\" dist/aragon-ui",
+    "build:app": "npm run sync-assets && cd app && npm run build",
     "build": "npm run compile",
     "publish": "aragon apm publish"
   },

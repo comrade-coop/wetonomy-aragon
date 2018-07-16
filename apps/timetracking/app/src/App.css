@@ -1,0 +1,89 @@
+.App {
+  text-align: center;
+  padding: 30px 100px 30px 100px;
+  background: #f7fbfd;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+.container {
+  display: inline-block;
+  width: 135px;
+  margin-left:15px;
+  margin-right:15px;
+}
+.left-container{
+  float: left;
+}
+.right-container{
+  float: right;
+  text-align: left;
+}
+.head-hours{
+  font-size: 45px;
+  font-weight: 300;
+  color: #00B4E6;
+  display: inline-block;
+  margin-top: 5px;
+}
+.head-tokens{
+  font-size: 45px;
+  font-weight: 300;
+  color: #707070a6;
+  display: inline-block;
+  margin-top: 5px;
+}
+.time-logged{
+  color: #707070a6;
+  font-weight: 300;
+  margin: 0;
+}
+.button-hours{
+  float: left;
+  text-align: left;
+  margin-left:auto;
+}
+.button-tokens{
+  float: right;
+  text-align: right;
+}
+.tokens-hours{
+  margin-top:  45px;
+}
+.button-description{
+  overflow: hidden;
+  margin-bottom: 20px;
+  height: 100px;
+}
+.WorkButton{
+  color:white;
+  border-radius:5px;
+  padding: 15px;
+  height: 200px;
+  width:80%;
+  margin-left: auto;
+  margin-right:auto;
+  text-align:left;
+  margin-top:10px;
+}
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
