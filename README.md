@@ -1,9 +1,25 @@
 # Wetonomy
-An opinionated DAO framework on top of AragonOS
+Toolkit built on top of AragonOS that will give teams, companies, and organizations the ability to collaborate, share profits, finance ideas and award contributions, all governed by smart contracts on the blockchain.
+
+Wetonomy implements an innovative solution called High-Risk Automated Debt, allowing for a proper incentivizing system for contributors to the future success of the DAO.
+
 
 ## Apps
 This repository contains the following apps:
-- **Members**: Manages the members in an organization
+- **Tasks**: The assembly point of the tasks in the organization. This is the place where each member can follow the activities inside the DAO, get a task or reward it. The dashboard contains separate screens:
+    - **News Feed**: the place to follow all recent activities and act on them:        
+        ![alt text](images/tasks_newsfeed_screen.png "Wetonomy Tasks Newsfeed Screen")
+    - **Board**: visualization of the status of all tasks in the organization:        
+        ![alt text](images/tasks_screen.png "Wetonomy Tasks Screen")
+
+
+- **Time Tracking**: Management of the tasks each member has. He/she will be able to add new tasks to the project:
+    ![alt text](images/time_tracking_screen.png "Wetonomy Time Tracking Screen")
+
+- **Members**: Management of the members of an organization. Each member's pay rate is set based on his/her seniority. The reputation is gained based on everyone's performance:
+    ![alt text](images/members_screen.png "Wetonomy Members Screen")
+
+
 
 ## Prerequisites
 
@@ -12,22 +28,24 @@ This repository contains the following apps:
 - [**Solhint**](https://www.npmjs.com/package/solhint): Open source project for linting Solidity code.
 - [**Truffle**](https://github.com/trufflesuite/truffle): Used to build and test the contracts 
 
-## Developing
+
+
+## Develop
 
 ## Kit Usage
 These are the steps required to build and run the Wetonomy Kit as a whole.
 
-First, install the separate package dependencies through Lerna:
+1. Install separate package dependencies through Lerna:
 ```sh
 npm run bootstrap
 ```
 
-Then start a local Devchain with:
+2. Start a local Devchain with:
 ```sh
 npm run devchain
 ```
 
-Then in a separate Terminal run the following in order to build the separate apps and run them as a Kit:
+3. In new Terminal run the following command in order to build the separate apps and run them as a Kit:
 ```sh
 npm run start:kit
 ```
