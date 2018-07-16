@@ -14,12 +14,11 @@ env:
   - TASK=lint
 before_install:
   - npm i -g npm 
-  - npm -global install lerna
+  - npm i -g lerna
   
 install:
   - npm install
   - npm run bootstrap
-  - npm run build:apps
   - npm run publish:apps 
 before_script:
   - npm prune
