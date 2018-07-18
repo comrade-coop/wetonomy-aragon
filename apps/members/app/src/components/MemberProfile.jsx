@@ -18,14 +18,16 @@ const MemberProfile = (props) => (
       <Icon src={rewardLogo} alt="Reward Tokens:" />
       <Text size="large" weight="bold" color={theme.textDimmed}>{props.rewardTokens}</Text>
     </MemberInfoContainer>
-    <MemberAvatar/>
-    <Text size="large">John Smith</Text>
+    <MemberAvatar seed={props.accountAddress} />
+    <Text size="large">{props.name}</Text>
   </ProfileRoot>
 )
 
 MemberProfile.propTypes = {
   debt: PropTypes.number.isRequired,
-  rewardTokens: PropTypes.number.isRequired
+  rewardTokens: PropTypes.number.isRequired,
+  accountAddress: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired
 }
 
 const ProfileRoot = styled.div`

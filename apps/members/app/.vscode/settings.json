@@ -1,7 +1,4 @@
 {
-  "files.associations": {
-    "*.js": "javascriptreact"
-  },
   "javascript.format.enable": false,
   "prettier.eslintIntegration": true
 }

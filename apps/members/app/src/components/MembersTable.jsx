@@ -10,7 +10,7 @@ class MembersTable extends React.Component {
     const Members = this
       .props
       .members
-      .map(member => <TableRowMember key={member.accountAddress} {...member}/>)
+      .map(member => <TableRowMember key={member.accountAddress} {...member} />)
 
     return (
       <Table header={<Header />}>

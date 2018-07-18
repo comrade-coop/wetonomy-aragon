@@ -11,16 +11,19 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Member from '../models/Member'
 
-import {MEMBER_EXPERIENCE_LEVELS, getMemberPayRate} from '../utils/appConstants'
-
 const initialState = {
   name: '',
   address: '',
-  experienceLevel: MEMBER_EXPERIENCE_LEVELS.Junior,
+  experienceLevel: Member.EXPERIENCE_LEVELS.Junior,
   error: null
 }
 
 class NewMemberForm extends React.Component {
+  static propTypes = {
+    onAddMember: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -58,7 +61,7 @@ class NewMemberForm extends React.Component {
 
     try {
       const member = new Member(name, address, experienceLevel)
-      console.log(member)
+      this.props.onAddMember(member)
       this._resetState()
     } catch (error) {
       this.setState({error: error.message})
@@ -87,10 +90,12 @@ class NewMemberForm extends React.Component {
         </Field>
         <Field name="experienceLevel" wide label="Experience Level:">
           <DropDown
-            items={Object.keys(MEMBER_EXPERIENCE_LEVELS)}
+            items={Object.keys(Member.EXPERIENCE_LEVELS)}
             active={this.state.experienceLevel}
             onChange={this.handleExperienceLevelChange}/>
-          <PayRateLabel color={theme.textSecondary}>Estimated Pay Rate: ${getMemberPayRate(this.state.experienceLevel)}/hr</PayRateLabel>
+          <PayRateLabel color={theme.textSecondary}>
+            Estimated Pay Rate: ${Member.EXPERIENCE_LEVELS_TO_PAYRATE[this.state.experienceLevel]}/hr
+          </PayRateLabel>
         </Field>
 
         {this.state.error && <Text color={theme.negative}>{this.state.error}</Text>}
@@ -102,10 +107,6 @@ class NewMemberForm extends React.Component {
       </form>
     )
   }
-}
-
-NewMemberForm.propTypes = {
-  onClose: PropTypes.func.isRequired
 }
 
 const ActionButton = styled(Button)`

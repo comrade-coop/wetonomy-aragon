@@ -1,10 +1,19 @@
 import {isAddress} from 'web3-utils'
-import {MIN_NAME_LENGTH, MAX_NAME_LENGTH, MEMBER_EXPERIENCE_LEVELS, getMemberPayRate} from '../utils/appConstants'
 
 class Member {
-  constructor(name, accountAddress, level) {
+  static MIN_NAME_LENGTH = 3
+  static MAX_NAME_LENGTH = 30
+  static EXPERIENCE_LEVELS = {
+    Junior: 0,
+    Intermediate: 1,
+    Senior: 2,
+    Expert: 3
+  }
+  static EXPERIENCE_LEVELS_TO_PAYRATE = [8, 12, 18, 24]
+
+  constructor(name, address, level) {
     this.name = name
-    this.accountAddress = accountAddress
+    this.address = address
     this.level = level
   }
 
@@ -20,16 +29,16 @@ class Member {
     return this._name
   }
 
-  set accountAddress(address) {
+  set address(address) {
     if (!Member.isValidAddress(address)) {
       throw new Error('Invalid address')
     }
 
-    this._accountAddress = address
+    this._address = address
   }
 
-  get accountAddress() {
-    return this._accountAddress
+  get address() {
+    return this._address
   }
 
   set level(level) {
@@ -44,20 +53,26 @@ class Member {
     return this._level
   }
 
+  get levelNamed() {
+    return Object.keys(Member.EXPERIENCE_LEVELS)[this.level]
+  }
+
   get payRate() {
-    return getMemberPayRate(this.level)
+    return Member.EXPERIENCE_LEVELS_TO_PAYRATE[this.level]
   }
 
   static isValidName(name) {
-    return name.length >= MIN_NAME_LENGTH && name.length <= MAX_NAME_LENGTH
+    return name.length >= Member.MIN_NAME_LENGTH && name.length <= Member.MAX_NAME_LENGTH
   }
 
   static isValidAddress(address) {
     return isAddress(address)
   }
 
-  static isValidLevel(level) {    
-    return level >= 0 && level <= Object.keys(MEMBER_EXPERIENCE_LEVELS).length
+  static isValidLevel(level) {
+    return level >= 0 && level <= Object
+      .keys(Member.EXPERIENCE_LEVELS_TO_PAYRATE)
+      .length
   }
 }
 
