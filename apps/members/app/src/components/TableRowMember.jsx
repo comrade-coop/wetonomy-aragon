@@ -8,25 +8,29 @@ import Icon from './Icon'
 
 import editLogo from '../assets/edit.svg'
 import removeLogo from '../assets/delete.svg'
+import Member from '../models/Member'
 
 const TableRowMember = (props) => {
+  const member = new Member(props._name, props._address, props._level)
+  
   return (
     <TableRow>
       <NameCell>
-        <Avatar />
-        <Text size="large" color={theme.textDimmed}>{props.name}</Text>
+        <Avatar seed={member.address} />
+        <Text size="large" color={theme.textDimmed}>{member.name}</Text>
       </NameCell>
       <TableCell>
-        <Text size="large" color={theme.textDimmed}>{props.accountAddress}</Text>
+        <Text size="large" color={theme.textDimmed}>{member.address}</Text>
       </TableCell>
       <TableCell>
-        <Text size="large" color={theme.textDimmed}>{props.level}</Text>
+        <Text size="large" color={theme.textDimmed}>{member.levelNamed}</Text>
       </TableCell>
       <TableCell>
-        <Text size="large" color={theme.textDimmed}>{props.reputation}</Text>
+        {/* TODO: This should be with real reputation */}
+        <Text size="large" color={theme.textDimmed}>{0}</Text>
       </TableCell>
       <TableCell>
-        <Text size="large" color={theme.textDimmed}>${props.payRate}/hr</Text>
+        <Text size="large" color={theme.textDimmed}>${member.payRate}/hr</Text>
       </TableCell>
       <ActionsCell>
         <Icon src={editLogo} alt="Edit Member" />        

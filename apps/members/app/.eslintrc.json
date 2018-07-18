@@ -13,12 +13,16 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "flowtype"
     ],
     "rules": {
         "indent": [
             "error",
-            2
+            2,
+            {
+                "SwitchCase": 1
+            }            
         ],
         "linebreak-style": [
             "error",
