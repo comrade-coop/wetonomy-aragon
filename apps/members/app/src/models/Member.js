@@ -10,11 +10,13 @@ class Member {
     Expert: 3
   }
   static EXPERIENCE_LEVELS_TO_PAYRATE = [8, 12, 18, 24]
+  static ID_UNEXISTANT = -1
 
-  constructor(name, address, level) {
+  constructor(name, address, level, id = Member.ID_UNEXISTANT) {
     this.name = name
     this.address = address
     this.level = level
+    this._id = id
   }
 
   set name(name) {
@@ -53,6 +55,10 @@ class Member {
     return this._level
   }
 
+  get id() {
+    return this._id
+  }
+
   get levelNamed() {
     return Object.keys(Member.EXPERIENCE_LEVELS)[this.level]
   }
@@ -73,6 +79,16 @@ class Member {
     return level >= 0 && level <= Object
       .keys(Member.EXPERIENCE_LEVELS_TO_PAYRATE)
       .length
+  }
+
+  static wrap(member) {
+    const memberWrapped = new Member(
+      member._name,
+      member._address,
+      member._level,
+      member._id
+    )
+    return memberWrapped
   }
 }
 

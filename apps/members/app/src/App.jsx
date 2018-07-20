@@ -3,10 +3,11 @@ import { AragonApp, observe } from '@aragon/ui'
 import PropTypes from 'prop-types'
 
 import './utils/globalStyle'
+import MembersScreen from './screens/MembersScreen'
+import NoMembersScreen from './screens/NoMembersScreen'
 import AppHeader from './components/AppHeader'
-import Main from './screens/Main'
-import NewMemberPanel from './components/NewMemberPanel'
-import NoMembers from './screens/NoMembers'
+import MemberPanel, { PanelMode } from './components/Panels/MemberPanel'
+
 import Member from './models/Member'
 
 class App extends React.Component {
@@ -16,18 +17,24 @@ class App extends React.Component {
 
   static defaultProps = {
     organizationName: '',
+    // members: [ new Member('Pesho', '0xb4124cEB3451635DAcedd11767f004d8a28c6eE7', 2, 1) ],
     members: [],
     memberDebt: 0,
-    rewardTokens: 0    
+    rewardTokens: 0
   }
 
   state = {
-    isNewMemberPanelOpened: false
+    isPanelOpened: false,
+    panelMode: PanelMode.ADD
   }
 
-  handleNewMemberPanelToggle = () => {
+  handlePanelToggle = (mode = PanelMode.ADD) => {
     this.setState({
-      isNewMemberPanelOpened: !this.state.isNewMemberPanelOpened
+      panelMode: mode
+    })
+
+    this.setState({
+      isPanelOpened: !this.state.isPanelOpened,      
     })
   }
 
@@ -35,20 +42,45 @@ class App extends React.Component {
     if (member instanceof Member) {
       this.props.app.addMember(member.address, member.name, member.level)
     } else {
-      console.error('passed parameter member should be of type Member')
+      console.error('Expected parameter of type Member but got:', member)
     }
     
-    this.handleNewMemberPanelToggle()
-  }  
+  }
+
+  handleEditMember = (oldMember, newMember) => {
+    if (!(oldMember instanceof Member)) {
+      console.error('Expected parameter of type Member but got:', oldMember)
+      return
+    }
+
+    if (!(newMember instanceof Member)) {
+      console.error('Expected parameter of type Member but got:', newMember)
+      return
+    }    
+    
+    const memberId = oldMember.id
+    if (oldMember.name !== newMember.name ||
+      oldMember.address !== newMember.address ||
+      oldMember.level !== newMember.level) {
+      this.props.app.updateMember(
+        memberId,
+        newMember.address,
+        newMember.name,
+        newMember.level  
+      )
+    }  
+  }
 
   handleRemoveMember = (member) => {
     if (member instanceof Member) {
-      this.props.app.removeMember(member.id)
+      this.props.app.removeMember(member.id)    
     } else {
-      console.error('passed parameter member should be of type Member')
+      console.error('Expected parameter of type Member but got:', member)
     }
+  }
 
-    this.handleNewMemberPanelToggle()
+  handleMemberSelect = (selectedMember) => {
+    this.setState({ selectedMember })
   }
 
   render() {
@@ -59,18 +91,24 @@ class App extends React.Component {
           rewardTokens={this.props.rewardTokens}/>
 
         {this.props.members.length > 0 ? 
-          <Main
+          <MembersScreen
             organizationName={this.props.organizationName}
             members={this.props.members}
-            onNewMemberClick={this.handleNewMemberPanelToggle} /> :
-          <NoMembers onNewMemberClick={this.handleNewMemberPanelToggle} />
+            onNewMemberClick={() => this.handlePanelToggle(PanelMode.ADD)}
+            onEditMemberClick={() => this.handlePanelToggle(PanelMode.EDIT)}
+            onRemoveMemberClick={() => this.handlePanelToggle(PanelMode.REMOVE)}
+            onMemberSelect={this.handleMemberSelect} /> :
+          <NoMembersScreen onNewMemberClick={() => this.handlePanelToggle(PanelMode.ADD)} />
         }
-        
 
-        <NewMemberPanel
+        <MemberPanel
           onAddMember={this.handleAddMember}
-          opened={this.state.isNewMemberPanelOpened}
-          onClose={this.handleNewMemberPanelToggle}/>
+          onEditMember={this.handleEditMember}
+          onRemoveMember={this.handleRemoveMember}
+          opened={this.state.isPanelOpened}
+          mode={this.state.panelMode}
+          selectedMember={this.state.selectedMember}
+          onClose={(mode) => this.handlePanelToggle(mode)} />
       </AragonApp>
     )
   }

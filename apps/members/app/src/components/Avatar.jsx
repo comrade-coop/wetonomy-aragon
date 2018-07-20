@@ -7,6 +7,8 @@ import {theme} from '@aragon/ui'
 const AvatarRoot = styled.div`
   width: 40px;
   height: 40px;
+  min-width: 40px;
+  min-height: 40px;
   border-radius: 50%;
   margin-right: 18px;
   overflow: hidden;
