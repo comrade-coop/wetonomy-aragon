@@ -12,11 +12,9 @@ contract TimeTracking is AragonApp {
     
     bytes32 constant public MANAGE_TASK_ROLE = keccak256("MANAGE_TASK_ROLE");
 
-    function trackHours(uint64 _hours) external auth(MANAGE_TASK_ROLE)
-    {
+    function trackHours(uint64 _hours) external { //auth(MANAGE_TASK_ROLE)
         addressToTrackedHours[msg.sender] += _hours;
         totalHours += _hours;
-
         HoursTracked(msg.sender, _hours);
-    }  
+    }
 }
