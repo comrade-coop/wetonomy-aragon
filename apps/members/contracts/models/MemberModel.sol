@@ -6,8 +6,8 @@ import "../libs/Strings.sol";
 contract MemberModel {
     using Strings for string;
 
-    uint8 constant MIN_NAME_LENGTH = 3;
-    uint8 constant MAX_NAME_LENGTH = 30;
+    uint8 public constant MIN_NAME_LENGTH = 3;
+    uint8 public constant MAX_NAME_LENGTH = 30;
 
     enum Level { JUNIOR, INTERMEDIATE, SENIOR, EXPERT }
     
@@ -17,22 +17,28 @@ contract MemberModel {
         Level level;
     }
     
-    modifier validName(string _name) {
+    function isValidName(string _name) 
+        public 
+        pure
+        returns(bool)
+    {
         uint nameLength = _name.length();
-        require(
-            nameLength >= MIN_NAME_LENGTH &&
-            nameLength <= MAX_NAME_LENGTH
-        );
-        _;
+        return nameLength >= MIN_NAME_LENGTH && nameLength <= MAX_NAME_LENGTH;
     }
     
-    function isValidMember(address _address, string _name) 
-        public
+    function isValidAddress(address _address) 
+        public 
         pure
-        validName(_name)        
-        returns (bool)
+        returns(bool)
     {
         return _address != address(0);
     }
     
+    function isValidMember(address _address, string _name, Level _level)
+        public
+        pure
+        returns (bool)
+    {
+        return isValidAddress(_address) && isValidName(_name);
+    }
 }

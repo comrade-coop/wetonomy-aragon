@@ -1,4 +1,4 @@
-async function assertThrowsAsync(promise, regExp, msg) {
+assertThrowsAsync = async (promise, regExp, msg) => {
   let f = () => {};
   try {
     await promise;

@@ -1,7 +1,7 @@
 import React from 'react'
 import {AppBar} from '@aragon/ui'
 import PropTypes from 'prop-types'
-import {APP_NAME} from '../utils/appConstants'
+import {APP_NAME} from '../../utils/appConstants'
 import MemberProfile from './MemberProfile'
 
 const AppHeader = (props) => props.accountAddress ? 

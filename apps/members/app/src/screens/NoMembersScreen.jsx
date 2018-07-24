@@ -1,11 +1,11 @@
 import React from 'react'
 import { EmptyStateCard } from '@aragon/ui'
-import Icon from '../components/Icon'
-import logo from '../assets/logo.svg'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { NO_MEMBERS_TITLE, NO_MEMBERS_MSG, NO_MEMBERS_ACTION } from '../utils/appConstants'
 
+import Icon from '../components/Icon'
+import logo from '../assets/logo.svg'
 
 const NoMembers = (props) => {
   return (

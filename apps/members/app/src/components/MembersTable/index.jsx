@@ -3,6 +3,7 @@ import {Table, TableRow, TableHeader} from '@aragon/ui'
 import TableRowMember from './TableRowMember'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import Member from '../../models/Member'
 
 class MembersTable extends React.Component {
 
@@ -10,10 +11,20 @@ class MembersTable extends React.Component {
     const Members = this
       .props
       .members
-      .map(member => <TableRowMember key={member.accountAddress} {...member} />)
+      .map(member => {
+        const wrappedMember = Member.wrap(member)
+
+        return (
+          <TableRowMember
+            key={wrappedMember.address}
+            member={wrappedMember}
+            onEditClick={() => this.props.onEditMemberClick(member)}
+            onRemoveClick={() => this.props.onRemoveMemberClick(member)}/>
+        )
+      })
 
     return (
-      <Table header={<Header />}>
+      <Table header={< Header />}>
         {Members}
       </Table>
     )
@@ -21,7 +32,9 @@ class MembersTable extends React.Component {
 }
 
 MembersTable.propTypes = {
-  members: PropTypes.array.isRequired
+  members: PropTypes.array.isRequired,
+  onEditMemberClick: PropTypes.func.isRequired,
+  onRemoveMemberClick: PropTypes.func.isRequired
 }
 
 const Header = () => (

@@ -4,11 +4,31 @@ import {Button, Text, theme} from '@aragon/ui'
 import PropTypes from 'prop-types'
 
 import MembersTable from '../components/MembersTable'
-class Main extends React.Component {
+
+class MembersScreen extends React.Component {
+  static propTypes = {
+    organizationName: PropTypes.string.isRequired,
+    members: PropTypes.array.isRequired,
+    onNewMemberClick: PropTypes.func.isRequired,
+    onEditMemberClick: PropTypes.func.isRequired,
+    onRemoveMemberClick: PropTypes.func.isRequired,
+    onMemberSelect: PropTypes.func.isRequired
+  }
+
+  handleMemberEditClick = (member) => {    
+    this.props.onMemberSelect(member)
+    this.props.onEditMemberClick(member)
+  }
+
+  handleMemberRemoveClick = (member) => {    
+    this.props.onMemberSelect(member)
+    this.props.onRemoveMemberClick(member)
+  }
+
   render() {
     return (
-      <MainRoot>
-        <MainTop>
+      <MembersRoot>
+        <MembersTop>
           <OrgInfo>            
             {this.props.organizationName && 
               <OrgName size="xlarge" color={theme.textDimmed}>
@@ -18,28 +38,25 @@ class Main extends React.Component {
             <Text size="xlarge" color={theme.textSecondary}>Total Member count: {this.props.members.length}</Text>
           </OrgInfo>
           <Button mode="strong" onClick={this.props.onNewMemberClick}>Add a new Member</Button>
-        </MainTop>
+        </MembersTop>
 
-        <MembersTable members={this.props.members} />
-      </MainRoot>
+        <MembersTable 
+          members={this.props.members} 
+          onEditMemberClick={this.handleMemberEditClick}
+          onRemoveMemberClick={this.handleMemberRemoveClick} />
+      </MembersRoot>
     )
   }
 }
 
-Main.propTypes = {
-  organizationName: PropTypes.string.isRequired,
-  members: PropTypes.array.isRequired,
-  onNewMemberClick: PropTypes.func.isRequired
-}
-
-const MainRoot = styled.main`
+const MembersRoot = styled.main`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   padding: 100px;
 `
 
-const MainTop = styled.div`
+const MembersTop = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -58,4 +75,4 @@ const OrgName = styled(Text)`
   margin-right: 10px;
 `
 
-export default Main
+export default MembersScreen

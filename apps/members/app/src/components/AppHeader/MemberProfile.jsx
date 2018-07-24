@@ -2,11 +2,11 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Text, theme } from '@aragon/ui'
-import Avatar from './Avatar'
-import Icon from './Icon'
+import Avatar from '../Avatar'
+import Icon from '../Icon'
 
-import debtLogo from '../assets/debt.svg'
-import rewardLogo from '../assets/reward-token.svg'
+import debtLogo from '../../assets/debt.svg'
+import rewardLogo from '../../assets/reward-token.svg'
 
 const MemberProfile = (props) => (
   <ProfileRoot>

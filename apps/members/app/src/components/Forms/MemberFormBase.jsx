@@ -9,33 +9,34 @@ import {
 } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import Member from '../models/Member'
+import Member from '../../models/Member'
 
-const initialState = {
-  name: '',
-  address: '',
-  experienceLevel: Member.EXPERIENCE_LEVELS.Junior,
-  error: null
-}
-
-class NewMemberForm extends React.Component {
+class MemberFormBase extends React.Component {
   static propTypes = {
-    onAddMember: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired
+    onSubmitMember: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+    submitBtnText: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    address: PropTypes.string,
+    level: PropTypes.number
+  }
+
+  static defaultProps = {
+    name: '',
+    address: '',
+    level: Member.EXPERIENCE_LEVELS.Junior
   }
 
   constructor(props) {
     super(props)
-    this.state = {
-      ...initialState
-    }
+    this.state = { ...props, error: null }
   }
 
-  handleExperienceLevelChange = (experienceLevel) => {
-    this.setState({experienceLevel})
+  handleLevelChange = (level) => {
+    this.setState({level})
   }
 
-  handleCancelClick = () => {
+  handleClose = () => {
     this._resetState()
     this
       .props
@@ -43,7 +44,7 @@ class NewMemberForm extends React.Component {
   }
 
   _resetState = () => {
-    this.setState(initialState)
+    this.setState({ ...MemberFormBase.defaultProps, error: null })
   }
 
   handleInputChange = (event) => {
@@ -56,13 +57,13 @@ class NewMemberForm extends React.Component {
     this.setState({[name]: value})
   }
 
-  handleNewMemberClick = () => {
-    const {name, address, experienceLevel} = this.state
+  handleSubmitMemberClick = () => {
+    const {name, address, level} = this.state    
 
     try {
-      const member = new Member(name, address, experienceLevel)
-      this.props.onAddMember(member)
-      this._resetState()
+      const member = new Member(name, address, level)
+      this.props.onSubmitMember(member)
+      this.handleClose()
     } catch (error) {
       this.setState({error: error.message})
       console.log('Wrong arguments for member:', error.message)      
@@ -88,21 +89,21 @@ class NewMemberForm extends React.Component {
             value={this.state.address}
             onChange={this.handleInputChange}/>
         </Field>
-        <Field name="experienceLevel" wide label="Experience Level:">
+        <Field name="level" wide label="Experience Level:">
           <DropDown
             items={Object.keys(Member.EXPERIENCE_LEVELS)}
-            active={this.state.experienceLevel}
-            onChange={this.handleExperienceLevelChange}/>
+            active={this.state.level}
+            onChange={this.handleLevelChange}/>
           <PayRateLabel color={theme.textSecondary}>
-            Estimated Pay Rate: ${Member.EXPERIENCE_LEVELS_TO_PAYRATE[this.state.experienceLevel]}/hr
+            Estimated Pay Rate: ${Member.EXPERIENCE_LEVELS_TO_PAYRATE[this.state.level]}/hr
           </PayRateLabel>
         </Field>
 
         {this.state.error && <Text color={theme.negative}>{this.state.error}</Text>}
 
         <ActionButtonsContainer>
-          <ActionButton mode="secondary" onClick={this.handleCancelClick}>Cancel</ActionButton>
-          <ActionButton mode="strong" onClick={this.handleNewMemberClick}>Add</ActionButton>
+          <ActionButton mode="secondary" onClick={this.handleClose}>Cancel</ActionButton>
+          <ActionButton mode="strong" onClick={this.handleSubmitMemberClick}>{this.props.submitBtnText}</ActionButton>
         </ActionButtonsContainer>
       </form>
     )
@@ -123,4 +124,4 @@ const PayRateLabel = styled(Text)`
   margin-left: 20px;
 `
 
-export default NewMemberForm
+export default MemberFormBase

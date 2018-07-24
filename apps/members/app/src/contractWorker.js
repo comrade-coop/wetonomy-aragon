@@ -1,39 +1,48 @@
 import Aragon from '@aragon/client'
 import {Events, Methods} from './utils/membersContractWrapper'
-import {of} from './rxjs'
 import {range} from './utils/utility'
 import Member from './models/Member'
 
-const INITIALIZATION_TRIGGER = 'INITIALIZATION_TRIGGER'
-
 const app = new Aragon()
 
-app.store(async(state, {event, returnValues}) => {
+app.store(async (state, {event, returnValues}) => {
   switch (event) {
-    case INITIALIZATION_TRIGGER:
-      return await loadMembers(state)
     case Events.MEMBER_ADDED:
       return await onMemberAdd(state, returnValues)
+    case Events.MEMBER_UPDATED:
+      return await onMemberUpdate(state, returnValues)
     case Events.MEMBER_REMOVED:
-      return await onMemberRemove(state, returnValues)
+      return await onMemberRemove(state, returnValues)    
     default:
       return state
   }
-}, [of({event: INITIALIZATION_TRIGGER})])
+})
 
 /***********************
  * Event Handlers      *
  ***********************/
 
-const onMemberAdd = (state, returnValues) => {
-  console.log('A new member was added!', returnValues)
-  const nextState = loadMembers(state)
+const onMemberAdd = async (state, returnValues) => {
+  console.log('A new member was added!', returnValues)  
+  const nextState = { ...state, members: await loadMembers(state) }
   return nextState
 }
 
-const onMemberRemove = (state, returnValues) => {
+const onMemberUpdate = async (state, returnValues) => {
+  console.log('A new member was updated!', returnValues)
+  const memberId = returnValues.id
+  const updatedMember = await loadMember(memberId)
+  const nextState = { 
+    ...state,
+    members: await loadMembers(state),
+    updatedMember 
+  }
+  return nextState
+}
+
+const onMemberRemove = async (state, returnValues) => {
   console.log('A member was removed!', returnValues)
-  const nextState = loadMembers(state)
+  const nextState = { ...state, members: await loadMembers(state) }
   return nextState
 }
 
@@ -41,18 +50,17 @@ const onMemberRemove = (state, returnValues) => {
  * Read Handles        *
  ***********************/
 
-const loadMembers = async(state) => {
+const loadMembers = async() => {
   const count = await loadMembersCount()
   if (count === 0) {
-    return state
+    return []
   }
+
+  console.log('Member count is: ', count)
 
   const members = await Promise.all(range(count).map(async index => await loadMember(index)))
 
-  return {
-    ...state,
-    members
-  }
+  return members
 }
 
 const loadMembersCount = async() => {
@@ -61,9 +69,9 @@ const loadMembersCount = async() => {
   return count
 }
 
-const loadMember = async(index) => {
-  const memberResult = await callReadMethod(Methods.GET_MEMBER, index)
-  const member = new Member(memberResult.name, memberResult.accountAddress, memberResult.level)
+const loadMember = async(id) => {
+  const memberResult = await callReadMethod(Methods.GET_MEMBER, id)
+  const member = new Member(memberResult.name, memberResult.accountAddress, memberResult.level, id)
   return member
 }
 
