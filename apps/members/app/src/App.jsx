@@ -8,19 +8,27 @@ import NoMembersScreen from './screens/NoMembersScreen'
 import AppHeader from './components/AppHeader'
 import MemberPanel, { PanelMode } from './components/Panels/MemberPanel'
 
-import Member from './models/Member'
+// import Member from './models/Member'
+import { isMember } from './utils/utility'
 
 class App extends React.Component {
   static propTypes = {
-    app: PropTypes.object.isRequired
+    app: PropTypes.object.isRequired,    
+    members: PropTypes.array.isRequired,
+    currentMember: PropTypes.object,
+    memberDebt: PropTypes.number,
+    rewardTokens: PropTypes.number,
+    organizationName: PropTypes.string
   }
 
   static defaultProps = {
-    organizationName: '',
+    app: null,
     // members: [ new Member('Pesho', '0xb4124cEB3451635DAcedd11767f004d8a28c6eE7', 2, 1) ],
     members: [],
+    currentMember: null,
     memberDebt: 0,
-    rewardTokens: 0
+    rewardTokens: 0,
+    organizationName: ''
   }
 
   state = {
@@ -30,53 +38,37 @@ class App extends React.Component {
 
   handlePanelToggle = (mode = PanelMode.ADD) => {
     this.setState({
-      panelMode: mode
-    })
-
-    this.setState({
-      isPanelOpened: !this.state.isPanelOpened,      
+      panelMode: mode,
+      isPanelOpened: !this.state.isPanelOpened
     })
   }
 
   handleAddMember = (member) => {
-    if (member instanceof Member) {
-      this.props.app.addMember(member.address, member.name, member.level)
-    } else {
-      console.error('Expected parameter of type Member but got:', member)
-    }
-    
+    if (isMember(member)) {
+      this.props.app.addMember(member.address, member.name, member.level)  
+    }   
   }
 
   handleEditMember = (oldMember, newMember) => {
-    if (!(oldMember instanceof Member)) {
-      console.error('Expected parameter of type Member but got:', oldMember)
-      return
+    if (isMember(oldMember) && isMember(newMember)) {
+      const memberId = oldMember.id
+      if (oldMember.name !== newMember.name ||
+        oldMember.address !== newMember.address ||
+        oldMember.level !== newMember.level) {
+        this.props.app.updateMember(
+          memberId,
+          newMember.address,
+          newMember.name,
+          newMember.level  
+        )
+      }        
     }
-
-    if (!(newMember instanceof Member)) {
-      console.error('Expected parameter of type Member but got:', newMember)
-      return
-    }    
-    
-    const memberId = oldMember.id
-    if (oldMember.name !== newMember.name ||
-      oldMember.address !== newMember.address ||
-      oldMember.level !== newMember.level) {
-      this.props.app.updateMember(
-        memberId,
-        newMember.address,
-        newMember.name,
-        newMember.level  
-      )
-    }  
   }
 
   handleRemoveMember = (member) => {
-    if (member instanceof Member) {
-      this.props.app.removeMember(member.id)    
-    } else {
-      console.error('Expected parameter of type Member but got:', member)
-    }
+    if (isMember(member)) {
+      this.props.app.removeMember(member.id)      
+    }   
   }
 
   handleMemberSelect = (selectedMember) => {
@@ -88,7 +80,8 @@ class App extends React.Component {
       <AragonApp>
         <AppHeader
           memberDebt={this.props.memberDebt}
-          rewardTokens={this.props.rewardTokens}/>
+          rewardTokens={this.props.rewardTokens}
+          currentMember={this.props.currentMember} />
 
         {this.props.members.length > 0 ? 
           <MembersScreen
@@ -108,7 +101,7 @@ class App extends React.Component {
           opened={this.state.isPanelOpened}
           mode={this.state.panelMode}
           selectedMember={this.state.selectedMember}
-          onClose={(mode) => this.handlePanelToggle(mode)} />
+          onClose={this.handlePanelToggle} />
       </AragonApp>
     )
   }

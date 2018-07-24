@@ -23,18 +23,24 @@ app.store(async (state, {event, returnValues}) => {
  ***********************/
 
 const onMemberAdd = async (state, returnValues) => {
-  console.log('A new member was added!', returnValues)  
-  const nextState = { ...state, members: await loadMembers(state) }
+  console.log('A new member was added!', returnValues)
+  const fetchedState = await loadCompleteState()
+  const nextState = { ...state, ...fetchedState }
   return nextState
 }
 
 const onMemberUpdate = async (state, returnValues) => {
   console.log('A new member was updated!', returnValues)
+
+  const fetchedState = await loadCompleteState()
+
   const memberId = returnValues.id
   const updatedMember = await loadMember(memberId)
+  
+
   const nextState = { 
     ...state,
-    members: await loadMembers(state),
+    ...fetchedState,
     updatedMember 
   }
   return nextState
@@ -42,13 +48,21 @@ const onMemberUpdate = async (state, returnValues) => {
 
 const onMemberRemove = async (state, returnValues) => {
   console.log('A member was removed!', returnValues)
-  const nextState = { ...state, members: await loadMembers(state) }
+  const fetchedState = await loadCompleteState()
+  const nextState = { ...state, ...fetchedState }
   return nextState
 }
 
 /***********************
  * Read Handles        *
  ***********************/
+
+const loadCompleteState = async() => {
+  const members = await loadMembers()
+  const currentMember = await findCurrentMember(members)
+
+  return { members, currentMember }
+}
 
 const loadMembers = async() => {
   const count = await loadMembersCount()
@@ -73,6 +87,32 @@ const loadMember = async(id) => {
   const memberResult = await callReadMethod(Methods.GET_MEMBER, id)
   const member = new Member(memberResult.name, memberResult.accountAddress, memberResult.level, id)
   return member
+}
+
+const loadCurrentAccount = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      app.accounts().subscribe(accounts => {
+        const currentAccount = accounts[0]
+        if (currentAccount) {
+          resolve(currentAccount)
+        } else {
+          reject('A valid account address wasn\'t found')
+        }
+
+      })
+    } catch (error) {
+      reject(error)
+    }    
+  })
+}
+
+const findCurrentMember = async (members) => {
+  const currentAccount = await loadCurrentAccount()
+  if (currentAccount) {
+    const currentMember = members.find(member => member.address === currentAccount)
+    return currentMember
+  }  
 }
 
 const callReadMethod = (method, ...args) => {
