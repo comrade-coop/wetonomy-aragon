@@ -1,26 +1,11 @@
 import React, { Component } from 'react';
 import { Text } from '@aragon/ui'
-
+import styled from 'styled-components'
 class WorkButton extends Component {
     constructor(props) {
       super(props);
     }
     render() {
-<<<<<<< HEAD:apps/timetracking/app/src/components/WorkButton.js
-      var description = this.props.description;
-      var background = `linear-gradient( 130deg,${this.props.color[0]},${this.props.color[1]})`
-      if(this.props.description.length > 65){
-        description = this.props.description.substring(0, 62)+ " ..."
-      }
-      return (
-        <div className="WorkButton" style={{background: background }}>
-          <div className="button-description"><Text size="large">{description}</Text></div>
-          <div className="button-project"><Text size="normal">Project: {this.props.project}</Text></div>
-          <div className="tokens-hours">
-            <div className="button-hours" size="large">{this.props.hours}h</div>
-            <div className="button-tokens" size="large">{this.props.tokens} Tokens</div>
-          </div>
-=======
       const obj = { ... this.props.workedHour}
       let hours = parseFloat(obj._hours);
       if(hours<=2) hours = 2;
@@ -43,15 +28,11 @@ class WorkButton extends Component {
             <Hours size="large">{h}h</Hours>
             <Tokens size="large">{obj._tokens} Tokens</Tokens>
         </WButton>
->>>>>>> Edit/Delete traked hours almost done:apps/timetracking/app/src/components/WorkWeekTable/WorkButton.jsx
         </div>
       )
     }
   }
 
-<<<<<<< HEAD:apps/timetracking/app/src/components/WorkButton.js
-  export default WorkButton
-=======
 const Hours = styled.div`
   position: absolute;
   bottom: 15px;
@@ -80,4 +61,3 @@ const WButton = styled.div`
 `
 export default WorkButton
   
->>>>>>> Edit/Delete traked hours almost done:apps/timetracking/app/src/components/WorkWeekTable/WorkButton.jsx

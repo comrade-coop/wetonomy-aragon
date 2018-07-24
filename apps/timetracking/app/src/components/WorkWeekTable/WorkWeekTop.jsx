@@ -12,22 +12,6 @@ export class  WorkWeekTop extends Component {
       secondMonth = months[this.props.today.getMonth()+1]
     }
 		return (
-<<<<<<< HEAD:apps/timetracking/app/src/components/WeekTop.js
-					<div>
-			<div className = "left-container" >
-				<WeekButton mode="normal" onClick = {() => this.props.changeWeek(-1)}> &lsaquo;</WeekButton>
-					<div className = "container" >
-						<Text size="xxlarge" color={theme.textSecondary} weight="bold" >Week 16</Text><br/>
-						<Text size="large" color={theme.textSecondary} >{months[this.props.today.getMonth()]} {this.props.days[0]} - {secondMonth} {this.props.days[6]}</Text>
-					</div>
-				<WeekButton mode="normal" onClick = {() => this.props.changeWeek(1)}> &rsaquo; </WeekButton>
-				</div>
-				<div className = "right-container" >
-					<h2 className="time-logged" >Time Logged (Week)</h2>
-					<h1 className = "head-hours" >{this.props.weekWork}h&nbsp;</h1>
-					<h1 color={theme.textSecondary} className = "head-tokens" >- {this.props.weekTokens} Tokens Generated</h1>
-				</div>
-=======
 			<div>
         <LeftContainer>
           <WeekButton mode="normal" onClick = {() => this.props.changeWeek(-1)}> &lsaquo;</WeekButton>
@@ -47,13 +31,10 @@ export class  WorkWeekTop extends Component {
             <TokensGen color={theme.textSecondary}>- {this.props.weekTokens} Tokens Generated</TokensGen>
           </div>
         </RgihtContainer>
->>>>>>> Edit/Delete traked hours almost done:apps/timetracking/app/src/components/WorkWeekTable/WorkWeekTop.jsx
 			</div>
 		)
 	}
 }
-<<<<<<< HEAD:apps/timetracking/app/src/components/WeekTop.js
-=======
 const Container = styled.div`
   display: inline-block;
   width: 135px;
@@ -91,12 +72,11 @@ const TokensGen = styled(Text)`
 const SyncButton = styled(Button)`
   margin-left:200px;
 `
->>>>>>> Edit/Delete traked hours almost done:apps/timetracking/app/src/components/WorkWeekTable/WorkWeekTop.jsx
 const WeekButton = styled.button`
   border-radius: 50px;
   font-size: 50px;
   width: 60px;
-  height: 60px;
+  // height: 60px;
   border: 0px;
   display: inline-block;
   background:white;

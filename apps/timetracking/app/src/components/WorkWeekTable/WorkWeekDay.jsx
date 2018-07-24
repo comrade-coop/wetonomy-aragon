@@ -2,12 +2,8 @@ import React from 'react'
 import WorkButton from './WorkButton'
 import {TableCell, Text, Button} from '@aragon/ui'
 import styled from 'styled-components'
-<<<<<<< HEAD:apps/timetracking/app/src/components/DayWork.js
-class DayWork extends React.Component {
-=======
 import {COLORS} from  '../../utils/dummyDataProvider'
 class WorkWeekDay extends React.Component {
->>>>>>> Edit/Delete traked hours almost done:apps/timetracking/app/src/components/WorkWeekTable/WorkWeekDay.jsx
 	render() {
 		var WorkedHours;
 		if(this.props.workedHours!=[]){
@@ -27,11 +23,7 @@ class WorkWeekDay extends React.Component {
 			<DayCell>
 				<Div>
 					{WorkedHours}
-<<<<<<< HEAD:apps/timetracking/app/src/components/DayWork.js
-					<TrackWork mode="normal"><Text size="xlarge">+ Track Work</Text></TrackWork>
-=======
 					<TrackWork onClick = {()=>this.props.handleNewTrackPanelToggle(this.props.day)} mode="normal"><Text size="xlarge">+ Track Work</Text></TrackWork>
->>>>>>> Edit/Delete traked hours almost done:apps/timetracking/app/src/components/WorkWeekTable/WorkWeekDay.jsx
 				</Div>
 			</DayCell>
 		)
@@ -58,7 +50,7 @@ const DayCell = styled(TableCell)`
   }
 `
 const Div = styled.div`
-	height:800px;
+	min-height:800px;
 	width: 100%;
 	text-align:center;
 `

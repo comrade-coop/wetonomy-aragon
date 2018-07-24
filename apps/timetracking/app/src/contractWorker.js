@@ -11,9 +11,9 @@ const app = new Aragon()
 app.store((state, event) => {
   switch (event.event) {
     case 'HoursTracked':
-      return { count: "Ioko" }
+      return { count: "Synced" }
     default:
-      return { count: "Laina" }
+      return { count: "Not OK" }
   }
 })
 
