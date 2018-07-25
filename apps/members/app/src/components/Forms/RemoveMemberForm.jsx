@@ -48,9 +48,11 @@ class RemoveMemberForm extends React.Component {
   }
 }
 
-const AddressContainer = styled.section`  
+const AddressContainer = styled.section`
   background-color: white;
   margin-top: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 const MemberCard = styled(Card)`
@@ -59,6 +61,7 @@ const MemberCard = styled(Card)`
   padding: 20px;  
   background-color: white !important;
   margin: 15px 0px;
+  overflow: hidden;
 `
 
 export default RemoveMemberForm

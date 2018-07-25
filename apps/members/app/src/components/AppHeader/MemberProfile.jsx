@@ -8,26 +8,34 @@ import Icon from '../Icon'
 import debtLogo from '../../assets/debt.svg'
 import rewardLogo from '../../assets/reward-token.svg'
 
-const MemberProfile = (props) => (
-  <ProfileRoot>
-    <MemberInfoContainer>
-      <BlueIcon src={debtLogo} alt="Debt:" />
-      <Text size="large" weight="bold" color={theme.accent}>${props.debt}</Text>
-    </MemberInfoContainer>
-    <MemberInfoContainer>
-      <Icon src={rewardLogo} alt="Reward Tokens:" />
-      <Text size="large" weight="bold" color={theme.textDimmed}>{props.rewardTokens}</Text>
-    </MemberInfoContainer>
-    <MemberAvatar seed={props.accountAddress} />
-    <Text size="large">{props.name}</Text>
-  </ProfileRoot>
-)
+import Member from '../../models/Member'
+
+const MemberProfile = (props) => {
+
+  const wrappedMember = Member.wrap(props.member)
+  
+  return (
+    <ProfileRoot>      
+      <MemberInfoContainer>
+        <BlueIcon src={debtLogo} alt="Debt:" />
+        <Text size="large" weight="bold" color={theme.accent}>${props.debt}</Text>
+      </MemberInfoContainer>      
+      
+      <MemberInfoContainer>
+        <Icon src={rewardLogo} alt="Reward Tokens:" />
+        <Text size="large" weight="bold" color={theme.textDimmed}>{props.rewardTokens}</Text>
+      </MemberInfoContainer>
+
+      <MemberAvatar seed={wrappedMember.address} />
+      <Text size="large">{wrappedMember.name}</Text>
+    </ProfileRoot>
+  )
+}
 
 MemberProfile.propTypes = {
-  debt: PropTypes.number.isRequired,
-  rewardTokens: PropTypes.number.isRequired,
-  accountAddress: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired
+  debt: PropTypes.number,
+  rewardTokens: PropTypes.number,
+  member: PropTypes.object.isRequired
 }
 
 const ProfileRoot = styled.div`

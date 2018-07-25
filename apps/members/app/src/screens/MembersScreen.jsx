@@ -7,7 +7,7 @@ import MembersTable from '../components/MembersTable'
 
 class MembersScreen extends React.Component {
   static propTypes = {
-    organizationName: PropTypes.string.isRequired,
+    organizationName: PropTypes.string,
     members: PropTypes.array.isRequired,
     onNewMemberClick: PropTypes.func.isRequired,
     onEditMemberClick: PropTypes.func.isRequired,
