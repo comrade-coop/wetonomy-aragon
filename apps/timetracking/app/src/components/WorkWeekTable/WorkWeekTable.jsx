@@ -18,8 +18,8 @@ export class WorkWeekTable extends Component {
     this.changeWeek = this.changeWeek.bind(this);
   }
   componentWillMount() {
-    var date = new Date();
-    var date2 = new Date();
+    var date = new Date(this.state.today);
+    var date2 = new Date(this.state.today);
     this.filterWork(this.props.workedHours,date,date2)
   }
   getWeek(year,month,day) {
@@ -72,12 +72,7 @@ export class WorkWeekTable extends Component {
   }
   filterWork(workedHours,date1,date2){
     date1.setDate(date1.getDate() -1);
-<<<<<<< HEAD:apps/timetracking/app/src/components/WorkWeekTable.js
-    date2.setDate(date2.getDate() + 7);
-    date2.setHours(0,0,0)
-=======
     date2.setDate(date2.getDate() + 6);
->>>>>>> Edit/Delete traked hours almost done:apps/timetracking/app/src/components/WorkWeekTable/WorkWeekTable.jsx
     var filteredWorkedHours = [[],[],[],[],[],[],[]];
     for(let i=0; i<workedHours.length; i++){
       let date = new Date(workedHours[i].date)
@@ -102,14 +97,9 @@ export class WorkWeekTable extends Component {
         }
       }
     
-<<<<<<< HEAD:apps/timetracking/app/src/components/WorkWeekTable.js
-    const WorkDone = <TableRowWork workedHours = {this.state.filteredWorkedHours}/>
-    const Header = <WeekTableHeader day = {this.state.days} hours = {weekDayHours} tokens = {weekDayTokens}/>
-=======
     const WorkDone = <WorkWeekTableRow handleNewTrackPanelToggle = {this.props.handleNewTrackPanelToggle} days = {this.state.days}
      workedHours = {this.state.filteredWorkedHours}/>
     const Header = <WorkWeekTableHeader day = {this.state.days} hours = {weekDayHours} tokens = {weekDayTokens}/>
->>>>>>> Edit/Delete traked hours almost done:apps/timetracking/app/src/components/WorkWeekTable/WorkWeekTable.jsx
     return (
       <div>
         <WorkWeekTop 
