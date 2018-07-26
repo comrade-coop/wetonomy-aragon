@@ -11,4 +11,8 @@ async function assertThrowsAsync(promise, regExp, msg) {
   }
 }
 
-module.exports = { assertThrowsAsync }
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+module.exports = { assertThrowsAsync, sleep }

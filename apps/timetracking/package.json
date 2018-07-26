@@ -22,7 +22,7 @@
   "scripts": {
     "start": "aragon run",
     "coverage": "npm run test",
-    "test": "../shared/test-utilities/truffle-test.sh",
+    "test": "../shared/test-utils/truffle-test.sh",
     "compile": "aragon contracts compile",
     "sync-assets": "mkdir -p dist; rsync -rtu \"$(dirname $(node -p 'require.resolve(\"@aragon/ui\")'))/\" dist/aragon-ui",
     "build:app": "npm run sync-assets && cd app && npm run build",

@@ -19,7 +19,7 @@
   "scripts": {
     "start": "aragon run",
     "coverage": "npm run test",
-    "test": "../shared/test-utilities/truffle-test.sh",
+    "test": "../shared/test-utils/truffle-test.sh",
     "compile": "aragon contracts compile",
     "build": "npm run compile && cd app && npm run build",
     "publish": "aragon apm publish"
