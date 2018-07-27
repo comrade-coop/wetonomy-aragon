@@ -3,12 +3,14 @@ pragma solidity 0.4.18;
 import "@aragon/os/contracts/apps/AragonApp.sol";
 import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
 import "./interfaces/IUnitsOfWork.sol";
+import "../../members/contracts/interfaces/IMembers.sol";
 
 
 contract TimeTracking is IUnitsOfWork, AragonApp {
     using SafeMath for uint256;
 
     event HoursTracked(address indexed ownerAddress, uint trackedHours);
+    event PeriodCreated(address indexed ownerAddress, uint periodsCount, uint endTimestamp);
     
     struct Period {
         uint endTimestamp;
@@ -17,11 +19,21 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
     
     bytes32 constant public MANAGE_TRACKING_ROLE = 
         keccak256("MANAGE_TRACKING_ROLE");
+        
+    IMembers public members;
     
     uint public periodLength;
     uint public maxHoursPerPeriod;
     mapping (address => Period[]) public addressToPeriods;
     mapping(address => uint) public addressToTrackedHours;
+    
+    modifier onlyMember() {
+        if (members != address(0)) {
+            var (accountAddress, name, level)  = members.getMemberByAddress(msg.sender);
+            require(accountAddress != address(0));    
+        }
+        _;
+    }
     
     /**
     * @notice Initializes TimeTracking app
@@ -29,11 +41,12 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
     * @param _maxHoursPerPeriod The maximum amount of hours which can be tracked 
     *   for one period
     */
-    function initialize(uint _periodLength, uint _maxHoursPerPeriod) 
+    function initialize(IMembers _members, uint _periodLength, uint _maxHoursPerPeriod)
         external 
         onlyInit
     {
         initialized();
+        members = _members;
         maxHoursPerPeriod = _maxHoursPerPeriod;
         periodLength = _periodLength;
     }
@@ -67,7 +80,7 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
     * @notice Tracks `_hours` amount of work hours
     * @param _hours Amount of hours to track
     */
-    function trackWork(uint _hours) external isInitialized {
+    function trackWork(uint _hours) external isInitialized onlyMember {
         _createNewPeriodIfItsTime(msg.sender);
 
         Period[] storage periods = addressToPeriods[msg.sender];
@@ -80,29 +93,35 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
         HoursTracked(msg.sender, _hours);
     }
 
-    function getPeriodsCountForAddress(address _address) 
-        external 
-        view
-        returns(uint) 
-    {
+    function getPeriodsCountForAddress(address _address) external view returns(uint) {
         return addressToPeriods[_address].length;
     }
     
     /**
-    * @dev Creates a new Period for an address if the last one has passed, 
-    *   or if it doesn't exist'
+    * @dev Calls _createNewPeriod an address if the last one has passed, 
+    *   or if it doesn't exist
     */
-    function _createNewPeriodIfItsTime(address _address) internal {
-        Period[] storage periods = addressToPeriods[_address];
+    function _createNewPeriodIfItsTime(address _forAddress) internal {
+        Period[] storage periods = addressToPeriods[_forAddress];        
         
         if (periods.length == 0) {
-            periods.push(Period(now.add(periodLength), 0));
+            _createNewPeriod(_forAddress);
+        } else {
+            Period storage lastPeriod = periods[periods.length.sub(1)];
+            if (lastPeriod.endTimestamp < now) {
+                _createNewPeriod(_forAddress);
+            }
         }
+    }
+
+    /**
+    * @dev Creates a new Period for an address
+    */
+    function _createNewPeriod(address _forAddress) internal {
+        Period[] storage periods = addressToPeriods[_forAddress];
+        Period memory newPeriod = Period(now.add(periodLength), 0);
+        uint periodsCount = periods.push(newPeriod);
         
-        Period storage lastPeriod = periods[periods.length.sub(1)];
-        
-        if (lastPeriod.endTimestamp < now) {
-            periods.push(Period(now.add(periodLength), 0));            
-        }
+        PeriodCreated(_forAddress, periodsCount, newPeriod.endTimestamp);
     }
 }

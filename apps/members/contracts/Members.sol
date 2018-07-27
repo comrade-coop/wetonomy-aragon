@@ -12,20 +12,8 @@ contract Members is IMembers, AragonApp {
     
     bytes32 constant public MANAGE_MEMBERS_ROLE = keccak256("MANAGE_MEMBERS_ROLE");
     
-    mapping(address => Member) public addressToMember;
+    mapping(address => Member) private addressToMember;
     address[] public memberAddresses;
-    
-    modifier isMemberByAddress(address _address) {
-        Member storage member = addressToMember[_address];
-        require(member.accountAddress != address(0));
-        _;
-    }
-    
-    modifier isMemberById(uint _id) {
-        address memberAddress = memberAddresses[_id];
-        require(memberAddress != address(0));
-        _;
-    }
     
     /**
      * @notice Add a new Member to the organisation     
@@ -87,7 +75,6 @@ contract Members is IMembers, AragonApp {
     function updateMember(uint _id, address _address, string _name, Level _level)
         external
         auth(MANAGE_MEMBERS_ROLE)
-        isMemberById(_id)
     {
         require(isValidMember(_address, _name, _level));
         address memberAddress = memberAddresses[_id];
@@ -112,7 +99,7 @@ contract Members is IMembers, AragonApp {
     
     function getMemberByAddress(address _address) 
         external 
-        view 
+        view
         returns (address accountAddress, string name, Level level) 
     {
         Member storage member = addressToMember[_address];
@@ -132,7 +119,7 @@ contract Members is IMembers, AragonApp {
         name = member.name;
         level = member.level;
     }
-    
+        
     function _addMember(address _address, string _name, Level _level) 
         internal
         auth(MANAGE_MEMBERS_ROLE)        
@@ -148,8 +135,7 @@ contract Members is IMembers, AragonApp {
     
     function _removeMember(uint _id) 
         internal
-        auth(MANAGE_MEMBERS_ROLE)
-        isMemberById(_id) 
+        auth(MANAGE_MEMBERS_ROLE) 
     {
         address memberAddress = memberAddresses[_id];
         Member memory member = addressToMember[memberAddress];
@@ -168,7 +154,6 @@ contract Members is IMembers, AragonApp {
     
     function _setMemberLevel(uint _id, Level _level) 
         internal
-        isMemberById(_id)         
     {
         address memberAddress = memberAddresses[_id];
         Member storage member = addressToMember[memberAddress];
@@ -177,7 +162,6 @@ contract Members is IMembers, AragonApp {
     
     function _setMemberAddress(uint _id, address _address)
         internal
-        isMemberById(_id)
     {
         require(isValidAddress(_address));
         address memberAddress = memberAddresses[_id];
@@ -187,7 +171,6 @@ contract Members is IMembers, AragonApp {
     
     function _setMemberName(uint _id, string _name) 
         internal
-        isMemberById(_id)
     {
         require(isValidName(_name));
         address memberAddress = memberAddresses[_id];

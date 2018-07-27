@@ -1,4 +1,7 @@
-const { assertThrowsAsync } = require("./helpers/util")
+const {
+  assertRevert,
+  assertInvalidOpcode
+} = require('@aragon/test-helpers/assertThrow')
 const Members = artifacts.require('Members')
 
 const MEMBER_INDEX_ADDRESS = 0
@@ -6,8 +9,7 @@ const MEMBER_INDEX_NAME = 1
 const MEMBER_INDEX_LEVEL = 2
 const MEMBER_MIN_NAME_LENGTH = 3
 const MEMBER_MAX_NAME_LENGTH = 30
-const REVERT_MSG = /revert/
-const INVALID_OPCODE_MSG = /invalid opcode/
+
 const MemberLevels = {
   JUNIOR: 0,
   INTERMEDIATE: 0,
@@ -16,7 +18,7 @@ const MemberLevels = {
 }
 
 contract('Members', async (accounts) => {
-  it('should add a new member correctly', async () => {    
+  it('should add a new member correctly', async () => {
     const instance = await Members.deployed()
     const memberCount = await instance.getMembersCount.call()
     const newMemberAddress = accounts[0]
@@ -26,8 +28,9 @@ contract('Members', async (accounts) => {
     await instance.addMember(
       newMemberAddress,
       newMemberName,
-      newMemberLevel,
-      { from: accounts[0] }
+      newMemberLevel, {
+        from: accounts[0]
+      }
     )
 
     const member = await instance.getMember.call(memberCount)
@@ -43,22 +46,29 @@ contract('Members', async (accounts) => {
       'Member count didn\'t increase')
   })
 
-  it('should not add a member with an invalid name', async () => {    
+  it('should not add a member with an invalid name', async () => {
     const instance = await Members.deployed()
     const shortMemberAddress = accounts[1]
     const shortMemberName = 'Pe'
     const longMemberAddress = accounts[2]
     const longMemberName = 'Peuhwefheufheifhwiuefhweuisdsda'
 
-    await assertThrowsAsync(
-      instance.addMember(shortMemberAddress, shortMemberName, MemberLevels.JUNIOR, { from: accounts[0] }),
-      REVERT_MSG)
-    await assertThrowsAsync(
-      instance.addMember(longMemberAddress, longMemberName, MemberLevels.JUNIOR, { from: accounts[0] }),
-      REVERT_MSG)
+    await assertRevert(() =>
+      instance.addMember(shortMemberAddress,
+        shortMemberName,
+        MemberLevels.JUNIOR, {
+          from: accounts[0]
+        })
+    )
+    await assertRevert(() =>
+      instance.addMember(longMemberAddress,
+        longMemberName,
+        MemberLevels.JUNIOR, {
+          from: accounts[0]
+        }))
   })
 
-  it('should not add a member with the same address twice', async () => {    
+  it('should not add a member with the same address twice', async () => {
     const instance = await Members.deployed()
     const newMemberAddress = accounts[3]
     const newMemberName = 'Pesho'
@@ -67,9 +77,13 @@ contract('Members', async (accounts) => {
     await instance.addMember(newMemberAddress, newMemberName, newMemberLevel, {
       from: accounts[0]
     })
-    await assertThrowsAsync(
-      instance.addMember(newMemberAddress, newMemberName, newMemberLevel, { from: accounts[0] }),
-      REVERT_MSG)
+    await assertRevert(() =>
+      instance.addMember(
+        newMemberAddress,
+        newMemberName,
+        newMemberLevel, {
+          from: accounts[0]
+        }))
   })
 
   it('shouldn\'t update a member\'s name if it\'s invalid', async () => {
@@ -81,27 +95,28 @@ contract('Members', async (accounts) => {
 
     const updatedNameShort = 'Go'
     const updatedNameLong = 'Gooidjiodfjeiwojoiejfoejwfoiejfiojweoijfoefejf'
-    
+
     await instance.addMember(
       newAddress,
       newName,
-      newLevel,
-      { from: accounts[0] }
+      newLevel, {
+        from: accounts[0]
+      }
     )
-    
+
     const updatedMemberIndex = await instance.getMembersCount.call() - 1
 
-    assertThrowsAsync(
-      instance.setMemberName(updatedMemberIndex, updatedNameShort, { from: accounts[0] }),
-      REVERT_MSG
-    )
-    assertThrowsAsync(
-      instance.setMemberName(updatedMemberIndex, updatedNameLong, { from: accounts[0] }),
-      REVERT_MSG
-    )    
+    assertRevert(() =>
+      instance.setMemberName(updatedMemberIndex, updatedNameShort, {
+        from: accounts[0]
+      }))
+    assertRevert(() =>
+      instance.setMemberName(updatedMemberIndex, updatedNameLong, {
+        from: accounts[0]
+      }))
   })
 
-  it('shouldn\'t update a member\'s address if it\'s invalid', async() => {
+  it('shouldn\'t update a member\'s address if it\'s invalid', async () => {
     const instance = await Members.deployed()
 
     const newAddress = accounts[5]
@@ -111,21 +126,22 @@ contract('Members', async (accounts) => {
     await instance.addMember(
       newAddress,
       newName,
-      newLevel,
-      { from: accounts[0] }
+      newLevel, {
+        from: accounts[0]
+      }
     )
-    
+
     const updatedMemberIndex = await instance.getMembersCount.call() - 1
 
     const updatedAddress = '0x0000000000000000000000000000000000000000'
 
-    assertThrowsAsync(
-      instance.setMemberAddress(updatedMemberIndex, updatedAddress, { from: accounts[0] }),
-      REVERT_MSG
-    )
+    assertRevert(() =>
+      instance.setMemberAddress(updatedMemberIndex, updatedAddress, {
+        from: accounts[0]
+      }))
   })
 
-  it('shouldn\'t update a member\'s level if it\'s invalid', async() => {
+  it('shouldn\'t update a member\'s level if it\'s invalid', async () => {
     const instance = await Members.deployed()
 
     const newAddress = accounts[6]
@@ -135,18 +151,19 @@ contract('Members', async (accounts) => {
     await instance.addMember(
       newAddress,
       newName,
-      newLevel,
-      { from: accounts[0] }
+      newLevel, {
+        from: accounts[0]
+      }
     )
 
     const updatedMemberIndex = await instance.getMembersCount.call() - 1
 
     const updatedLevel = 34
 
-    assertThrowsAsync(
-      instance.setMemberLevel(updatedMemberIndex, updatedLevel, { from: accounts[0] }),
-      INVALID_OPCODE_MSG
-    )
+    assertInvalidOpcode(() =>
+      instance.setMemberLevel(updatedMemberIndex, updatedLevel, {
+        from: accounts[0]
+      }))
   })
 
   it('should update a member correctly', async () => {
@@ -163,14 +180,15 @@ contract('Members', async (accounts) => {
     await instance.addMember(
       newMemberAddress,
       newMemberName,
-      newMemberLevel,
-      { from: accounts[0] }
+      newMemberLevel, {
+        from: accounts[0]
+      }
     )
-    
+
     const updatedMemberIndex = await instance.getMembersCount.call() - 1
 
     await instance.updateMember(
-      updatedMemberIndex, 
+      updatedMemberIndex,
       updatedMemberAddress,
       updatedMemberName,
       updatedMemberLevel)
@@ -190,11 +208,11 @@ contract('Members', async (accounts) => {
 
     const memberToRemoveId = memberCount - 1
     await instance.removeMember(memberToRemoveId)
-    
+
     let newMemberCount = (await instance.getMembersCount.call()).toNumber()
     assert.equal(newMemberCount + 1, memberCount, 'Member wasn\'t removed correctly')
 
-    await assertThrowsAsync(instance.getMember(memberToRemoveId), INVALID_OPCODE_MSG)
+    await assertInvalidOpcode(() => instance.getMember(memberToRemoveId))
 
     const secondMemberToRemoveId = 0
     await instance.removeMember(secondMemberToRemoveId)
@@ -202,6 +220,6 @@ contract('Members', async (accounts) => {
     newMemberCount = (await instance.getMembersCount.call()).toNumber()
     assert.equal(newMemberCount + 2, memberCount, 'Second member wasn\'t removed correctly')
 
-    await assertThrowsAsync(instance.getMember(memberCount - 1), INVALID_OPCODE_MSG)
+    await assertInvalidOpcode(() => instance.getMember(memberCount - 1))
   })
 })
