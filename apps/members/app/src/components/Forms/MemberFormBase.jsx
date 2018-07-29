@@ -9,7 +9,7 @@ import {
 } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import Member from '../../models/Member'
+import createMember, { EXPERIENCE_LEVELS, EXPERIENCE_LEVELS_TO_PAYRATE } from '../../models/Member'
 
 class MemberFormBase extends React.Component {
   static propTypes = {
@@ -24,7 +24,7 @@ class MemberFormBase extends React.Component {
   static defaultProps = {
     name: '',
     address: '',
-    level: Member.EXPERIENCE_LEVELS.Junior
+    level: EXPERIENCE_LEVELS.Junior
   }
 
   constructor(props) {
@@ -61,7 +61,7 @@ class MemberFormBase extends React.Component {
     const {name, address, level} = this.state    
 
     try {
-      const member = new Member(name, address, level)
+      const member = createMember(name, address, level)
       this.props.onSubmitMember(member)
       this.handleClose()
     } catch (error) {
@@ -91,11 +91,11 @@ class MemberFormBase extends React.Component {
         </Field>
         <Field name="level" wide label="Experience Level:">
           <DropDown
-            items={Object.keys(Member.EXPERIENCE_LEVELS)}
+            items={Object.keys(EXPERIENCE_LEVELS)}
             active={this.state.level}
             onChange={this.handleLevelChange}/>
           <PayRateLabel color={theme.textSecondary}>
-            Estimated Pay Rate: ${Member.EXPERIENCE_LEVELS_TO_PAYRATE[this.state.level]}/hr
+            Estimated Pay Rate: ${EXPERIENCE_LEVELS_TO_PAYRATE[this.state.level]}/hr
           </PayRateLabel>
         </Field>
 

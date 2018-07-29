@@ -3,21 +3,20 @@ import {Table, TableRow, TableHeader} from '@aragon/ui'
 import TableRowMember from './TableRowMember'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import Member from '../../models/Member'
 
 class MembersTable extends React.Component {
 
   render() {
+    console.log(this.props.members)
+
     const Members = this
       .props
       .members
       .map(member => {
-        const wrappedMember = Member.wrap(member)
-
         return (
           <TableRowMember
-            key={wrappedMember.address}
-            member={wrappedMember}
+            key={member.address}
+            member={member}
             onEditClick={() => this.props.onEditMemberClick(member)}
             onRemoveClick={() => this.props.onRemoveMemberClick(member)}/>
         )
