@@ -1,6 +1,8 @@
 const TimeTracking = artifacts.require('TimeTracking')
-const { assertThrowsAsync, sleep } = require('../../shared/test-utils/util')
+const { sleep } = require('../../shared/test-utils/util')
+const { assertRevert } = require('@aragon/test-helpers/assertThrow')
 
+const MEMBERS_ADDRESS_DEFAULT = '0x0000000000000000000000000000000000000000'
 const PERIOD_LENGTH_SECONDS = 5
 const MAX_HOURS = 10
 
@@ -11,6 +13,7 @@ contract('TimeTracking', async (accounts) => {
     const owner = accounts[0]
 
     await instance.initialize(
+      MEMBERS_ADDRESS_DEFAULT,
       PERIOD_LENGTH_SECONDS, 
       MAX_HOURS, 
       { from: owner })
@@ -48,7 +51,7 @@ contract('TimeTracking', async (accounts) => {
     const instance = await TimeTracking.deployed()
     const owner = accounts[1]
 
-    assertThrowsAsync(instance.trackWork(134, { from:owner }))
+    assertRevert(() => instance.trackWork(134, { from:owner }))
   })
 
   it('should create a new period after the last one has passed', async () => {
