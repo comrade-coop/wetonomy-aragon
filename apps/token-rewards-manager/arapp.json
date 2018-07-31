@@ -1,0 +1,22 @@
+{
+  "appName": "token-rewards-manager.aragonpm.eth",
+  "version": "1.0.0",
+  "roles": [
+    {
+      "name": "Gives Rights to mint reward tokens",
+      "id": "MINT_ROLE",
+      "params": []
+    },
+    {
+      "name": "Gives Rights to burn reward tokens",
+      "id": "BURN_ROLE",
+      "params": []
+    },
+    {
+      "name": "Gives Rights to reward someone with DAO tokens",
+      "id": "REWARD_ROLE",
+      "params": []
+    }
+  ],
+  "path": "contracts/TokenRewardsManager.sol"
+}
