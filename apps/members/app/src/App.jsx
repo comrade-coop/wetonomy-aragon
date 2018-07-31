@@ -8,8 +8,7 @@ import NoMembersScreen from './screens/NoMembersScreen'
 import AppHeader from './components/AppHeader'
 import MemberPanel, { PanelMode } from './components/Panels/MemberPanel'
 
-// import Member from './models/Member'
-import { isMember } from './utils/utility'
+import { isValidMember } from './models/Member'
 
 class App extends React.Component {
   static propTypes = {
@@ -43,14 +42,14 @@ class App extends React.Component {
     })
   }
 
-  handleAddMember = (member) => {
-    if (isMember(member)) {
+  handleAddMember = (member) => {    
+    if (isValidMember(member)) {
       this.props.app.addMember(member.address, member.name, member.level)  
     }   
   }
 
   handleEditMember = (oldMember, newMember) => {
-    if (isMember(oldMember) && isMember(newMember)) {
+    if (isValidMember(oldMember) && isValidMember(newMember)) {
       const memberId = oldMember.id
       if (oldMember.name !== newMember.name ||
         oldMember.address !== newMember.address ||
@@ -66,7 +65,7 @@ class App extends React.Component {
   }
 
   handleRemoveMember = (member) => {
-    if (isMember(member)) {
+    if (isValidMember(member)) {
       this.props.app.removeMember(member.id)      
     }   
   }

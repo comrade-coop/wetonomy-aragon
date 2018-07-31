@@ -8,12 +8,7 @@ import Icon from '../Icon'
 import debtLogo from '../../assets/debt.svg'
 import rewardLogo from '../../assets/reward-token.svg'
 
-import Member from '../../models/Member'
-
-const MemberProfile = (props) => {
-
-  const wrappedMember = Member.wrap(props.member)
-  
+const MemberProfile = (props) => {  
   return (
     <ProfileRoot>      
       <MemberInfoContainer>
@@ -26,8 +21,8 @@ const MemberProfile = (props) => {
         <Text size="large" weight="bold" color={theme.textDimmed}>{props.rewardTokens}</Text>
       </MemberInfoContainer>
 
-      <MemberAvatar seed={wrappedMember.address} />
-      <Text size="large">{wrappedMember.name}</Text>
+      <MemberAvatar seed={props.member.address} />
+      <Text size="large">{props.member.name}</Text>
     </ProfileRoot>
   )
 }

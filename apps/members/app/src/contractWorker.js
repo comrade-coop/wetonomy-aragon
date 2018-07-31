@@ -1,7 +1,7 @@
 import Aragon from '@aragon/client'
 import {Events, Methods} from './utils/membersContractWrapper'
 import {range} from './utils/utility'
-import Member from './models/Member'
+import createMember from './models/Member'
 
 const app = new Aragon()
 
@@ -85,7 +85,7 @@ const loadMembersCount = async() => {
 
 const loadMember = async(id) => {
   const memberResult = await callReadMethod(Methods.GET_MEMBER, id)
-  const member = new Member(memberResult.name, memberResult.accountAddress, memberResult.level, id)
+  const member = createMember(memberResult.name, memberResult.accountAddress, memberResult.level, id)
   return member
 }
 

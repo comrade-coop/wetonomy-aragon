@@ -4,7 +4,6 @@ import {SidePanel} from '@aragon/ui'
 import AddMemberForm from '../Forms/AddMemberForm'
 import EditMemberForm from '../Forms/EditMemberForm'
 import RemoveMemberForm from '../Forms/RemoveMemberForm'
-import Member from '../../models/Member'
 
 export const PanelMode = {
   ADD: 0,
@@ -26,19 +25,19 @@ class MemberPanel extends React.Component {
   _getPanelContent = () => {
     switch (this.props.mode) {      
       case PanelMode.EDIT: {
-        const member = Member.wrap(this.props.selectedMember)
+        const { selectedMember } = this.props
         return (
           <EditMemberForm
-            member={member}
+            member={selectedMember}
             onClose={this.props.onClose}            
             onEditMember={this.props.onEditMember} />
         )
       }
       case PanelMode.REMOVE: {
-        const member = Member.wrap(this.props.selectedMember)
+        const { selectedMember } = this.props
         return (
           <RemoveMemberForm
-            member={member}
+            member={selectedMember}
             onClose={this.props.onClose}
             onRemoveMember={this.props.onRemoveMember}/>
         )
