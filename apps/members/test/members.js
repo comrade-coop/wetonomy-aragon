@@ -7,6 +7,7 @@ const Members = artifacts.require('Members')
 const MEMBER_INDEX_ADDRESS = 0
 const MEMBER_INDEX_NAME = 1
 const MEMBER_INDEX_LEVEL = 2
+const MEMBER_INDEX_REPUTATION = 3
 const MEMBER_MIN_NAME_LENGTH = 3
 const MEMBER_MAX_NAME_LENGTH = 30
 
@@ -33,6 +34,8 @@ contract('Members', async (accounts) => {
       }
     )
 
+    const initialReputation = (await instance.initialReputation.call()).toNumber()
+
     const member = await instance.getMember.call(memberCount)
     assert.equal(newMemberAddress, member[MEMBER_INDEX_ADDRESS],
       'Member wasn\'t added with the correct address')
@@ -40,11 +43,13 @@ contract('Members', async (accounts) => {
       'Member wasn\'t added with the correct name')
     assert.equal(newMemberLevel, member[MEMBER_INDEX_LEVEL],
       'Member wasn\'t added with the correct level')
+    assert.equal(initialReputation, member[MEMBER_INDEX_REPUTATION],
+      'Member wasn\'t added with the correct reputation')
 
     const newCount = await instance.getMembersCount.call()
     assert.equal(memberCount + 1, newCount.toNumber(),
       'Member count didn\'t increase')
-  })
+  })  
 
   it('should not add a member with an invalid name', async () => {
     const instance = await Members.deployed()
@@ -176,14 +181,12 @@ contract('Members', async (accounts) => {
     const updatedMemberName = 'Gosho'
     const updatedMemberAddress = accounts[6]
     const updatedMemberLevel = MemberLevels.SENIOR
+    const updatedMemberReputation = 23
 
     await instance.addMember(
       newMemberAddress,
       newMemberName,
-      newMemberLevel, {
-        from: accounts[0]
-      }
-    )
+      newMemberLevel)
 
     const updatedMemberIndex = await instance.getMembersCount.call() - 1
 
@@ -192,6 +195,7 @@ contract('Members', async (accounts) => {
       updatedMemberAddress,
       updatedMemberName,
       updatedMemberLevel)
+    await instance.setMemberReputation(updatedMemberIndex, updatedMemberReputation)
 
     const member = await instance.getMember.call(updatedMemberIndex)
     assert.equal(updatedMemberAddress, member[MEMBER_INDEX_ADDRESS],
@@ -200,6 +204,8 @@ contract('Members', async (accounts) => {
       'Member wasn\'t updated with the correct name')
     assert.equal(updatedMemberLevel, member[MEMBER_INDEX_LEVEL],
       'Member wasn\'t updated with the correct level')
+    assert.equal(updatedMemberReputation, member[MEMBER_INDEX_REPUTATION],
+        'Member wasn\'t updated with the correct reputation')
   })
 
   it('should remove a member correctly', async () => {
@@ -222,4 +228,5 @@ contract('Members', async (accounts) => {
 
     await assertInvalidOpcode(() => instance.getMember(memberCount - 1))
   })
+
 })

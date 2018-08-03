@@ -73,7 +73,7 @@ const loadMembers = async() => {
   console.log('Member count is: ', count)
 
   const members = await Promise.all(range(count).map(async index => await loadMember(index)))
-
+  
   return members
 }
 
@@ -85,6 +85,7 @@ const loadMembersCount = async() => {
 
 const loadMember = async(id) => {
   const memberResult = await callReadMethod(Methods.GET_MEMBER, id)
+  console.log('Member: ', memberResult)
   const member = createMember(memberResult.name, memberResult.accountAddress, memberResult.level, id)
   return member
 }

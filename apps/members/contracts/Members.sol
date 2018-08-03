@@ -10,10 +10,24 @@ contract Members is IMembers, AragonApp {
     event MemberUpdated(uint indexed id);
     event MemberRemoved(address indexed accountAddress, string name);    
     
+    uint constant public DEFAULT_INITIAL_REPUTATION = 1;
     bytes32 constant public MANAGE_MEMBERS_ROLE = keccak256("MANAGE_MEMBERS_ROLE");
+    
+    uint public initialReputation = DEFAULT_INITIAL_REPUTATION;
     
     mapping(address => Member) private addressToMember;
     address[] public memberAddresses;
+    
+    /**
+     * @notice Sets the initial reputation for a newly added member
+     * @param _initialReputation The new initial repuation
+     */
+    function setInitialReputation(uint _initialReputation) 
+        external 
+        auth(MANAGE_MEMBERS_ROLE)
+    {
+        initialReputation = _initialReputation;
+    }
     
     /**
      * @notice Add a new Member to the organisation     
@@ -72,6 +86,19 @@ contract Members is IMembers, AragonApp {
         MemberUpdated(_id);
     }
     
+    /**
+     * @notice Set the reputation of a Member in an organisation
+     * @param _id The id of the Member
+     * @param _reputation The new reputation for the member
+     */
+    function setMemberReputation(uint _id, uint _reputation) 
+        external
+        auth(MANAGE_MEMBERS_ROLE)
+    {
+        _setMemberReputation(_id, _reputation);
+        MemberUpdated(_id);
+    }
+    
     function updateMember(uint _id, address _address, string _name, Level _level)
         external
         auth(MANAGE_MEMBERS_ROLE)
@@ -80,15 +107,9 @@ contract Members is IMembers, AragonApp {
         address memberAddress = memberAddresses[_id];
         Member storage member = addressToMember[memberAddress];
         
-        if (member.accountAddress != _address) {
-            _setMemberAddress(_id, _address);
-        }
-        if (!member.name.compareTo(_name)) {
-            _setMemberName(_id, _name);
-        }
-        if (member.level != _level) {
-            _setMemberLevel(_id, _level);
-        }
+        if (member.accountAddress != _address) _setMemberAddress(_id, _address);
+        if (!member.name.compareTo(_name)) _setMemberName(_id, _name);
+        if (member.level != _level) _setMemberLevel(_id, _level);
         
         MemberUpdated(_id);
     }
@@ -98,37 +119,35 @@ contract Members is IMembers, AragonApp {
     }
     
     function getMemberByAddress(address _address) 
-        external 
+        public 
         view
-        returns (address accountAddress, string name, Level level) 
+        returns (address accountAddress, string name, Level level, uint reputation) 
     {
         Member storage member = addressToMember[_address];
         accountAddress = member.accountAddress;
         name = member.name;
         level = member.level;
+        reputation = member.reputation;
     }
     
     function getMember(uint _id)
-        external
-        view 
-        returns (address accountAddress, string name, Level level) 
+        public
+        view
+        returns (address accountAddress, string name, Level level, uint reputation) 
     {
         address memberAddress = memberAddresses[_id];
-        Member storage member = addressToMember[memberAddress];
-        accountAddress = member.accountAddress;
-        name = member.name;
-        level = member.level;
+        return getMemberByAddress(memberAddress);
     }
         
     function _addMember(address _address, string _name, Level _level) 
         internal
-        auth(MANAGE_MEMBERS_ROLE)        
+        auth(MANAGE_MEMBERS_ROLE)
     {
         require(addressToMember[_address].accountAddress == address(0));
-        require(isValidMember(_address, _name, _level));
+        Member memory member = _createMember(_address, _name, _level, initialReputation);
         
         uint id = memberAddresses.push(_address) - 1;
-        Member memory member = Member(_address, _name, _level);
+        
         addressToMember[_address] = member;
         MemberAdded(id, _address, _name);
     }
@@ -176,5 +195,13 @@ contract Members is IMembers, AragonApp {
         address memberAddress = memberAddresses[_id];
         Member storage member = addressToMember[memberAddress];
         member.name = _name;
+    }
+    
+    function _setMemberReputation(uint _id, uint _reputation) 
+        internal
+    {
+        address memberAddress = memberAddresses[_id];
+        Member storage member = addressToMember[memberAddress];
+        member.reputation = _reputation;
     }
 }

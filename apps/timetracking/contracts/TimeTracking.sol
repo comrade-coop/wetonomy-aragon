@@ -29,7 +29,7 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
     
     modifier onlyMember() {
         if (members != address(0)) {
-            var (accountAddress, name, level)  = members.getMemberByAddress(msg.sender);
+            var (accountAddress, name, level, reputation)  = members.getMemberByAddress(msg.sender);
             require(accountAddress != address(0));    
         }
         _;
