@@ -15,6 +15,7 @@ contract MemberModel {
         address accountAddress;
         string name;
         Level level;
+        uint reputation;
     }
     
     function isValidName(string _name) 
@@ -40,5 +41,14 @@ contract MemberModel {
         returns (bool)
     {
         return isValidAddress(_address) && isValidName(_name);
+    }
+    
+    function _createMember(address _accountAddress, string _name, Level _level, uint _reputation)
+        internal
+        pure
+        returns(Member)
+    {
+        require(isValidMember(_accountAddress, _name, _level));
+        return Member(_accountAddress, _name, _level, _reputation);
     }
 }
