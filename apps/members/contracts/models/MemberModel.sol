@@ -35,7 +35,7 @@ contract MemberModel {
         return _address != address(0);
     }
     
-    function isValidMember(address _address, string _name, Level _level)
+    function isValidMember(address _address, string _name, Level)
         public
         pure
         returns (bool)

@@ -18,5 +18,5 @@
       "params": []
     }
   ],
-  "path": "contracts/TokenRewardsManager.sol"
+  "path": "contracts/ExchangeTokenManager.sol"
 }

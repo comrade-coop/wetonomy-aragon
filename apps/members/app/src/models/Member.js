@@ -25,6 +25,10 @@ export const isValidLevel = (level) => {
     .length
 }
 
+export const isValidReputation = (reputation) => {
+  return reputation >= 0
+}
+
 export const isValidMember = (member) => {
   try {
     validateMember(member.name, member.address, member.level)
@@ -35,7 +39,7 @@ export const isValidMember = (member) => {
   }
 }
 
-const validateMember = (name, address, level) => {
+const validateMember = (name, address, level, reputation = 0) => {
   if (!isValidName(name)) {
     throw new Error ('Invalid name')
   }
@@ -47,16 +51,21 @@ const validateMember = (name, address, level) => {
   if (!isValidLevel(level)) {
     throw new Error ('Invalid Level')
   }
+
+  if (!isValidReputation(reputation)) {
+    throw new Error('Invalid reputation')
+  }
 }
 
-export default (name, address, level, id = ID_UNEXISTANT) => {  
-  validateMember(name, address, level)
+export default (name, address, level, reputation, id = ID_UNEXISTANT) => {  
+  validateMember(name, address, level, reputation)
 
   return Object.freeze({
     name,
     address,
     level,
     levelNamed: Object.keys(EXPERIENCE_LEVELS)[level],
+    reputation,
     payRate: EXPERIENCE_LEVELS_TO_PAYRATE[level],
     id
   })

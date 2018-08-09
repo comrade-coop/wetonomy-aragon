@@ -17,8 +17,7 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
         uint trackedHours;
     }
     
-    bytes32 constant public MANAGE_TRACKING_ROLE = 
-        keccak256("MANAGE_TRACKING_ROLE");
+    bytes32 constant public MANAGE_TRACKING_ROLE = keccak256("MANAGE_TRACKING_ROLE");
         
     IMembers public members;
     
@@ -29,28 +28,12 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
     
     modifier onlyMember() {
         if (members != address(0)) {
-            var (accountAddress, name, level, reputation)  = members.getMemberByAddress(msg.sender);
+            var (accountAddress,) = members.getMemberByAddress(msg.sender);
             require(accountAddress != address(0));    
         }
         _;
     }
-    
-    /**
-    * @notice Initializes TimeTracking app
-    * @param _periodLength The length of one Work Period in seconds
-    * @param _maxHoursPerPeriod The maximum amount of hours which can be tracked 
-    *   for one period
-    */
-    function initialize(IMembers _members, uint _periodLength, uint _maxHoursPerPeriod)
-        external 
-        onlyInit
-    {
-        initialized();
-        members = _members;
-        maxHoursPerPeriod = _maxHoursPerPeriod;
-        periodLength = _periodLength;
-    }
-    
+
     /**
     * @notice Changes the the length of one working period
     * @param _periodLength The new period length in seconds
@@ -60,6 +43,7 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
         isInitialized
         auth(MANAGE_TRACKING_ROLE)
     {
+        require(_periodLength > 0);
         periodLength = _periodLength;
     }
     
@@ -73,6 +57,8 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
         isInitialized
         auth(MANAGE_TRACKING_ROLE)
     {
+        uint periodLengthHours = periodLength.div(60).div(60);
+        require(_maxHoursPerPeriod > 0 && _maxHoursPerPeriod <= periodLengthHours);
         maxHoursPerPeriod = _maxHoursPerPeriod;
     }
     
@@ -81,21 +67,32 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
     * @param _hours Amount of hours to track
     */
     function trackWork(uint _hours) external isInitialized onlyMember {
-        _createNewPeriodIfItsTime(msg.sender);
-
-        Period[] storage periods = addressToPeriods[msg.sender];
-        Period storage lastPeriod = periods[periods.length.sub(1)];        
-        require(lastPeriod.trackedHours.add(_hours) <= maxHoursPerPeriod);
-        
-        lastPeriod.trackedHours = lastPeriod.trackedHours.add(_hours);
-        addressToTrackedHours[msg.sender] = addressToTrackedHours[msg.sender].add(_hours);
-        
-        HoursTracked(msg.sender, _hours);
+        _trackWork(_hours);
     }
 
     function getPeriodsCountForAddress(address _address) external view returns(uint) {
         return addressToPeriods[_address].length;
     }
+    
+    /**
+    * @notice Initializes TimeTracking app
+    * @param _periodLength The length of one Work Period in seconds
+    * @param _maxHoursPerPeriod The maximum amount of hours which can be tracked 
+    *   for one period
+    */
+    function initialize(
+        IMembers _members, 
+        uint _periodLength, 
+        uint _maxHoursPerPeriod)
+        public
+        onlyInit
+    {
+        members = _members;
+        maxHoursPerPeriod = _maxHoursPerPeriod;
+        periodLength = _periodLength;
+        
+        initialized();
+    }    
     
     /**
     * @dev Calls _createNewPeriod an address if the last one has passed, 
@@ -123,5 +120,18 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
         uint periodsCount = periods.push(newPeriod);
         
         PeriodCreated(_forAddress, periodsCount, newPeriod.endTimestamp);
+    }
+    
+    function _trackWork(uint _hours) internal {
+        _createNewPeriodIfItsTime(msg.sender);
+
+        Period[] storage periods = addressToPeriods[msg.sender];
+        Period storage lastPeriod = periods[periods.length.sub(1)];        
+        require(lastPeriod.trackedHours.add(_hours) <= maxHoursPerPeriod);
+        
+        lastPeriod.trackedHours = lastPeriod.trackedHours.add(_hours);
+        addressToTrackedHours[msg.sender] = addressToTrackedHours[msg.sender].add(_hours);
+        
+        HoursTracked(msg.sender, _hours);
     }
 }

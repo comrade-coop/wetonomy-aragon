@@ -11,7 +11,7 @@ import editLogo from '../../assets/edit.svg'
 import removeLogo from '../../assets/delete.svg'
 
 const TableRowMember = (props) => {
-  const { name, address, levelNamed, payRate } = props.member
+  const { name, address, levelNamed, reputation, payRate } = props.member
   
   return (
     <TableRow>
@@ -25,8 +25,7 @@ const TableRowMember = (props) => {
         <Text size="large" color={theme.textDimmed}>{levelNamed}</Text>
       </TableCell>
       <TableCell>
-        {/* TODO: This should be with real reputation */}
-        <Text size="large" color={theme.textDimmed}>{0}</Text>
+        <Text size="large" color={theme.textDimmed}>{reputation}</Text>
       </TableCell>
       <TableCell>
         <Text size="large" color={theme.textDimmed}>${payRate}/hr</Text>
