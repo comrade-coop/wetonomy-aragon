@@ -1,6 +1,6 @@
 import Aragon from '@aragon/client'
 import {Events, Methods} from './utils/membersContractWrapper'
-import {range} from './utils/utility'
+import _ from 'lodash'
 import createMember from './models/Member'
 
 const app = new Aragon()
@@ -69,11 +69,9 @@ const loadMembers = async() => {
   if (count === 0) {
     return []
   }
-
-  console.log('Member count is: ', count)
-
-  const members = await Promise.all(range(count).map(async index => await loadMember(index)))
   
+  console.log('Member count is: ', count)
+  const members = await Promise.all(_.range(0, count).map(async index => await loadMember(index)))
   return members
 }
 
@@ -85,8 +83,13 @@ const loadMembersCount = async() => {
 
 const loadMember = async(id) => {
   const memberResult = await callReadMethod(Methods.GET_MEMBER, id)
-  console.log('Member: ', memberResult)
-  const member = createMember(memberResult.name, memberResult.accountAddress, memberResult.level, id)
+  const member = createMember(
+    memberResult.name, 
+    memberResult.accountAddress,
+    memberResult.level,
+    memberResult.reputation,
+    id
+  )
   return member
 }
 

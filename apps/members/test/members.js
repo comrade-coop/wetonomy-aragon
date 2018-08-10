@@ -10,6 +10,7 @@ const MEMBER_INDEX_LEVEL = 2
 const MEMBER_INDEX_REPUTATION = 3
 const MEMBER_MIN_NAME_LENGTH = 3
 const MEMBER_MAX_NAME_LENGTH = 30
+const MEMBER_INITIAL_REPUTATION = 1
 
 const MemberLevels = {
   JUNIOR: 0,
@@ -19,6 +20,20 @@ const MemberLevels = {
 }
 
 contract('Members', async (accounts) => {
+  it('should initialize the app with correct initialReputation', async () => {
+    const instance = await Members.deployed()
+
+    await instance.initialize(MEMBER_INITIAL_REPUTATION)
+
+    const contractReputation = (await instance.initialReputation.call()).toNumber()
+
+    assert.equal(
+      MEMBER_INITIAL_REPUTATION, 
+      contractReputation, 
+      'App didn\'t initialize with right reputation'
+    )
+  })
+
   it('should add a new member correctly', async () => {
     const instance = await Members.deployed()
     const memberCount = await instance.getMembersCount.call()

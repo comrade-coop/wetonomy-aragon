@@ -1,11 +1,12 @@
 {
-  "name": "token-rewards-manager",
+  "name": "wetonomy-token-manager",
   "version": "1.0.0",
   "description": "",
   "dependencies": {
-    "@aragon/os": "3.1.9",
     "@aragon/client": "^1.0.0-beta.8",
+    "@aragon/os": "3.1.9",
     "@aragon/ui": "^0.11.0",
+    "lodash": "^4.17.10",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "styled-components": "^3.2.6"
@@ -28,7 +29,7 @@
     "build:app": "parcel build app/index.html -d dist/ --public-url '.'",
     "build:script": "parcel build app/script.js -d dist/",
     "build": "npm run compile && npm run sync-assets && npm run build:app && npm run build:script",
-    "publish": "aragon publish"
+    "publish": "aragon apm publish"
   },
   "keywords": [],
   "license": "MIT"

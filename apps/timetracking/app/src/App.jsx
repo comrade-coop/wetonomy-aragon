@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AragonApp, observe, Button } from '@aragon/ui'
-import { getWorkedHours, getMemberDebt, getRewardTokens, getWorkedHours2 } from './utils/dummyDataProvider'
+import { getMemberDebt, getRewardTokens, getWorkedHours2 } from './utils/dummyDataProvider'
 import { WorkWeekTable } from './components/WorkWeekTable/WorkWeekTable'
 import TrackPanel , { PanelMode }from './components/TrackPanel'
 import AppHeader from './components/AppHeader'
