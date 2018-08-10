@@ -15,16 +15,21 @@ contract Members is IMembers, AragonApp {
     
     uint public initialReputation = DEFAULT_INITIAL_REPUTATION;
     
-    mapping(address => Member) private addressToMember;
+    mapping(address => Member) internal addressToMember;
     address[] public memberAddresses;
+    
+    function initialize(uint _initialReputation) external onlyInit {
+        initialReputation = _initialReputation;
+        initialized();
+    }
     
     /**
      * @notice Sets the initial reputation for a newly added member
      * @param _initialReputation The new initial repuation
      */
     function setInitialReputation(uint _initialReputation) 
-        external 
-        auth(MANAGE_MEMBERS_ROLE)
+        external        
+        auth(MANAGE_MEMBERS_ROLE)        
     {
         initialReputation = _initialReputation;
     }
@@ -35,7 +40,10 @@ contract Members is IMembers, AragonApp {
      * @param _name Name of the member
      * @param _level Experience level for the member. Must be a value between 0 and 3
      */
-    function addMember(address _address, string _name, Level _level) external {
+    function addMember(address _address, string _name, Level _level) 
+        external 
+        auth(MANAGE_MEMBERS_ROLE)     
+    {
         _addMember(_address, _name, _level);
     }
     
@@ -43,7 +51,7 @@ contract Members is IMembers, AragonApp {
      * @notice Remove a member from the organisation
      * @param _id The id of the Member     
      */
-    function removeMember(uint _id) external {
+    function removeMember(uint _id) external auth(MANAGE_MEMBERS_ROLE) {
         _removeMember(_id);
     }
     
@@ -133,7 +141,7 @@ contract Members is IMembers, AragonApp {
     function getMember(uint _id)
         public
         view
-        returns (address accountAddress, string name, Level level, uint reputation) 
+        returns (address accountAddress, string name, Level level, uint reputation)
     {
         address memberAddress = memberAddresses[_id];
         return getMemberByAddress(memberAddress);
@@ -141,7 +149,6 @@ contract Members is IMembers, AragonApp {
         
     function _addMember(address _address, string _name, Level _level) 
         internal
-        auth(MANAGE_MEMBERS_ROLE)
     {
         require(addressToMember[_address].accountAddress == address(0));
         Member memory member = _createMember(_address, _name, _level, initialReputation);
@@ -154,7 +161,6 @@ contract Members is IMembers, AragonApp {
     
     function _removeMember(uint _id) 
         internal
-        auth(MANAGE_MEMBERS_ROLE) 
     {
         address memberAddress = memberAddresses[_id];
         Member memory member = addressToMember[memberAddress];

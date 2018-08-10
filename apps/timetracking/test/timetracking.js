@@ -1,6 +1,6 @@
 const TimeTracking = artifacts.require('TimeTracking')
-const { sleep } = require('../../shared/test-utils/util')
 const { assertRevert } = require('@aragon/test-helpers/assertThrow')
+const timeTravel = require('@aragon/test-helpers/timeTravel')(web3)
 
 const MEMBERS_ADDRESS_DEFAULT = '0x0000000000000000000000000000000000000000'
 const PERIOD_LENGTH_SECONDS = 5
@@ -57,11 +57,9 @@ contract('TimeTracking', async (accounts) => {
   it('should create a new period after the last one has passed', async () => {
     const instance = await TimeTracking.deployed()
     const owner = accounts[1]
-
-    // Multiplying with 1.5 since blocktime doesn't equal real time
-    await sleep(PERIOD_LENGTH_SECONDS * 1000 * 1.5)
+    
+    timeTravel(PERIOD_LENGTH_SECONDS + 1)
     await instance.trackWork(3, { from:owner })
-
     const periodCount = await instance.getPeriodsCountForAddress(owner)
     assert.equal(periodCount.toNumber(), 2)
   })

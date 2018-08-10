@@ -6,6 +6,7 @@
     "@aragon/client": "^1.0.0-beta.9",
     "@aragon/react-scripts": "^1.1.0-aragon.6",
     "@aragon/ui": "^0.15.0",
+    "lodash": "^4.17.10",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-blockies": "^1.3.0",

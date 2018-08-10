@@ -1,5 +1,5 @@
-const TokenRewardsManager = artifacts.require('TokenRewardsManager.sol')
+const ExchangeTokenManager = artifacts.require('ExchangeTokenManager.sol')
 
 module.exports = (deployer) => {
-    deployer.deploy(TokenRewardsManager)
+    deployer.deploy(ExchangeTokenManager)
 }

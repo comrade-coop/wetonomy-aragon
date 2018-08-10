@@ -8,9 +8,9 @@
     "state": "members"
   }],
   "roles": [{
-    "name": "Manage task",
-    "id": "MANAGE_TASK_ROLE",
+    "name": "Manage Time Tracking Parameters",
+    "id": "MANAGE_TRACKING_ROLE",
     "params": []
   }],
-  "path": "contracts/TimeTracking.sol"
+  "path": "contracts/InflationTimeTracking.sol"
 }
