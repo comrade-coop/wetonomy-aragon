@@ -43,6 +43,7 @@ class App extends React.Component {
   }
 
   handleAddMember = (member) => {    
+    console.log(member)
     if (isValidMember(member)) {
       this.props.app.addMember(member.address, member.name, member.level)  
     }   

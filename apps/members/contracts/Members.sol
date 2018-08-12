@@ -115,7 +115,7 @@ contract Members is IMembers, AragonApp {
         address memberAddress = memberAddresses[_id];
         Member storage member = addressToMember[memberAddress];
         
-        if (member.accountAddress != _address) _setMemberAddress(_id, _address);
+        if (addressToMember[_address].level == Level.NONE) _setMemberAddress(_id, _address);        
         if (!member.name.compareTo(_name)) _setMemberName(_id, _name);
         if (member.level != _level) _setMemberLevel(_id, _level);
         
@@ -132,7 +132,8 @@ contract Members is IMembers, AragonApp {
         returns (address accountAddress, string name, Level level, uint reputation) 
     {
         Member storage member = addressToMember[_address];
-        accountAddress = member.accountAddress;
+        require(member.level != Level.NONE);
+        accountAddress = _address;
         name = member.name;
         level = member.level;
         reputation = member.reputation;
@@ -150,7 +151,7 @@ contract Members is IMembers, AragonApp {
     function _addMember(address _address, string _name, Level _level) 
         internal
     {
-        require(addressToMember[_address].accountAddress == address(0));
+        require(addressToMember[_address].level == Level.NONE && _level != Level.NONE);
         Member memory member = _createMember(_address, _name, _level, initialReputation);
         
         uint id = memberAddresses.push(_address) - 1;
@@ -174,7 +175,7 @@ contract Members is IMembers, AragonApp {
         }
         memberAddresses.length--;
         
-        MemberRemoved(member.accountAddress, member.name);
+        MemberRemoved(memberAddress, member.name);
     }
     
     function _setMemberLevel(uint _id, Level _level) 
@@ -189,9 +190,13 @@ contract Members is IMembers, AragonApp {
         internal
     {
         require(isValidAddress(_address));
+        require(addressToMember[_address].level == Level.NONE);
+        
         address memberAddress = memberAddresses[_id];
-        Member storage member = addressToMember[memberAddress];
-        member.accountAddress = _address;
+        Member memory member = addressToMember[memberAddress];
+        delete addressToMember[memberAddress];
+        addressToMember[_address] = member;
+        memberAddresses[_id] = _address;
     }
     
     function _setMemberName(uint _id, string _name) 
