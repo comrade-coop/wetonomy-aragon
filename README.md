@@ -48,7 +48,7 @@ npm run devchain
 
 3. In new Terminal run the following command in order to build the separate apps and run them as a Kit:
 ```sh
-npm run start:kit
+npm run start
 ```
 
 ## Run tests
