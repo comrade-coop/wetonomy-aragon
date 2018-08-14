@@ -1,8 +1,13 @@
 {
   "appName": "token-rewards-manager.aragonpm.eth",
   "version": "1.0.0",
-  "roles": [
-    {
+  "dependencies": [{
+    "appName": "members.aragonpm.eth",
+    "version": "^1.0.0",
+    "initParam": "_members",
+    "state": "members"
+  }],
+  "roles": [{
       "name": "Gives Rights to mint reward tokens",
       "id": "MINT_ROLE",
       "params": []

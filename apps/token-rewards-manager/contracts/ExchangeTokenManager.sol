@@ -28,6 +28,14 @@ contract ExchangeTokenManager is
     bytes32 constant public BURN_ROLE = keccak256("BURN_ROLE");
     bytes32 constant public REWARD_ROLE = keccak256("REWARD_ROLE");
 
+    // @dev TODO: For some weird reason, primitive types, which are from an inherited contract
+    //    get weird values, and can not be mutated, when called through a proxy. When overwriting
+    //    them in the child contract however this problem doesn't occure. Find reasons why this 
+    //    problem occurs.
+    uint public inflationMultiplier;
+    uint public inflationBalance;
+    uint public totalInflationReleased;
+
     uint public rewardToDaoCourse;
     
     /// @notice Initializes the app
@@ -37,16 +45,16 @@ contract ExchangeTokenManager is
     /// @param _rewardToDaoCourse The course which is used to convert reward tokens to DAO tokens
     function initialize(
         IMembers _members,
-        MiniMeToken _rewardToken, 
-        MiniMeToken _daoToken, 
+        MiniMeToken _rewardToken,
+        MiniMeToken _daoToken,
         uint _rewardToDaoCourse,
         uint _inflationMultiplier)
         external
         onlyInit
-    {       
+    {
         members = _members;
         rewardToken = _rewardToken;
-        daoToken = _daoToken;        
+        daoToken = _daoToken;
         rewardToDaoCourse = _rewardToDaoCourse;
         inflationMultiplier = _inflationMultiplier;
 

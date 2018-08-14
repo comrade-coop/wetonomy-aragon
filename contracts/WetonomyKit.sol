@@ -36,11 +36,11 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         Voting voting = installVotingApp(dao, debtToken);
         
         acl.createPermission(root, members, members.MANAGE_MEMBERS_ROLE(), root);
-        acl.createPermission(root, tokenManager, tokenManager.MINT_ROLE(), root);
+        acl.createPermission(timeTracking, tokenManager, tokenManager.MINT_ROLE(), root);
         acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root);
-        acl.createPermission(root, timeTracking, timeTracking.MANAGE_TRACKING_ROLE(), root);        
+        acl.createPermission(root, timeTracking, timeTracking.MANAGE_TRACKING_ROLE(), root);
 
-        // // Clean up permissions
+        // Clean up permissions
         acl.grantPermission(root, dao, dao.APP_MANAGER_ROLE());
         acl.revokePermission(this, dao, dao.APP_MANAGER_ROLE());
         acl.setPermissionManager(root, dao, dao.APP_MANAGER_ROLE());
@@ -52,31 +52,28 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         DeployInstance(dao);
     }
 
-    function installMembersApp(Kernel _dao) public returns (Members) {
-        bytes32 membersId = apmNamehash("members");
-        Members members = Members(_dao.newAppInstance(membersId, latestVersionAppBase(membersId)));        
-
+    function installMembersApp(Kernel _dao) public returns (Members) {        
+        Members members = Members(_dao.newAppInstance(membersId, latestVersionAppBase(membersId)));
         return members;
     }
 
-    function installTokenManager(Kernel _dao, Members _members) public returns (ExchangeTokenManager) {
-        bytes32 tokenManagerId = apmNamehash("token-rewards-manager");
+    function installTokenManager(Kernel _dao, IMembers _members) public returns (ExchangeTokenManager) {
         ExchangeTokenManager tokenManager = ExchangeTokenManager(
             _dao.newAppInstance(tokenManagerId, latestVersionAppBase(tokenManagerId))
         );
 
-        MiniMeToken rewardToken = tokenFactory.createCloneToken(address(0), 0, "Reward token", 0, "RWD", false);
-        MiniMeToken debtToken = tokenFactory.createCloneToken(address(0), 0, "Debt token", 0, "DBT", false);
+        MiniMeToken rewardToken = tokenFactory.createCloneToken(address(0), 0, "Reward token", 18, "RWD", false);
+        MiniMeToken debtToken = tokenFactory.createCloneToken(address(0), 0, "Debt token", 18, "DBT", false);
         rewardToken.changeController(tokenManager);
         debtToken.changeController(tokenManager);
 
-        // tokenManager.initialize(
-        //     _members,
-        //     rewardToken,
-        //     debtToken,
-        //     DEFAULT_REWARD_TO_DAO_COURSE,
-        //     DEFAULT_INFLATION_MULTIPLIER
-        // );
+        tokenManager.initialize(
+            _members,
+            rewardToken,
+            debtToken,
+            DEFAULT_REWARD_TO_DAO_COURSE,
+            DEFAULT_INFLATION_MULTIPLIER
+        );
 
         return tokenManager;
     }
@@ -87,11 +84,10 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         IMembers _members) 
         public 
         returns (TimeTracking)
-    {
-        bytes32 timeTrackingId = apmNamehash("timetracking");
-        
+    {       
         InflationTimeTracking timeTracking = InflationTimeTracking(
-            _dao.newAppInstance(timeTrackingId, latestVersionAppBase(timeTrackingId))
+            _dao.newAppInstance(timetrackingId,
+            latestVersionAppBase(timetrackingId))
         );
 
         timeTracking.initialize(
@@ -105,9 +101,7 @@ contract WetonomyKit is KitBase, WetonomyConstants {
     }
 
     function installVotingApp(Kernel _dao, MiniMeToken _token) public returns(Voting) {
-        bytes32 votingAppId = apmNamehash("voting");
-
-        Voting voting = Voting(_dao.newAppInstance(votingAppId, latestVersionAppBase(votingAppId)));
+        Voting voting = Voting(_dao.newAppInstance(votingId, latestVersionAppBase(votingId)));
         voting.initialize(_token, 50 * PCT, 20 * PCT, 1 days);
 
         return voting;
