@@ -33,6 +33,7 @@ class BaseTrackForm extends React.Component {
 
   _resetState = () => {
     document.getElementById("new").style.display = 'none';
+    document.getElementById("new-btn").style.display = 'block';
   }
 
   handleInputChange = (event) => {
@@ -74,6 +75,12 @@ class BaseTrackForm extends React.Component {
   }
   newProject= (event) => {
     document.getElementById("new").style.display = 'block';
+    document.getElementById("new-btn").style.display = 'none';
+    event.target.style.width = "100px";
+  }
+  cancelNewProject= (event) => {
+    document.getElementById("new").style.display = 'none';
+    document.getElementById("new-btn").style.display = 'block';
     event.target.style.width = "100px";
   }
   render() {
@@ -97,14 +104,15 @@ class BaseTrackForm extends React.Component {
         </Field>
         <NewButton onClick={this.newProject}>New Project</NewButton>
         <NewField id="new">
-        <Field label="NewProject">
-          <TextInput
-            wide
-            type="text"
-            name="newProject"
-            value={this.state.newProject}
-            onChange={this.handleInputChange}/>
-        </Field>
+          <Field label="NewProject">
+            <TextInput
+              wide
+              type="text"
+              name="newProject"
+              value={this.state.newProject}
+              onChange={this.handleInputChange}/>
+          </Field>
+          <CancelButton onClick={this.cancelNewProject} mode="secondary" emphasis="negative">Cancel</CancelButton>
         </NewField>
         <Field name="workedTime" wide label="Worked Time:">
           <DropDown
@@ -138,7 +146,11 @@ class BaseTrackForm extends React.Component {
 BaseTrackForm.propTypes = {
   onClose: PropTypes.func.isRequired
 }
-
+const CancelButton = styled(Button)`
+  display:block;
+  margin-left: auto;
+  margin-right: auto;
+`
 const ActionButton = styled(Button)`
   width: 48%;
 `

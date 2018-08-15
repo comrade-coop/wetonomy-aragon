@@ -2,5 +2,3 @@ node_modules
 build
 .cache
 dist
-.solhintignore
-lerna-debug.log

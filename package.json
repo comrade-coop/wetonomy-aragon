@@ -27,6 +27,7 @@
     "clean": "git clean -fdxi",
     "start:dummy": "aragon run",
     "start:kit": "npm run build:apps && npm run publish:apps && aragon run --kit WetonomyKit --kit-init @ARAGON_ENS",
+    "start:kit2": "aragon run --kit WetonomyKit --kit-init @ARAGON_ENS",
     "test": "lerna run --scope=wetonomy-* --concurrency=1 --stream test",
     "coverage": "lerna run --scope=wetonomy-* --concurrency=1 --stream coverage",
     "lint": "solhint apps/**/contracts/*.sol contracts/*.sol",

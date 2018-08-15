@@ -9,6 +9,7 @@ import "@aragon/os/contracts/lib/minime/MiniMeToken.sol";
 
 import "../apps/members/contracts/Members.sol";
 import "../apps/timetracking/contracts/InflationTimeTracking.sol";
+import "../apps/task-board/contracts/TaskBoard.sol";
 import "../apps/token-rewards-manager/contracts/ExchangeTokenManager.sol";
 
 
@@ -30,6 +31,7 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         Members members = installMembersApp(dao);        
         ExchangeTokenManager tokenManager = installTokenManager(dao, members);
         TimeTracking timeTracking = installTimeTracking(dao, tokenManager, members);
+        TaskBoard taskBoard = installTaskBoard(dao);  
 
         MiniMeToken debtToken = tokenManager.daoToken();
 
@@ -39,6 +41,7 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         acl.createPermission(root, tokenManager, tokenManager.MINT_ROLE(), root);
         acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root);
         acl.createPermission(root, timeTracking, timeTracking.MANAGE_TRACKING_ROLE(), root);        
+        acl.createPermission(root, taskBoard, taskBoard.INCREMENT_ROLE(), root);
 
         // // Clean up permissions
         acl.grantPermission(root, dao, dao.APP_MANAGER_ROLE());
@@ -102,6 +105,14 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         );
 
         return timeTracking;
+    }
+    
+    function installTaskBoard(Kernel _dao) public returns (TaskBoard) {
+        bytes32 taskBoardId = apmNamehash("taskboard");
+        TaskBoard taskBoard = TaskBoard(   
+            _dao.newAppInstance(taskBoardId, latestVersionAppBase(taskBoardId)));       
+
+        return taskBoard;
     }
 
     function installVotingApp(Kernel _dao, MiniMeToken _token) public returns(Voting) {
