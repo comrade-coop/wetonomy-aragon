@@ -106,6 +106,7 @@ contract WetonomyKit is KitBase, WetonomyConstants {
 
         return timeTracking;
     }
+    
     function installTaskBoard(Kernel _dao) public returns (TaskBoard) {
         bytes32 taskBoardId = apmNamehash("taskboard");
         TaskBoard taskBoard = TaskBoard(   
@@ -113,6 +114,7 @@ contract WetonomyKit is KitBase, WetonomyConstants {
 
         return taskBoard;
     }
+
     function installVotingApp(Kernel _dao, MiniMeToken _token) public returns(Voting) {
         bytes32 votingAppId = apmNamehash("voting");
 
