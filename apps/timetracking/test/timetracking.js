@@ -1,66 +1,64 @@
 const TimeTracking = artifacts.require('TimeTracking')
+const Members = artifacts.require('./mocks/MembersMock.sol')
 const { assertRevert } = require('@aragon/test-helpers/assertThrow')
 const timeTravel = require('@aragon/test-helpers/timeTravel')(web3)
 
-const MEMBERS_ADDRESS_DEFAULT = '0x0000000000000000000000000000000000000000'
 const PERIOD_LENGTH_SECONDS = 5
 const MAX_HOURS = 10
 
 contract('TimeTracking', async (accounts) => {
 
-  it('should initialize the app with the right period length, and limit', async () => {
-    const instance = await TimeTracking.deployed()
-    const owner = accounts[0]
+  let app
+  const member = accounts[0]
 
-    await instance.initialize(
-      MEMBERS_ADDRESS_DEFAULT,
+  beforeEach(async () => {
+    membersApp = await Members.new()
+    app = await TimeTracking.new()
+    
+    membersApp.addMember(member, 'John', 1)
+
+    await app.initialize(
+      membersApp.address,
       PERIOD_LENGTH_SECONDS, 
-      MAX_HOURS, 
-      { from: owner })
+      MAX_HOURS)
 
-    const periodLengthContract = await instance.periodLength.call()
-    const maxHoursContract = await instance.maxHoursPerPeriod.call()
+    const periodLengthContract = await app.periodLength.call()
+    const maxHoursContract = await app.maxHoursPerPeriod.call()
 
     assert.equal(PERIOD_LENGTH_SECONDS, periodLengthContract)
     assert.equal(MAX_HOURS, maxHoursContract)
   })
 
   it('should add first tracked hours', async () => {
-    const instance = await TimeTracking.deployed()
-    const owner = accounts[0]
-
-    await instance.trackWork(3, { from:owner })
-    const trackedHours = await instance.addressToTrackedHours.call(owner)
+    await app.trackWork(3, { from: member })
+    const trackedHours = await app.addressToTrackedHours.call(member)
 
     assert.equal(3, trackedHours)
   })
 
   it('should sum up tracked hours', async () => {
-    const instance = await TimeTracking.deployed()
-    const owner = accounts[1]
+    await app.trackWork(1, { from: member })
+    await app.trackWork(3, { from: member })
 
-    await instance.trackWork(1, { from:owner })
-    await instance.trackWork(3, { from:owner })
-
-    const trackedHours = await instance.addressToTrackedHours.call(owner)
+    const trackedHours = await app.addressToTrackedHours.call(member)
 
     assert.equal(4, trackedHours.toNumber())
   })
 
   it('shouldn\'t track hours exceeding limit', async () => {
-    const instance = await TimeTracking.deployed()
-    const owner = accounts[1]
-
-    assertRevert(() => instance.trackWork(134, { from:owner }))
+    assertRevert(() => app.trackWork(1342432, { from: member }))
   })
 
   it('should create a new period after the last one has passed', async () => {
-    const instance = await TimeTracking.deployed()
-    const owner = accounts[1]
-    
+    await app.trackWork(3, { from: member })
     timeTravel(PERIOD_LENGTH_SECONDS + 1)
-    await instance.trackWork(3, { from:owner })
-    const periodCount = await instance.getPeriodsCountForAddress(owner)
+    await app.trackWork(3, { from: member })
+    const periodCount = await app.getPeriodsCountForAddress(member)
     assert.equal(periodCount.toNumber(), 2)
+  })
+
+  it('shouldn\'t allow a non-member to track', async () => {
+    const nonMember = accounts[1]
+    assertRevert(() => app.trackWork(1, { from: nonMember }))
   })
 })
