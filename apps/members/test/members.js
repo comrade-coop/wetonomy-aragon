@@ -13,35 +13,49 @@ const MEMBER_MAX_NAME_LENGTH = 30
 const MEMBER_INITIAL_REPUTATION = 1
 
 const MemberLevels = {
-  JUNIOR: 0,
-  INTERMEDIATE: 0,
-  SENIOR: 0,
-  EXPERT: 0,
+  NONE: 0,
+  JUNIOR: 1,
+  INTERMEDIATE: 2,
+  SENIOR: 3,
+  EXPERT: 4,
 }
 
 contract('Members', async (accounts) => {
-  it('should initialize the app with correct initialReputation', async () => {
-    const instance = await Members.deployed()
+  let app
 
-    await instance.initialize(MEMBER_INITIAL_REPUTATION)
+  beforeEach(async () => {
+    app = await Members.new()
 
-    const contractReputation = (await instance.initialReputation.call()).toNumber()
+    await app.initialize(MEMBER_INITIAL_REPUTATION)
+
+    const contractReputation = (await app.initialReputation.call()).toNumber()
 
     assert.equal(
       MEMBER_INITIAL_REPUTATION, 
       contractReputation, 
       'App didn\'t initialize with right reputation'
     )
-  })
 
-  it('should add a new member correctly', async () => {
-    const instance = await Members.deployed()
-    const memberCount = await instance.getMembersCount.call()
     const newMemberAddress = accounts[0]
     const newMemberName = 'Pesho'
     const newMemberLevel = MemberLevels.INTERMEDIATE
 
-    await instance.addMember(
+    await app.addMember(
+      newMemberAddress,
+      newMemberName,
+      newMemberLevel, {
+        from: accounts[0]
+      }
+    )
+  })
+
+  it('should add a new member correctly', async () => {
+    const memberCount = (await app.getMembersCount.call()).toNumber()
+    const newMemberAddress = accounts[1]
+    const newMemberName = 'Pesho'
+    const newMemberLevel = MemberLevels.INTERMEDIATE
+
+    await app.addMember(
       newMemberAddress,
       newMemberName,
       newMemberLevel, {
@@ -49,9 +63,9 @@ contract('Members', async (accounts) => {
       }
     )
 
-    const initialReputation = (await instance.initialReputation.call()).toNumber()
+    const initialReputation = (await app.initialReputation.call()).toNumber()
 
-    const member = await instance.getMember.call(memberCount)
+    const member = await app.getMember.call(memberCount)
     assert.equal(newMemberAddress, member[MEMBER_INDEX_ADDRESS],
       'Member wasn\'t added with the correct address')
     assert.equal(newMemberName, member[MEMBER_INDEX_NAME],
@@ -61,27 +75,26 @@ contract('Members', async (accounts) => {
     assert.equal(initialReputation, member[MEMBER_INDEX_REPUTATION],
       'Member wasn\'t added with the correct reputation')
 
-    const newCount = await instance.getMembersCount.call()
+    const newCount = await app.getMembersCount.call()
     assert.equal(memberCount + 1, newCount.toNumber(),
       'Member count didn\'t increase')
   })  
 
   it('should not add a member with an invalid name', async () => {
-    const instance = await Members.deployed()
     const shortMemberAddress = accounts[1]
     const shortMemberName = 'Pe'
     const longMemberAddress = accounts[2]
     const longMemberName = 'Peuhwefheufheifhwiuefhweuisdsda'
 
     await assertRevert(() =>
-      instance.addMember(shortMemberAddress,
+      app.addMember(shortMemberAddress,
         shortMemberName,
         MemberLevels.JUNIOR, {
           from: accounts[0]
         })
     )
     await assertRevert(() =>
-      instance.addMember(longMemberAddress,
+      app.addMember(longMemberAddress,
         longMemberName,
         MemberLevels.JUNIOR, {
           from: accounts[0]
@@ -89,16 +102,15 @@ contract('Members', async (accounts) => {
   })
 
   it('should not add a member with the same address twice', async () => {
-    const instance = await Members.deployed()
     const newMemberAddress = accounts[3]
     const newMemberName = 'Pesho'
     const newMemberLevel = MemberLevels.JUNIOR
 
-    await instance.addMember(newMemberAddress, newMemberName, newMemberLevel, {
+    await app.addMember(newMemberAddress, newMemberName, newMemberLevel, {
       from: accounts[0]
     })
     await assertRevert(() =>
-      instance.addMember(
+      app.addMember(
         newMemberAddress,
         newMemberName,
         newMemberLevel, {
@@ -107,8 +119,6 @@ contract('Members', async (accounts) => {
   })
 
   it('shouldn\'t update a member\'s name if it\'s invalid', async () => {
-    const instance = await Members.deployed()
-
     const newAddress = accounts[4]
     const newName = 'Pesho'
     const newLevel = MemberLevels.INTERMEDIATE
@@ -116,7 +126,7 @@ contract('Members', async (accounts) => {
     const updatedNameShort = 'Go'
     const updatedNameLong = 'Gooidjiodfjeiwojoiejfoejwfoiejfiojweoijfoefejf'
 
-    await instance.addMember(
+    await app.addMember(
       newAddress,
       newName,
       newLevel, {
@@ -124,26 +134,24 @@ contract('Members', async (accounts) => {
       }
     )
 
-    const updatedMemberIndex = await instance.getMembersCount.call() - 1
+    const updatedMemberIndex = await app.getMembersCount.call() - 1
 
     assertRevert(() =>
-      instance.setMemberName(updatedMemberIndex, updatedNameShort, {
+      app.setMemberName(updatedMemberIndex, updatedNameShort, {
         from: accounts[0]
       }))
     assertRevert(() =>
-      instance.setMemberName(updatedMemberIndex, updatedNameLong, {
+      app.setMemberName(updatedMemberIndex, updatedNameLong, {
         from: accounts[0]
       }))
   })
 
   it('shouldn\'t update a member\'s address if it\'s invalid', async () => {
-    const instance = await Members.deployed()
-
     const newAddress = accounts[5]
     const newName = 'Pesho'
     const newLevel = MemberLevels.INTERMEDIATE
 
-    await instance.addMember(
+    await app.addMember(
       newAddress,
       newName,
       newLevel, {
@@ -151,24 +159,22 @@ contract('Members', async (accounts) => {
       }
     )
 
-    const updatedMemberIndex = await instance.getMembersCount.call() - 1
+    const updatedMemberIndex = await app.getMembersCount.call() - 1
 
     const updatedAddress = '0x0000000000000000000000000000000000000000'
 
     assertRevert(() =>
-      instance.setMemberAddress(updatedMemberIndex, updatedAddress, {
+      app.setMemberAddress(updatedMemberIndex, updatedAddress, {
         from: accounts[0]
       }))
   })
 
   it('shouldn\'t update a member\'s level if it\'s invalid', async () => {
-    const instance = await Members.deployed()
-
     const newAddress = accounts[6]
     const newName = 'Pesho'
     const newLevel = MemberLevels.INTERMEDIATE
 
-    await instance.addMember(
+    await app.addMember(
       newAddress,
       newName,
       newLevel, {
@@ -176,19 +182,17 @@ contract('Members', async (accounts) => {
       }
     )
 
-    const updatedMemberIndex = await instance.getMembersCount.call() - 1
+    const updatedMemberIndex = await app.getMembersCount.call() - 1
 
     const updatedLevel = 34
 
     assertInvalidOpcode(() =>
-      instance.setMemberLevel(updatedMemberIndex, updatedLevel, {
+      app.setMemberLevel(updatedMemberIndex, updatedLevel, {
         from: accounts[0]
       }))
   })
 
   it('should update a member correctly', async () => {
-    const instance = await Members.deployed()
-
     const newMemberAddress = accounts[7]
     const newMemberName = 'Pesho'
     const newMemberLevel = MemberLevels.INTERMEDIATE
@@ -198,21 +202,21 @@ contract('Members', async (accounts) => {
     const updatedMemberLevel = MemberLevels.SENIOR
     const updatedMemberReputation = 23
 
-    await instance.addMember(
+    await app.addMember(
       newMemberAddress,
       newMemberName,
       newMemberLevel)
 
-    const updatedMemberIndex = await instance.getMembersCount.call() - 1
+    const updatedMemberIndex = await app.getMembersCount.call() - 1
 
-    await instance.updateMember(
+    await app.updateMember(
       updatedMemberIndex,
       updatedMemberAddress,
       updatedMemberName,
       updatedMemberLevel)
-    await instance.setMemberReputation(updatedMemberIndex, updatedMemberReputation)
+    await app.setMemberReputation(updatedMemberIndex, updatedMemberReputation)
 
-    const member = await instance.getMember.call(updatedMemberIndex)
+    const member = await app.getMember.call(updatedMemberIndex)
     assert.equal(updatedMemberAddress, member[MEMBER_INDEX_ADDRESS],
       'Member wasn\'t updated with the correct address')
     assert.equal(updatedMemberName, member[MEMBER_INDEX_NAME],
@@ -221,27 +225,37 @@ contract('Members', async (accounts) => {
       'Member wasn\'t updated with the correct level')
     assert.equal(updatedMemberReputation, member[MEMBER_INDEX_REPUTATION],
         'Member wasn\'t updated with the correct reputation')
+    assertRevert(() => app.getMemberByAddress.call(newMemberAddress))    
   })
 
   it('should remove a member correctly', async () => {
-    const instance = await Members.deployed()
-    const memberCount = (await instance.getMembersCount.call()).toNumber()
+    const newMemberAddress = accounts[1]
+    const newMemberName = 'Gosho'
+    const newMemberLevel = MemberLevels.INTERMEDIATE
+
+    await app.addMember(
+      newMemberAddress,
+      newMemberName,
+      newMemberLevel
+    )
+
+    const memberCount = (await app.getMembersCount.call()).toNumber()
 
     const memberToRemoveId = memberCount - 1
-    await instance.removeMember(memberToRemoveId)
+    await app.removeMember(memberToRemoveId)
 
-    let newMemberCount = (await instance.getMembersCount.call()).toNumber()
+    let newMemberCount = (await app.getMembersCount.call()).toNumber()
     assert.equal(newMemberCount + 1, memberCount, 'Member wasn\'t removed correctly')
 
-    await assertInvalidOpcode(() => instance.getMember(memberToRemoveId))
+    await assertInvalidOpcode(() => app.getMember(memberToRemoveId))
 
     const secondMemberToRemoveId = 0
-    await instance.removeMember(secondMemberToRemoveId)
+    await app.removeMember(secondMemberToRemoveId)
 
-    newMemberCount = (await instance.getMembersCount.call()).toNumber()
+    newMemberCount = (await app.getMembersCount.call()).toNumber()
     assert.equal(newMemberCount + 2, memberCount, 'Second member wasn\'t removed correctly')
 
-    await assertInvalidOpcode(() => instance.getMember(memberCount - 1))
+    await assertInvalidOpcode(() => app.getMember(memberCount - 1))
   })
 
 })

@@ -3,10 +3,10 @@ import { isAddress } from 'web3-utils'
 export const MIN_NAME_LENGTH = 3
 export const MAX_NAME_LENGTH = 30
 export const EXPERIENCE_LEVELS = {
-  Junior: 0,
-  Intermediate: 1,
-  Senior: 2,
-  Expert: 3
+  Junior: 1,
+  Intermediate: 2,
+  Senior: 3,
+  Expert: 4
 }
 export const EXPERIENCE_LEVELS_TO_PAYRATE = [8, 12, 18, 24]
 export const ID_UNEXISTANT = -1
@@ -20,9 +20,7 @@ export const isValidAddress = (address) => {
 }
 
 export const isValidLevel = (level) => {
-  return level >= 0 && level <= Object
-    .keys(EXPERIENCE_LEVELS_TO_PAYRATE)
-    .length
+  return level >= EXPERIENCE_LEVELS.Junior && level <= EXPERIENCE_LEVELS.Expert
 }
 
 export const isValidReputation = (reputation) => {

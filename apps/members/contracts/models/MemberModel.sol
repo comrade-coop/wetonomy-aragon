@@ -9,10 +9,9 @@ contract MemberModel {
     uint8 public constant MIN_NAME_LENGTH = 3;
     uint8 public constant MAX_NAME_LENGTH = 30;
 
-    enum Level { JUNIOR, INTERMEDIATE, SENIOR, EXPERT }
+    enum Level { NONE, JUNIOR, INTERMEDIATE, SENIOR, EXPERT }
     
     struct Member {
-        address accountAddress;
         string name;
         Level level;
         uint reputation;
@@ -49,6 +48,6 @@ contract MemberModel {
         returns(Member)
     {
         require(isValidMember(_accountAddress, _name, _level));
-        return Member(_accountAddress, _name, _level, _reputation);
+        return Member(_name, _level, _reputation);
     }
 }
