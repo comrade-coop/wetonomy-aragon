@@ -72,7 +72,31 @@ contract('TokenRewardsManager', async (accounts) => {
     await  app.claimRewardTokens({ from: accounts[1] })
 
     const balanceSecond = await rewardTokenInstance.balanceOf.call(accounts[1])
-    assert.equal(mintPerMember * INFLATION_MULTIPLIER, balanceSecond.toNumber(), 'The account\'s balance should have increased in the Reward Token contract')
+    assert.equal(mintPerMember * INFLATION_MULTIPLIER, balanceSecond.toNumber(), 
+      'The account\'s balance should have increased in the Reward Token contract')
+  })
+
+  it('should transfer right amount of reward tokens between two addresses', async () => {
+    const mintPerMember = 10
+    const rewardTokenAddress = await app.rewardToken.call()
+    const rewardTokenInstance = MiniMeToken.at(rewardTokenAddress)
+
+    await app.mint(mintPerMember)
+    await app.claimRewardTokens({ from: accounts[0] })
+    await app.claimRewardTokens({ from: accounts[1] })
+
+    const balanceFrom = (await rewardTokenInstance.balanceOf.call(accounts[0])).toNumber()
+    const balanceTo = (await rewardTokenInstance.balanceOf.call(accounts[1])).toNumber()
+    const transferAmount = 100
+
+    await app.transfer(accounts[0], accounts[1], transferAmount);
+
+    const balanceFromAfter = (await rewardTokenInstance.balanceOf.call(accounts[0])).toNumber()
+    const balanceToAfter = (await rewardTokenInstance.balanceOf.call(accounts[1])).toNumber()
+    assert.equal(balanceFrom - transferAmount, balanceFromAfter, 
+      'The account\'s balance should have decreased in the Reward Token contract')
+    assert.equal(balanceTo + transferAmount, balanceToAfter, 
+      'The account\'s balance should have increased in the Reward Token contract')
   })
 
   it('should reward an address and update balances correctly', async () => {    
