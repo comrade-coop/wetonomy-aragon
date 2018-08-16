@@ -38,9 +38,15 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         Voting voting = installVotingApp(dao, debtToken);
         
         acl.createPermission(root, members, members.MANAGE_MEMBERS_ROLE(), root);
+
         acl.createPermission(timeTracking, tokenManager, tokenManager.MINT_ROLE(), root);
+        acl.createPermission(taskBoard, tokenManager, tokenManager.TRANSFER_ROLE(), root);
+        acl.createPermission(taskBoard, tokenManager, tokenManager.REWARD_ROLE(), root);
+
         acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root);
-        acl.createPermission(root, timeTracking, timeTracking.MANAGE_TRACKING_ROLE(), root);        
+
+        acl.createPermission(root, timeTracking, timeTracking.MANAGE_TRACKING_ROLE(), root);
+
         acl.createPermission(root, taskBoard, taskBoard.INCREMENT_ROLE(), root);
 
         // Clean up permissions

@@ -2,13 +2,12 @@ pragma solidity 0.4.18;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
 import "@aragon/os/contracts/lib/minime/MiniMeToken.sol";
-import "./interfaces/IRewarder.sol";
 import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
-import "./interfaces/ITokenManager.sol";
+import "./interfaces/IRewardTokenManager.sol";
 import "../../members/contracts/interfaces/IMembers.sol";
 
 
-contract TokenRewardsManager is ITokenManager, IRewarder, AragonApp {
+contract TokenRewardsManager is IRewardTokenManager, AragonApp {
     using SafeMath for uint256;
 
     event RewardGiven(address sender, address receiver, uint rewardAmount, uint rewardToDaoCourse);
@@ -20,6 +19,7 @@ contract TokenRewardsManager is ITokenManager, IRewarder, AragonApp {
     
     bytes32 constant public MINT_ROLE = keccak256("MINT_ROLE");
     bytes32 constant public BURN_ROLE = keccak256("BURN_ROLE");
+    bytes32 constant public TRANSFER_ROLE = keccak256("TRANSFER_ROLE");
     bytes32 constant public REWARD_ROLE = keccak256("REWARD_ROLE");
 
     IMembers public members;
@@ -32,6 +32,11 @@ contract TokenRewardsManager is ITokenManager, IRewarder, AragonApp {
     mapping(address => uint) public released;   
 
     uint public rewardToDaoCourse;
+
+    modifier onlyToken() {
+        require(msg.sender == address(rewardToken) || msg.sender == address(daoToken));
+        _;
+    }
     
     /// @notice Initializes the app
     /// @param _members The address of the Members contract to be used for rewards
@@ -81,6 +86,20 @@ contract TokenRewardsManager is ITokenManager, IRewarder, AragonApp {
         _burnRewardTokens(_owner, _amount);
         return true;
     }    
+
+    /// @notice Transfers `_amount` amount of reward tokens from `_owner` to `_receiver`
+    /// @param _from The address to transfer tokens from
+    /// @param _to The address to transfer tokens to
+    /// @param _amount The amount of tokens to transfer
+    /// @return True if the transfer was fulfilled
+    function transfer(address _from, address _to, uint _amount) 
+        external 
+        isInitialized
+        auth(TRANSFER_ROLE)
+        returns (bool)
+    {
+        return rewardToken.transferFrom(_from, _to, _amount);
+    }
     
     /// @notice Gives `_amount * rewardToDaoCourse` amount of DAO tokens to `_receiver`
     /// @param _rewarder The address which gives the reward
@@ -128,8 +147,9 @@ contract TokenRewardsManager is ITokenManager, IRewarder, AragonApp {
     /// @notice Called when `_owner` sends ether to the MiniMe Token contract
     /// @return True if the ether is accepted, false if it throws
     function proxyPayment(address) 
-        public
+        public        
         payable
+        onlyToken
         returns (bool)
     {
         return false;
@@ -139,9 +159,13 @@ contract TokenRewardsManager is ITokenManager, IRewarder, AragonApp {
     ///  controller to react if desired
     /// @return False if the controller does not authorize the transfer
     function onTransfer(address, address, uint) 
-        public          
+        public
+        onlyToken
         returns (bool)
     {
+        if (msg.sender == address(rewardToken)) {
+            return true;
+        }
         return false;
     }
 
@@ -149,7 +173,8 @@ contract TokenRewardsManager is ITokenManager, IRewarder, AragonApp {
     ///  controller to react if desired
     /// @return False if the controller does not authorize the approval
     function onApprove(address, address, uint)
-        public   
+        public
+        onlyToken
         returns(bool)
     {
         return false;

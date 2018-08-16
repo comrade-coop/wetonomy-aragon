@@ -18,6 +18,11 @@
       "params": []
     },
     {
+      "name": "Gives Rights to transfer reward tokens",
+      "id": "TRANSFER_ROLE",
+      "params": []
+    },
+    {
       "name": "Gives Rights to reward someone with DAO tokens",
       "id": "REWARD_ROLE",
       "params": []
