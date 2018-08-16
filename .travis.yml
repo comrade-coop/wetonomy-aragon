@@ -19,7 +19,7 @@ before_install:
 install:
   - npm install
   - npm run bootstrap
-  - npm run publish:apps 
+  - npm run publish
 before_script:
   - npm prune
 script:
