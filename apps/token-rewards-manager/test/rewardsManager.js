@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const ExchangeTokenManager = artifacts.require('ExchangeTokenManager.sol')
+const TokenRewardsManager = artifacts.require('TokenRewardsManager.sol')
 const MembersMock = artifacts.require('MembersMock.sol')
 
 const MiniMeToken = artifacts.require('MiniMeToken.sol')
@@ -9,7 +9,7 @@ const REWARD_TO_DAO_COURSE = 2
 const INFLATION_MULTIPLIER = 100
 const MEMBERS_INITIAL_REPUTATION = 1
 
-contract('ExchangeTokenManager', async (accounts) => {
+contract('TokenRewardsManager', async (accounts) => {
   let app
   let membersApp
 
@@ -18,7 +18,7 @@ contract('ExchangeTokenManager', async (accounts) => {
     const daoTokenInstance = await createToken('DAO Token', 18, 'DAO', false)
     
     membersApp = await MembersMock.new()
-    app = await ExchangeTokenManager.new()
+    app = await TokenRewardsManager.new()
 
     await membersApp.initialize(MEMBERS_INITIAL_REPUTATION, { from: accounts[0] })
     await app.initialize(
@@ -128,7 +128,7 @@ contract('ExchangeTokenManager', async (accounts) => {
 
 const addMembers = async (membersApp, accounts) => {
   await Promise.all(_.range(0, 5).map(async i => 
-    await membersApp.addMember(accounts[i], 'Pesho', 1)
+    await membersApp.addMember(accounts[i], 'Pesho', 2)
   ))
 }
 

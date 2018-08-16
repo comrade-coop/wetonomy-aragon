@@ -1,5 +1,5 @@
-const CounterApp = artifacts.require('CounterApp.sol')
+const TaskBoard = artifacts.require('TaskBoard.sol')
 
-contract('CounterApp', (accounts) => {
+contract('TaskBoard', (accounts) => {
   it('should be tested')
 })
