@@ -4,13 +4,13 @@ import PropTypes from 'prop-types'
 import {APP_NAME} from '../../utils/appConstants'
 import MemberProfile from './MemberProfile'
 
-const AppHeader = (props) => props.currentMember ?
+const AppHeader = ({ currentMember, memberDebt, rewardTokens }) => currentMember ?
   <AppBar
     title={APP_NAME}
     endContent={<MemberProfile
-      debt={props.memberDebt}
-      rewardTokens={props.rewardTokens}
-      member={props.currentMember} />} /> :
+      debt={memberDebt}
+      rewardTokens={rewardTokens}
+      member={currentMember} />} /> :
   <AppBar title={APP_NAME} /> 
 
 AppHeader.propTypes = {

@@ -2,20 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import MemberFormBase from './MemberFormBase'
 
-class AddMemberForm extends React.Component {
-  static propTypes = {
-    onAddMember: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired
-  }
+import { ADD_MEMBER_FORM_BTN_LABEL } from '../../utils/appConstants'
 
-  render() {
-    return (
-      <MemberFormBase
-        onSubmitMember={this.props.onAddMember}
-        onClose={this.props.onClose}
-        submitBtnText={'Add'} />
-    )
-  }
+const AddMemberForm = ({ onAddMember, onCancel }) => (
+  <MemberFormBase
+    onSubmitMember={onAddMember}
+    onCancel={onCancel}
+    submitBtnText={ADD_MEMBER_FORM_BTN_LABEL} />
+)
+
+AddMemberForm.propTypes = {
+  onAddMember: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired
 }
 
 export default AddMemberForm

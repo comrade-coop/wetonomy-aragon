@@ -8,21 +8,21 @@ import Icon from '../Icon'
 import debtLogo from '../../assets/debt.svg'
 import rewardLogo from '../../assets/reward-token.svg'
 
-const MemberProfile = (props) => {  
+const MemberProfile = ({ debt, rewardTokens, member }) => {  
   return (
     <ProfileRoot>      
       <MemberInfoContainer>
         <BlueIcon src={debtLogo} alt="Debt:" />
-        <Text size="large" weight="bold" color={theme.accent}>${props.debt}</Text>
+        <Text size="large" weight="bold" color={theme.accent}>${debt}</Text>
       </MemberInfoContainer>      
       
       <MemberInfoContainer>
         <Icon src={rewardLogo} alt="Reward Tokens:" />
-        <Text size="large" weight="bold" color={theme.textDimmed}>{props.rewardTokens}</Text>
+        <Text size="large" weight="bold" color={theme.textDimmed}>{rewardTokens}</Text>
       </MemberInfoContainer>
 
-      <MemberAvatar seed={props.member.address} />
-      <Text size="large">{props.member.name}</Text>
+      <MemberAvatar seed={member.address} />
+      <Text size="large">{member.name}</Text>
     </ProfileRoot>
   )
 }

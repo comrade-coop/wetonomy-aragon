@@ -10,33 +10,29 @@ import Icon from '../Icon'
 import editLogo from '../../assets/edit.svg'
 import removeLogo from '../../assets/delete.svg'
 
-const TableRowMember = (props) => {
-  const { name, address, levelNamed, reputation, payRate } = props.member
-  
-  return (
-    <TableRow>
-      <NameCell>
-        <MemberProfileShort name={name} address={address} />
-      </NameCell>
-      <TableCell>
-        <Text size="large" color={theme.textDimmed}>{address}</Text>
-      </TableCell>
-      <TableCell>
-        <Text size="large" color={theme.textDimmed}>{levelNamed}</Text>
-      </TableCell>
-      <TableCell>
-        <Text size="large" color={theme.textDimmed}>{reputation}</Text>
-      </TableCell>
-      <TableCell>
-        <Text size="large" color={theme.textDimmed}>${payRate}/hr</Text>
-      </TableCell>
-      <ActionsCell>
-        <Icon src={editLogo} alt="Edit Member" onClick={props.onEditClick} />
-        <Icon src={removeLogo} alt="Remove Member" onClick={props.onRemoveClick} />
-      </ActionsCell>
-    </TableRow>
-  )
-}
+const TableRowMember = ({ member, onEditClick, onRemoveClick }) => (
+  <TableRow>
+    <NameCell>
+      <MemberProfileShort name={member.name} address={member.address} />
+    </NameCell>
+    <TableCell>
+      <Text size="large" color={theme.textDimmed}>{member.address}</Text>
+    </TableCell>
+    <TableCell>
+      <Text size="large" color={theme.textDimmed}>{member.level.title}</Text>
+    </TableCell>
+    <TableCell>
+      <Text size="large" color={theme.textDimmed}>{member.reputation}</Text>
+    </TableCell>
+    <TableCell>
+      <Text size="large" color={theme.textDimmed}>${member.level.payRate}/hr</Text>
+    </TableCell>
+    <ActionsCell>
+      <Icon src={editLogo} alt="Edit Member" onClick={() => onEditClick(member)} />
+      <Icon src={removeLogo} alt="Remove Member" onClick={() => onRemoveClick(member)} />
+    </ActionsCell>
+  </TableRow>
+)
 
 TableRowMember.propTypes = {
   member: PropTypes.object.isRequired,

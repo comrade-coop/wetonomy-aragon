@@ -9,45 +9,51 @@ import {
 } from '@aragon/ui'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import createMember, { EXPERIENCE_LEVELS, EXPERIENCE_LEVELS_TO_PAYRATE } from '../../models/Member'
+import * as Member from '../../models/Member'
 
 class MemberFormBase extends React.Component {
   static propTypes = {
     onSubmitMember: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
     submitBtnText: PropTypes.string.isRequired,
-    name: PropTypes.string,
-    address: PropTypes.string,
-    level: PropTypes.number
+    name: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    level: PropTypes.object.isRequired
   }
 
   static defaultProps = {
     name: '',
     address: '',
-    level: EXPERIENCE_LEVELS.Junior
+    level: Member.EXPERIENCE_LEVELS[0]
   }
 
   constructor(props) {
     super(props)
-    this.state = { ...props, error: null }
+    this.state = { ...props, levelIndex: this._getLevelIndex(props.level), error: null }
   }
 
-  handleLevelChange = (level) => {
-    this.setState({level})
+  _getLevelIndex(level) {
+    return Member.EXPERIENCE_LEVELS.findIndex(currentLevel => Member.levelEquals(currentLevel, level))
+  }
+
+  handleLevelChange = (levelIndex) => {
+    const level = this._getMemberLevelFromIndex(levelIndex)
+    this.setState({ levelIndex, level })
   }
 
   handleClose = () => {
     this._resetState()
-    this
-      .props
-      .onClose()
+    this.props.onCancel()
   }
 
   _resetState = () => {
-    this.setState({ ...MemberFormBase.defaultProps, error: null })
+    this.setState({ ...MemberFormBase.defaultProps, levelIndex: 0, error: null })
   }
 
-  handleInputChange = (event) => {
+  _getMemberLevelFromIndex = index => 
+    Member.EXPERIENCE_LEVELS[index]
+
+  handleInputChange = event => {
     const target = event.target
     const value = target.type === 'checkbox'
       ? target.checked
@@ -58,15 +64,15 @@ class MemberFormBase extends React.Component {
   }
 
   handleSubmitMemberClick = () => {
-    const {name, address, level} = this.state    
+    const {name, address, level} = this.state
 
     try {
-      const member = createMember(name, address, level)
+      const member = Member.create(name, address, level)
       this.props.onSubmitMember(member)
       this.handleClose()
     } catch (error) {
       this.setState({error: error.message})
-      console.log('Wrong arguments for member:', error.message)      
+      console.log('Wrong arguments for member:', error.message)
     }
   }
 
@@ -91,11 +97,11 @@ class MemberFormBase extends React.Component {
         </Field>
         <Field name="level" wide label="Experience Level:">
           <DropDown
-            items={Object.keys(EXPERIENCE_LEVELS)}
-            active={this.state.level}
-            onChange={this.handleLevelChange}/>
+            items={Member.EXPERIENCE_LEVELS.map(level => level.title)}
+            active={this.state.levelIndex}
+            onChange={this.handleLevelChange} />
           <PayRateLabel color={theme.textSecondary}>
-            Estimated Pay Rate: ${EXPERIENCE_LEVELS_TO_PAYRATE[this.state.level]}/hr
+            Estimated Pay Rate: ${Member.EXPERIENCE_LEVELS[this.state.levelIndex].payRate}/hr
           </PayRateLabel>
         </Field>
 

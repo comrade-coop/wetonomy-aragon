@@ -7,23 +7,29 @@ import styled from 'styled-components'
 import ActionButtonsContainer from '../ActionButtonsContainer'
 import ActionButton from '../ActionButton'
 
+import { 
+  REMOVE_MEMBER_FORM_BTN_POSITIVE, 
+  REMOVE_MEMBER_FORM_BTN_NEGATIVE,
+  REMOVE_MEMBER_QUESTION
+} from '../../utils/appConstants'
+
 class RemoveMemberForm extends React.Component {
   static propTypes = {
     onRemoveMember: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
     member: PropTypes.object.isRequired
   }
 
   handleRemoveClick = () => {    
     this.props.onRemoveMember(this.props.member)
-    this.props.onClose()
+    this.props.onCancel()
   }
 
   render() {
     const { address, name } = this.props.member
     return (
       <section>
-        <Text color={theme.textDimmed} size="large">Do you really want to remove this member from the organisation?</Text>
+        <Text color={theme.textDimmed} size="large">{REMOVE_MEMBER_QUESTION}</Text>
         <MemberCard>
           <MemberProfileShort address={address} name={name} />
           <AddressContainer>
@@ -34,13 +40,13 @@ class RemoveMemberForm extends React.Component {
         <ActionButtonsContainer>
           <ActionButton 
             mode="secondary" 
-            onClick={this.props.onClose}>
-            No
+            onClick={this.props.onCancel}>
+            {REMOVE_MEMBER_FORM_BTN_NEGATIVE}
           </ActionButton>
           <ActionButton 
             mode="strong" 
-            onClick={this.handleRemoveClick}>
-            Yes
+            onClick={this.handleRemoveClick}>            
+            {REMOVE_MEMBER_FORM_BTN_POSITIVE}
           </ActionButton>
         </ActionButtonsContainer>
       </section>
