@@ -63,6 +63,7 @@ contract WetonomyKit is KitBase, WetonomyConstants {
 
     function installMembersApp(Kernel _dao) public returns (Members) {        
         Members members = Members(_dao.newAppInstance(membersId, latestVersionAppBase(membersId)));
+        members.initialize(members.DEFAULT_INITIAL_REPUTATION());
         return members;
     }
 
