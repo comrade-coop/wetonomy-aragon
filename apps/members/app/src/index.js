@@ -1,50 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Aragon, { providers } from '@aragon/client'
-import App from './App'
+import { Provider } from 'react-redux'
 
-class ConnectedApp extends React.Component {
-  state = {
-    app: new Aragon(new providers.WindowMessage(window.parent)),
-    observable: null,
-    userAccount: '',
-  }
-
-  componentDidMount() {
-    window.addEventListener('message', this.handleWrapperMessage)
-  }
-  componentWillUnmount() {
-    window.removeEventListener('message', this.handleWrapperMessage)
-  }
-
-  handleWrapperMessage = ({ data }) => {
-    if (data.from !== 'wrapper') {
-      return
-    }
-    
-    if (data.name === 'ready') {
-      const { app } = this.state
-      this.sendMessageToWrapper('ready', true)
-      this.setState({
-        observable: app.state(),
-      })
-      
-      app.accounts().subscribe(accounts => {
-        this.setState({
-          userAccount: accounts[0],
-        })
-      })
-    }
-  }
-
-  sendMessageToWrapper = (name, value) => {
-    window.parent.postMessage({ from: 'app', name, value }, '*')
-  }
-
-  render() {
-    return <App {...this.state} />
-  }
-}
+import store from './store'
+import ConnectedApp from './ConnectedApp'
 
 ReactDOM.render(
-  <ConnectedApp />, document.getElementById('root'))
+  <Provider store={store}>
+    <ConnectedApp />
+  </Provider>,  
+  document.getElementById('root')
+)

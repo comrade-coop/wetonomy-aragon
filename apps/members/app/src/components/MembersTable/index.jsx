@@ -6,25 +6,25 @@ import styled from 'styled-components'
 
 class MembersTable extends React.Component {
 
-  render() {
-    console.log(this.props.members)
-
-    const Members = this
+  _getMemberRows() {
+    return this
       .props
       .members
-      .map(member => {
+      .map(member => {        
         return (
           <TableRowMember
             key={member.address}
             member={member}
-            onEditClick={() => this.props.onEditMemberClick(member)}
-            onRemoveClick={() => this.props.onRemoveMemberClick(member)}/>
+            onEditClick={this.props.onEditMemberClick}
+            onRemoveClick={this.props.onRemoveMemberClick}/>
         )
       })
+  }
 
+  render() {
     return (
-      <Table header={< Header />}>
-        {Members}
+      <Table header={<Header />}>
+        {this._getMemberRows()}
       </Table>
     )
   }

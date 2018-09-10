@@ -1,13 +1,15 @@
 import Aragon from '@aragon/client'
-import {Events, Methods} from './utils/membersContractWrapper'
 import _ from 'lodash'
-import createMember from './models/Member'
+
+import {Events, Methods} from './utils/membersContractWrapper'
+import * as Member from './models/Member'
+import { initialState } from './reducers/members'
 
 const app = new Aragon()
 
-app.store(async (state, {event, returnValues}) => {
+app.store(async (state = initialState, {event, returnValues}) => {
   switch (event) {
-    case Events.MEMBER_ADDED:
+    case Events.MEMBER_ADDED: 
       return await onMemberAdd(state, returnValues)
     case Events.MEMBER_UPDATED:
       return await onMemberUpdate(state, returnValues)
@@ -59,8 +61,7 @@ const onMemberRemove = async (state, returnValues) => {
 
 const loadCompleteState = async() => {
   const members = await loadMembers()
-  const currentMember = await findCurrentMember(members)
-
+  const currentMember = await findCurrentMember(members)  
   return { members, currentMember }
 }
 
@@ -68,10 +69,8 @@ const loadMembers = async() => {
   const count = await loadMembersCount()
   if (count === 0) {
     return []
-  }
-  
-  console.log('Member count is: ', count)
-  const members = await Promise.all(_.range(0, count).map(async index => await loadMember(index)))
+  }  
+  const members = await Promise.all(_.range(0, count).map(async index => await loadMember(index)))  
   return members
 }
 
@@ -83,13 +82,14 @@ const loadMembersCount = async() => {
 
 const loadMember = async(id) => {
   const memberResult = await callReadMethod(Methods.GET_MEMBER, id)
-  const member = createMember(
-    memberResult.name, 
+  const member = Member.create(
+    memberResult.name,
     memberResult.accountAddress,
-    memberResult.level,
+    Member.getLevelForLevelValue(Number.parseInt(memberResult.level)),
     memberResult.reputation,
     id
   )
+  console.log('Member was loaded', member)
   return member
 }
 

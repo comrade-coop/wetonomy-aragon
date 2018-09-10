@@ -2,32 +2,35 @@ import { isAddress } from 'web3-utils'
 
 export const MIN_NAME_LENGTH = 3
 export const MAX_NAME_LENGTH = 30
-export const EXPERIENCE_LEVELS = {
-  Junior: 1,
-  Intermediate: 2,
-  Senior: 3,
-  Expert: 4
-}
-export const EXPERIENCE_LEVELS_TO_PAYRATE = [8, 12, 18, 24]
-export const ID_UNEXISTANT = -1
+export const ID_UNEXISTENT = -1
+export const EXPERIENCE_LEVELS = [
+  { title: 'Junior', value: 1, payRate: 8 },
+  { title: 'Intermediate', value: 2, payRate: 12 },
+  { title: 'Senior', value: 3, payRate: 18 },
+  { title: 'Expert', value: 4, payRate: 24 },
+]
 
-export const isValidName = (name) => {
-  return name.length >= MIN_NAME_LENGTH && name.length <= MAX_NAME_LENGTH
-}
+export const isValidName = name =>
+  (name.length >= MIN_NAME_LENGTH) && (name.length <= MAX_NAME_LENGTH)
 
-export const isValidAddress = (address) => {
-  return isAddress(address)
-}
+export const isValidAddress = address =>
+  isAddress(address)
 
-export const isValidLevel = (level) => {
-  return level >= EXPERIENCE_LEVELS.Junior && level <= EXPERIENCE_LEVELS.Expert
-}
-
-export const isValidReputation = (reputation) => {
-  return reputation >= 0
+export const isValidLevel = validatedLevel => {
+  const level = EXPERIENCE_LEVELS.find(level => 
+    level.value === validatedLevel.value &&
+    level.payRate === validatedLevel.payRate &&
+    level.title === validatedLevel.title)
+  return level !== undefined
 }
 
-export const isValidMember = (member) => {
+export const getLevelForLevelValue = levelValue => {
+  return EXPERIENCE_LEVELS.find(level => level.value === levelValue)
+}
+
+export const isValidReputation = reputation => reputation >= 0
+
+export const isValidMember = member => {
   try {
     validateMember(member.name, member.address, member.level)
     return true
@@ -35,6 +38,12 @@ export const isValidMember = (member) => {
     console.error(e)
     return false
   }
+}
+
+export const levelEquals = (firstLevel, secondLevel) => {
+  return firstLevel.title === secondLevel.title &&
+    firstLevel.value === secondLevel.value &&
+    firstLevel.payRate === secondLevel.payRate 
 }
 
 const validateMember = (name, address, level, reputation = 0) => {
@@ -55,16 +64,19 @@ const validateMember = (name, address, level, reputation = 0) => {
   }
 }
 
-export default (name, address, level, reputation, id = ID_UNEXISTANT) => {  
+export const areEqual = (firstMember, secondMember) => 
+  firstMember.name === secondMember.name &&
+  firstMember.address === secondMember.address &&
+  levelEquals(firstMember.level, secondMember.level)
+
+export const create = (name, address, level, reputation = 0, id = ID_UNEXISTENT) => {  
   validateMember(name, address, level, reputation)
 
   return Object.freeze({
+    id,
     name,
     address,
-    level,
-    levelNamed: Object.keys(EXPERIENCE_LEVELS)[level],
     reputation,
-    payRate: EXPERIENCE_LEVELS_TO_PAYRATE[level],
-    id
+    level
   })
 }

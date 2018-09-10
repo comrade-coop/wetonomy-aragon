@@ -15,7 +15,7 @@ const NoMembers = (props) => {
         text={NO_MEMBERS_MSG}
         actionText={NO_MEMBERS_ACTION}        
         icon={() => <Icon src={logo}/>}
-        onActivate={() => props.onNewMemberClick()} />
+        onActivate={props.onNewMemberClick} />
     </NoMembersRoot>
   )
 }
