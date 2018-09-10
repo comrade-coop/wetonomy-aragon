@@ -24,7 +24,7 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --no-hoist=@aragon/os",
-    "clean": "git clean -fdxi",    
+    "clean": "git clean -fdxi",
     "start": "npm run publish && npm run start:kit",
     "start:kit": "aragon run --kit WetonomyKit --kit-init @ARAGON_ENS",
     "test": "lerna run --scope=wetonomy-* --concurrency=1 --stream test",
@@ -36,5 +36,5 @@
     "devchain": "ganache-cli --db ~/.aragon/ganache-db-8545 --mnemonic \"explain tackle mirror kit van hammer degree position ginger unfair soup bonus\" --gasLimit 50000000"
   },
   "keywords": [],
-  "license": "GPL-3.0"
+  "license": "MIT"
 }
