@@ -1,11 +1,11 @@
 import React from 'react'
-import { EmptyStateCard } from '@aragon/ui'
+import { EmptyStateCard, theme } from '@aragon/ui'
+import { ICON_SIZE_BIG } from '../utils/appConstants'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { NO_MEMBERS_TITLE, NO_MEMBERS_MSG, NO_MEMBERS_ACTION } from '../utils/appConstants'
 
-import Icon from '../components/Icon'
-import logo from '../assets/logo.svg'
+import { People } from 'material-react-icons'
 
 const NoMembers = (props) => {
   return (
@@ -14,7 +14,7 @@ const NoMembers = (props) => {
         title={NO_MEMBERS_TITLE}
         text={NO_MEMBERS_MSG}
         actionText={NO_MEMBERS_ACTION}        
-        icon={() => <Icon src={logo}/>}
+        icon={() => <People size={ICON_SIZE_BIG} color={theme.accent} />}
         onActivate={props.onNewMemberClick} />
     </NoMembersRoot>
   )

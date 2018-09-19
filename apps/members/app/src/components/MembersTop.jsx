@@ -3,7 +3,9 @@ import styled from 'styled-components'
 import { theme, Text, Button } from '@aragon/ui'
 import PropTypes from 'prop-types'
 
-import { TOTAL_MEMBERS_COUNT, ADD_NEW_MEMBER } from '../utils/appConstants'
+import { Add } from 'material-react-icons'
+
+import { TOTAL_MEMBERS_COUNT, ADD_NEW_MEMBER, ICON_SIZE_DEFAULT } from '../utils/appConstants'
 
 const MembersTop = ({ organizationName, members, onNewMemberClick }) => (  
   <MembersTopRoot>
@@ -13,9 +15,12 @@ const MembersTop = ({ organizationName, members, onNewMemberClick }) => (
           {organizationName}
         </OrgName>
       }
-      <Text size="xlarge" color={theme.textSecondary}>{TOTAL_MEMBERS_COUNT} {members.length}</Text>
+      <Text size="xlarge" color={theme.textSecondary}>{TOTAL_MEMBERS_COUNT} {members.length}</Text>      
     </OrgInfo>
-    <Button mode="strong" onClick={onNewMemberClick}>{ADD_NEW_MEMBER}</Button>
+    <Button mode="strong" onClick={onNewMemberClick}>
+      <Add size={ICON_SIZE_DEFAULT} color="white" />
+      {ADD_NEW_MEMBER}
+    </Button>
   </MembersTopRoot>   
 )
 

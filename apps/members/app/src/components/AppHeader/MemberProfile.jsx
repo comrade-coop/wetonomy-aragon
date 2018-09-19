@@ -3,22 +3,21 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Text, theme } from '@aragon/ui'
 import Avatar from '../Avatar'
-import Icon from '../Icon'
 
-import debtLogo from '../../assets/debt.svg'
-import rewardLogo from '../../assets/reward-token.svg'
+import { ArrowDropUp, Toll } from 'material-react-icons'
+
 
 const MemberProfile = ({ debt, rewardTokens, member }) => {  
   return (
     <ProfileRoot>      
       <MemberInfoContainer>
-        <BlueIcon src={debtLogo} alt="Debt:" />
-        <Text size="large" weight="bold" color={theme.accent}>${debt}</Text>
+        <ArrowDropUpStyled  color={theme.accent} />
+        <Text size="large" weight="bold" color={theme.accent}>${debt ? debt : 0}</Text>
       </MemberInfoContainer>      
       
       <MemberInfoContainer>
-        <Icon src={rewardLogo} alt="Reward Tokens:" />
-        <Text size="large" weight="bold" color={theme.textDimmed}>{rewardTokens}</Text>
+        <TollStyled  />        
+        <Text size="large" weight="bold" color={theme.textDimmed}>{rewardTokens ? rewardTokens : 0}</Text>
       </MemberInfoContainer>
 
       <MemberAvatar seed={member.address} />
@@ -33,6 +32,14 @@ MemberProfile.propTypes = {
   member: PropTypes.object.isRequired
 }
 
+const ArrowDropUpStyled = styled(ArrowDropUp)`
+  margin-right: 5px;
+`
+
+const TollStyled = styled(Toll)`
+  margin-right: 5px;
+`
+
 const ProfileRoot = styled.div`
   display: flex;
   align-items: center;
@@ -43,15 +50,16 @@ const MemberAvatar = styled(Avatar)`
   cursor: pointer;
 `
 
-const MemberInfoContainer = styled.span`
+const MemberInfoContainer = styled.div`
   margin: 0px 20px;
   display: flex;
+  justify-content: center;
   align-items: center;
   cursor: pointer;
-`
 
-const BlueIcon = styled(Icon)`
-  fill: ${theme.accent};  
+  & > span {
+    height: 20px;
+  }
 `
 
 export default MemberProfile

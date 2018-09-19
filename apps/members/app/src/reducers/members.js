@@ -1,8 +1,14 @@
 import { LOAD_FULL_STATE } from '../actions/members'
+// import { getMembers } from '../utils/dummyDataProvider'
+
+// export const initialState = {
+//   members: getMembers(10),
+//   currentMember: getMembers(1)[0]
+// }
 
 export const initialState = {
   members: [],
-  currentMember: null  
+  currentMember: null
 }
 
 export default (state = initialState, action) => {
