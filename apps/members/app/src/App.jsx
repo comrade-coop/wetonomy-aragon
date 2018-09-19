@@ -18,7 +18,7 @@ class App extends React.Component {
   render() {
     return (
       <AragonApp>
-        <AppHeader />
+        <AppHeader currentMember={this.props.currentMember} />
         {this.renderMainContent()}
         <MemberPanelContainer />
       </AragonApp>
@@ -27,7 +27,8 @@ class App extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  members: state.members.members
+  members: state.members.members,
+  currentMember: state.members.currentMember
 })
 
 export default connect(mapStateToProps)(App)

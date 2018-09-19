@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import MembersTable from '../components/MembersTable'
+import MembersTable from '../components/Tables/MembersTable'
 import { editMember, removeMember } from '../actions/panel'
 
 class MembersTableContainer extends Component {

@@ -15,6 +15,8 @@ const Root = styled.main`
   flex-direction: column;
   flex-wrap: wrap;
   padding: 100px;
+  max-width: 1500px;
+  margin: 0 auto;
 `
 
 export default MembersMain

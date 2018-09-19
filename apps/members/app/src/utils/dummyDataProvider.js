@@ -1,60 +1,16 @@
-const organizationName = 'Comrade'
-const members = [
-  {
-    name: 'John Smith',
-    accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724E86',
-    level: 'Senior',
-    reputation: 324,
-    payRate: 24
-  }, {
-    name: 'John Smith',
-    accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724C86',
-    level: 'Senior',
-    reputation: 324,
-    payRate: 24
-  }, {
-    name: 'John Smith',
-    accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724D86',
-    level: 'Senior',
-    reputation: 324,
-    payRate: 24
-  }, {
-    name: 'John Smith',
-    accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724F86',
-    level: 'Senior',
-    reputation: 324,
-    payRate: 24
-  }, {
-    name: 'John Smith',
-    accountAddress: '0x969F8A3667987823B84C4F22A4CdfEA3Ae724G86',
-    level: 'Senior',
-    reputation: 324,
-    payRate: 24
-  }
-]
-const memberDebt = 1230.53
-const rewardTokens = 320
+import * as Member from '../models/Member'
+import _ from 'lodash'
 
-export const getMembers = () => {
-  return new Promise((resolve) => {
-    resolve(members)
+export const getMembers = (count) => {
+  const members = _.range(0, count).map(index => {
+    return Member.create(
+      Math.random().toString(36).slice(2),
+      `0x000000000000000000000000000000000000000${index % 10}`,
+      Member.EXPERIENCE_LEVELS[index % Member.EXPERIENCE_LEVELS.length],
+      index,
+      index)
   })
+  console.log(members)
+  return members
 }
 
-export const getOrganizationName = () => {
-  return new Promise((resolve) => {
-    resolve(organizationName)
-  })
-}
-
-export const getMemberDebt = () => {
-  return new Promise((resolve) => {
-    resolve(memberDebt)
-  })
-}
-
-export const getRewardTokens = () => {
-  return new Promise((resolve) => {
-    resolve(rewardTokens)
-  })
-}

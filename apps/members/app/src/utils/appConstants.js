@@ -12,4 +12,9 @@ export const REMOVE_MEMBER_FORM_BTN_NEGATIVE = 'No'
 export const REMOVE_MEMBER_QUESTION = 'Do you really want to remove this member from the organisation?'
 
 export const TOTAL_MEMBERS_COUNT = 'Total Members Count:'
-export const ADD_NEW_MEMBER = 'Add a new Member'
+export const ADD_NEW_MEMBER = 'Add Member'
+
+export const MEMBERS_TABLE_HEADER_TITLES = ['Name', 'Address', 'Level', 'Reputation', 'Pay Rate', 'Actions']
+
+export const ICON_SIZE_DEFAULT = 22
+export const ICON_SIZE_BIG = 32
