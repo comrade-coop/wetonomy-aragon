@@ -4,3 +4,9 @@ build
 dist
 .solhintignore
 lerna-debug.log
+
+apps/*/build
+apps/*/app/build
+apps/*/dist
+apps/*/.cache
+apps/*/app/.cache
