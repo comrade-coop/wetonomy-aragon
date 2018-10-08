@@ -16,4 +16,5 @@ contract WetonomyConstants is APMNamehash {
     bytes32 public membersId = apmNamehash("members");
     bytes32 public timetrackingId = apmNamehash("timetracking");
     bytes32 public votingId = apmNamehash("voting");
+    bytes32 public taskBoardId = apmNamehash("taskboard");
 }

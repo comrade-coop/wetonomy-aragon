@@ -1,73 +1,157 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Text, Badge, Button, theme } from '@aragon/ui'
-import { DIFFICULTIES, WORK_FIELD } from '../../utils/appConstants'
+import { Text, Badge, theme } from '@aragon/ui'
+import { DIFFICULTIES, WORK_FIELD, TASK_TYPES } from '../../utils/appConstants'
 import editLogo from '../../assets/edit.svg'
-class Task extends React.Component {
-	constructor(props){
-		super(props)
-		this.state = {task: this.props.task}
-	}
-  isPriority = () => {
-		var task = this.state.task;
-		task.isPriority = !task.isPriority;
-		this.setState({task: this.props.task})
-	}
-	acceptTask = () => {
-		console.log("Task accepted")
-	}
-  render() {
-		
-		var tags = this.state.task.tags.map(tag => 
-				<NewTag
-          key = {this.state.task.tags.indexOf(tag)}
-					name={tag}
-				/>)
-		
-		return (
-			<TaskHolder draggable="true" 
-				onDragStart={(event) => this.props.drag(event)} 
-				onDragEnd={(event) => this.props.dragEnd(event)} 
-				// onClick = {this.props.handleTaskPanelToggle}
-				id={"task"+this.state.task.id}>
-				<Text size="small" weight="bold">{WORK_FIELD[this.state.task.workField]}</Text>
-				<Icon src={editLogo} alt="Edit Task" onClick={() => this.props.handleTaskPanelToggle(this.state.task.id)} />
-				<Tags>
-				<Tag background="#5ae39d" foreground="white">{this.state.task.project}</Tag>
-					{tags}
-				</Tags>
-				<Description>
-					<Text size="normal"> {this.state.task.heading.substring(0, 42)+ " ..."} </Text>
-				</Description>
-				<Difficulty>
-					<Text color={theme.textSecondary} >Difficulty: </Text>
-					<Text color={theme.textSecondary} weight="bold">{DIFFICULTIES[this.state.task.difficulty]}</Text>
-				</Difficulty>
-				<Reward>
-					<Text color={theme.textSecondary} >Reward: so far: </Text>
-					<Text color={theme.accent} weight="bold">{this.state.task.tokens} DAO Tekens</Text>
-				</Reward>
-				<Actions>
-				{this.state.task.isPriority==true ? ((
-					<Priority onClick={this.isPriority}>
-					<i class="material-icons">star_border</i>
-					</Priority>
-				)) : (
-					<NotPriority onClick={this.isPriority}><i class="material-icons">star_border</i></NotPriority>
-				)}
-					<Accept>Accept Task</Accept>
-				</Actions>
-      </TaskHolder>
-    )
-  }
+import Avatar from '../Top/Avatar'
+const getTags = (task) => {
+  return task.tags.map(tag =>
+    <NewTag
+      key={task.tags.indexOf(tag)}
+      name={tag}
+    />)
 }
-export const NewTag = (props) => {
+const NewTag = (props) => {
   return (
     <Tag>{props.name}</Tag>
   )
 }
+const assignee = (user, props) => {
+  if (props.task.column == 3 && user == props.task.issuer) {
+    return (
+      <Finish onClick={props.onRewardTask} style={{ background: '#9c55ebe3' }}>Reward</Finish>
+    )
+  }
+  if (user == props.task.assignee && props.task.column < 3) {
+    return (
+      <Finish onClick={props.onFinishTask}>Finish</Finish>
+    )
+  }
+  return (
+    <UserAvatar>
+      <Avatar seed={props.task.assignee} radius={'25%'} width={'35px'} />
+    </UserAvatar>
+  )
+
+}
+const getBackground = (props) => {
+  switch (props.task.type) {
+    case TASK_TYPES.NEW:
+      return props.error ? { background: 'rgb(76, 175, 80)' } : { background: 'rgba(231, 255, 213, 0.3)' }
+    case TASK_TYPES.DELETED:
+      return props.error ? { background: 'rgb(251, 121, 121)' } : { background: 'rgba(255, 200, 179, 0.3)' }
+    case TASK_TYPES.BASE:
+      return { background: 'rgb(255,255,255,0.9)' }
+  }
+}
+
+const getErrorMsg = (error) => {
+  if (error) {
+    return error.error
+  }
+  return null
+}
+const Task = (props) => (
+  <TaskHolder draggable="true"
+    onDragStart={(event) => props.drag(event)}
+    onDragEnd={(event) => props.dragEnd(event)}
+    // onClick = {props.handleTaskPanelToggle}
+    id={'task' + props.task.id}>
+    {props.error || props.task.type ? ((
+      <Fade onClick={props.clearError} style={getBackground(props)}>
+        <Error style={getBackground(props)}>
+          <Text color={props.task.type == TASK_TYPES.BASE ? '#d01b1b' : 'white'} size="xlarge">
+            {getErrorMsg(props.error)}
+          </Text>
+        </Error>
+      </Fade>
+    )) : (
+      ''
+    )}
+    <Text size="small" weight="bold">{WORK_FIELD[props.task.workField]}</Text>
+    <Icon src={editLogo} alt="Edit Task" onClick={() => props.onEditTaskClick(props.task)} />
+    <Tags>
+      <Tag background="#5ae39d" foreground="white">{props.task.project}</Tag>
+      {getTags(props.task)}
+    </Tags>
+    <Description>
+      <Text size="normal">
+        {props.task.heading.length > 35? props.task.heading.substring(0, 35) + ' ...' : props.task.heading}
+      </Text>
+    </Description>
+    <Difficulty>
+      <Text color={theme.textSecondary} >Difficulty: </Text>
+      <Text color={theme.textSecondary} weight="bold">{DIFFICULTIES[props.task.difficulty]}</Text>
+    </Difficulty>
+    <Reward>
+      <Text color={theme.textSecondary} >Reward so far: </Text>
+      <Text color={theme.accent} weight="bold">{props.task.tokens} DAO Tekens</Text>
+    </Reward>
+    <Actions>
+      <NotPriority className="star" id={'star' + props.task.id}>
+        {props.points === 0 ? ((
+          <i className="material-icons">star_border</i>
+        )) : (
+          props.points
+        )}
+      </NotPriority>
+      <Absolut className="parent">
+        <Div>
+          <TopContainer onMouseLeave={props.onMouseLeave}>
+            <Priority className="pooints" onClick={() => props.onOpenClick(10)}>10</Priority>
+            <Priority className="pooints" onClick={() => props.onOpenClick(20)}>20</Priority>
+            <Priority className="pooints" onClick={() => props.onOpenClick(30)}>30</Priority>
+            <Priority className="pooints" onClick={() => props.onOpenClick(40)}>40</Priority>
+            <Priority className="pooints" onClick={() => props.onOpenClick(50)}>50</Priority>
+          </TopContainer>
+        </Div>
+      </Absolut>
+      {props.task.assignee === null ? ((
+        <Accept onClick={props.onAcceptTask}>Accept Task</Accept>
+      )) : (
+        assignee(props.user, props)
+      )}
+    </Actions>
+  </TaskHolder>
+)
+
+const Fade = styled.div`
+	position:absolute;
+	background: rgb(255,255,255,0.9);
+	width: 100%;
+	height: 100%;
+	z-index: 3;
+	top: 0;
+	left: 0;
+`
+const Error = styled.div`
+	text-align: center;
+	margin-top: 80px;
+	background: white;
+	font-weight: 600;
+`
+const Absolut = styled.div`
+	position:absolute;
+	top:-0;
+`
+const Div = styled.div`
+	z-index: 1;
+	position: relative;
+	background: white;
+	height: 30px;
+	width: 200px;
+	box-shadow: 0 0 2px rgba(0,0,0,0.16), 0 0 2px rgba(0,0,0,0.23);
+	border-radius: 50px;
+	padding-right: 4px;
+	display: inline-block;
+`
+const TopContainer = styled.div`
+	display: flex;
+	padding-left:32px;
+`
 const TaskHolder = styled.div`
+	position: relative;
 	width:100%;
 	margin-left:auto;
 	margin-right:auto;
@@ -77,9 +161,9 @@ const TaskHolder = styled.div`
 	cursor: pointer;
 	border-radius: 3px;
 	box-shadow: 0 0 2px rgba(0,0,0,0.16), 0 0 2px rgba(0,0,0,0.23);
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-  :hover {
-    box-shadow: 0 0 5px rgba(0,0,0,0.26), 0 0 5px rgba(0,0,0,0.33);
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	:hover {
+    	box-shadow: 0 0 5px rgba(0,0,0,0.26), 0 0 5px rgba(0,0,0,0.33);
 	}
 `
 const Icon = styled.img`
@@ -100,6 +184,7 @@ const Reward = styled.div`
 `
 const Actions = styled.div`
 	margin-top: 10px;
+	position: relative;
 `
 const Accept = styled.div`
 	height: 30px;
@@ -115,8 +200,26 @@ const Accept = styled.div`
 	background-image: linear-gradient( 130deg,#00B4E6,#00F0E0 );
 	box-shadow: 0 0 2px rgba(0,0,0,0.16), 0 0 2px rgba(0,0,0,0.23);
 	:hover {
-    box-shadow: 0 0 5px rgba(0,0,0,0.26), 0 0 5px rgba(0,0,0,0.33);
-  }
+    	box-shadow: 0 0 5px rgba(0,0,0,0.26), 0 0 5px rgba(0,0,0,0.33);
+	}
+`
+const Finish = styled.div`
+	height: 26px;
+	color: white;
+	text-align: center;
+	width: 60px;
+	padding: 3px;
+	cursor: pointer;
+	border-radius: 3px;
+	font-size: 12px;
+	display: inline-block;
+	float: right;
+	margin-top:4px;
+	background: #5ae39d;
+	box-shadow: 0 0 2px rgba(0,0,0,0.16), 0 0 2px rgba(0,0,0,0.23);
+	:hover {
+    	box-shadow: 0 0 5px rgba(0,0,0,0.26), 0 0 5px rgba(0,0,0,0.33);
+	}
 `
 const NotPriority = styled.div`
 	height: 30px;
@@ -129,29 +232,33 @@ const NotPriority = styled.div`
 	font-size: 15px;
 	font-weight: 600;
 	display: inline-block;
-	float: left;
+	position: relative;
+	z-index: 2;
 	box-shadow: 0 0 2px rgba(0,0,0,0.16), 0 0 2px rgba(0,0,0,0.23);
 	:hover {
-    box-shadow: 0 0 5px rgba(0,0,0,0.26), 0 0 5px rgba(0,0,0,0.33);
-  }
+		box-shadow: 0 0 5px rgba(0,0,0,0.26), 0 0 5px rgba(0,0,0,0.33);
+	}
 `
 const Priority = styled.div`
-	height: 30px;
-	width: 30px;
+	height: 26px;
+	width: 26px;
 	color: #fff;
 	text-align: center;
-	padding-top: 3px;
+	padding-top: 2px;
 	cursor: pointer;
 	border-radius: 30px;
 	font-size: 15px;
+	margin: 2px 0 2px 6px;
 	font-weight: 600;
 	display: inline-block;
-	float: left;
+	position: relative;
+	z-index: 2;
 	background-image: linear-gradient( 130deg,#00B4E6,#00F0E0 );
 	box-shadow: 0 0 2px rgba(0,0,0,0.16), 0 0 2px rgba(0,0,0,0.23);
 	:hover {
-    box-shadow: 0 0 5px rgba(0,0,0,0.26), 0 0 5px rgba(0,0,0,0.33);
-  }
+		box-shadow: 0 0 5px rgba(0,0,0,0.26), 0 0 5px rgba(0,0,0,0.33);
+		-webkit-transition: all 1s ease-in-out;
+	}
 `
 const Tag = styled(Badge)`
 	margin-left: 8px;
@@ -160,7 +267,10 @@ const Tag = styled(Badge)`
 		margin-left: 0px;
   }
 `
+const UserAvatar = styled.div`
+  position: absolute;
+  top: -5px;
+  right: -15px;
+`
 
-export {
-	Task
-} 
+export default Task

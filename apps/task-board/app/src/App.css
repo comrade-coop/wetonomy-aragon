@@ -1,5 +1,24 @@
-.active{
-    border-bottom: 3px solid #00B4E6;
-    font-weight: 600;
-    color: #3b3b3bd1;
+.parent {
+    opacity: 0;
+}
+.star:hover +.parent { 
+    opacity: 1;
+    display: block;
+    width: 26px;
+    transition: all 1.5s ease-out; 
+    -webkit-transition: all 1.5s ease-out; 
+}
+.star:hover .parent { 
+    opacity: 1;
+    display: block;
+    width: 26px;
+    transition: all 1.5s ease-out; 
+    -webkit-transition: all 1.5s ease-out; 
+}
+.parent:hover { 
+    opacity: 1;
+    display: block;
+    width: 26px;
+    transition: all 1.5s ease-out; 
+    -webkit-transition: all 1.5s ease-out; 
 }

@@ -1,39 +1,40 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { Text, Button } from '@aragon/ui'
 import {theme} from '@aragon/ui'
 import styled from 'styled-components'
 export class  WorkWeekTop extends Component {
-	render() {
-		var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'];
-    
-    var secondMonth = months[this.props.today.getMonth()];
-    if(this.props.days[0]>this.props.days[6]){
+  render() {
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan']
+
+    var secondMonth = months[this.props.today.getMonth()]
+    if(this.props.days[0]>this.props.days[6]) {
       secondMonth = months[this.props.today.getMonth()+1]
     }
-		return (
-			<div>
+    return (
+      <div>
         <LeftContainer>
           <WeekButton mode="normal" onClick = {() => this.props.changeWeek(-1)}> &lsaquo;</WeekButton>
-            <Container>
-              <Text size="xxlarge" color={theme.textSecondary} weight="bold" >Week 16</Text><br/>
-              <Text size="large" color={theme.textSecondary} >{months[this.props.today.getMonth()]} {this.props.days[0]} - {secondMonth} {this.props.days[6]}</Text>
-            </Container>
+          <Container>
+            <Text size="xxlarge" color={theme.textSecondary} weight="bold" >Week 16</Text><br/>
+            <Text size="large" color={theme.textSecondary} >{months[this.props.today.getMonth()]} {this.props.days[0]} - {secondMonth} {this.props.days[6]}</Text>
+          </Container>
           <WeekButton mode="normal" onClick = {() => this.props.changeWeek(1)}> &rsaquo; </WeekButton>
-				</LeftContainer>
-				<RgihtContainer>
+        </LeftContainer>
+        <RgihtContainer>
           <div>
             <TimeLogged>Time Logged (Week)</TimeLogged>
-            <SyncButton onClick={() => this.props.app.trackHours(4)}>{this.props.count}</SyncButton>
+            <SyncButton onClick={() => this.props.app.trackWork(4)}>{this.props.count}</SyncButton>
+            <SyncButton onClick={() => this.props.app.claim(4)}>Claim</SyncButton>
           </div>
           <div>
             <HoursLogged>{this.props.weekWork}h&nbsp;</HoursLogged>
             <TokensGen color={theme.textSecondary}>- {this.props.weekTokens} Tokens Generated</TokensGen>
           </div>
         </RgihtContainer>
-			</div>
-		)
-	}
+      </div>
+    )
+  }
 }
 const Container = styled.div`
   display: inline-block;

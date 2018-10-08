@@ -31,9 +31,9 @@
     "coverage": "lerna run --scope=wetonomy-* --concurrency=1 --stream coverage",
     "lint": "solhint apps/**/contracts/*.sol contracts/*.sol",
     "compile": "aragon contracts compile && npm run lint",
-    "build": "npm run compile && lerna run --stream build",
+    "build:project": "npm run compile && lerna run --stream build",
     "publish": "lerna run --concurrency=1 --stream publish",
-    "devchain": "ganache-cli --db ~/.aragon/ganache-db-8545 --mnemonic \"explain tackle mirror kit van hammer degree position ginger unfair soup bonus\" --gasLimit 50000000"
+    "devchain": "ganache-cli --db C:/Users/ioan6/.aragon/ganache-db-8545 --mnemonic \"explain tackle mirror kit van hammer degree position ginger unfair soup bonus\" --gasLimit 50000000"
   },
   "keywords": [],
   "license": "MIT"

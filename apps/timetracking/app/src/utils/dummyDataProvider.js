@@ -6,7 +6,7 @@ const workedHours = [
     description:"Worked on design Wireframes.Worked on design Wireframes.Worked on design Wireframes.Worked on design Wireframes.",
     project:"Wetonomy",
     hours:"2",
-    date:"Mon Jul 23 2018 GMT+0300",
+    date:"Mon Sep 3 2018 GMT+0300",
     tokens:"40",
 },
   {
@@ -14,7 +14,7 @@ const workedHours = [
     description:"Worked on design Wireframes.Worked on design Wireframes.Worked on design Wireframes.Worked on design Wireframes.",
     project:"Skynet",
     hours:"4",
-    date:"Mon Jul 23 2018 GMT+0300",
+    date:"Mon Sep 3 2018 GMT+0300",
     tokens:"40",
 },
   {
@@ -22,12 +22,12 @@ const workedHours = [
     description:"Worked on design Wireframes.Worked on design Wireframes.Worked on design Wireframes.Worked on design Wireframes.",
     project:"WebInvent",
     hours:"8",
-    date:"Mon Jul 29 2018 GMT+0300",
+    date:"Sun Sep 9 2018 GMT+0300",
     tokens:"40",
  }
 ]
 
-const memberDebt = 1230.53
+const memberDebt = 0
 const rewardTokens = 320
 
 export const COLORS = {
