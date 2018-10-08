@@ -15,7 +15,7 @@ import "../apps/token-rewards-manager/contracts/TokenRewardsManager.sol";
 
 contract WetonomyKit is KitBase, WetonomyConstants {
 
-    MiniMeTokenFactory public tokenFactory;    
+    MiniMeTokenFactory public tokenFactory;
 
     function WetonomyKit(ENS ens) public KitBase(DAOFactory(0), ens) {
         tokenFactory = new MiniMeTokenFactory();
@@ -28,22 +28,23 @@ contract WetonomyKit is KitBase, WetonomyConstants {
 
         address root = msg.sender;
 
-        Members members = installMembersApp(dao);        
+        Members members = installMembersApp(dao);
         TokenRewardsManager tokenManager = installTokenManager(dao, members);
         TimeTracking timeTracking = installTimeTracking(dao, tokenManager, members);
-        TaskBoard taskBoard = installTaskBoard(dao);  
+        TaskBoard taskBoard = installTaskBoard(dao, root, members, tokenManager);
 
         MiniMeToken debtToken = tokenManager.daoToken();
 
-        Voting voting = installVotingApp(dao, debtToken);
-        
+        // Voting voting = installVotingApp(dao, debtToken);
+
         acl.createPermission(root, members, members.MANAGE_MEMBERS_ROLE(), root);
 
         acl.createPermission(timeTracking, tokenManager, tokenManager.MINT_ROLE(), root);
+
         acl.createPermission(taskBoard, tokenManager, tokenManager.TRANSFER_ROLE(), root);
         acl.createPermission(taskBoard, tokenManager, tokenManager.REWARD_ROLE(), root);
 
-        acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root);
+        // acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root);
 
         acl.createPermission(root, timeTracking, timeTracking.MANAGE_TRACKING_ROLE(), root);
 
@@ -61,7 +62,7 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         DeployInstance(dao);
     }
 
-    function installMembersApp(Kernel _dao) public returns (Members) {        
+    function installMembersApp(Kernel _dao) public returns (Members) {
         Members members = Members(_dao.newAppInstance(membersId, latestVersionAppBase(membersId)));
         members.initialize(members.DEFAULT_INITIAL_REPUTATION());
         return members;
@@ -72,8 +73,8 @@ contract WetonomyKit is KitBase, WetonomyConstants {
             _dao.newAppInstance(tokenManagerId, latestVersionAppBase(tokenManagerId))
         );
 
-        MiniMeToken rewardToken = tokenFactory.createCloneToken(address(0), 0, "Reward token", 18, "RWD", false);
-        MiniMeToken debtToken = tokenFactory.createCloneToken(address(0), 0, "Debt token", 18, "DBT", false);
+        MiniMeToken rewardToken = tokenFactory.createCloneToken(address(0), 0, "Reward token", 18, "RWD", true);
+        MiniMeToken debtToken = tokenFactory.createCloneToken(address(0), 0, "Debt token", 18, "DBT", true);
         rewardToken.changeController(tokenManager);
         debtToken.changeController(tokenManager);
 
@@ -89,12 +90,12 @@ contract WetonomyKit is KitBase, WetonomyConstants {
     }
 
     function installTimeTracking(
-        Kernel _dao, 
-        ITokenManager _tokenManager, 
-        IMembers _members) 
-        public 
+        Kernel _dao,
+        IRewardTokenManager _tokenManager,
+        IMembers _members)
+        public
         returns (TimeTracking)
-    {       
+    {
         InflationTimeTracking timeTracking = InflationTimeTracking(
             _dao.newAppInstance(timetrackingId,
             latestVersionAppBase(timetrackingId))
@@ -109,11 +110,22 @@ contract WetonomyKit is KitBase, WetonomyConstants {
 
         return timeTracking;
     }
-    
-    function installTaskBoard(Kernel _dao) public returns (TaskBoard) {
-        bytes32 taskBoardId = apmNamehash("taskboard");
-        TaskBoard taskBoard = TaskBoard(   
-            _dao.newAppInstance(taskBoardId, latestVersionAppBase(taskBoardId)));       
+
+    function installTaskBoard(
+        Kernel _dao,
+        address _root,
+        IMembers _members,
+        IRewardTokenManager _tokenManager
+        ) public returns (TaskBoard) {
+
+        TaskBoard taskBoard = TaskBoard(
+            _dao.newAppInstance(taskBoardId, latestVersionAppBase(taskBoardId)));
+
+        taskBoard.initialize(
+            _root,
+            _members,
+            _tokenManager
+        );
 
         return taskBoard;
     }

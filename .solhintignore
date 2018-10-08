@@ -1,1 +1,3 @@
 node_modules/
+apps/token-rewards-manager/contracts/MiniMeToken.sol
+apps/token-rewards-manager/contracts/ITokenController.sol

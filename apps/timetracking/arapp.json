@@ -1,16 +1,20 @@
 {
   "appName": "timetracking.aragonpm.eth",
   "version": "1.0.0",
-  "dependencies": [{
-    "appName": "members.aragonpm.eth",
-    "version": "^1.0.0",
-    "initParam": "_members",
-    "state": "members"
-  }],
-  "roles": [{
-    "name": "Manage Time Tracking Parameters",
-    "id": "MANAGE_TRACKING_ROLE",
-    "params": []
-  }],
+  "dependencies": [
+    {
+      "appName": "members.aragonpm.eth",
+      "version": "^1.0.0",
+      "initParam": "_members",
+      "state": "members"
+    }
+  ],
+  "roles": [
+    {
+      "name": "Manage Time Tracking Parameters",
+      "id": "MANAGE_TRACKING_ROLE",
+      "params": []
+    }
+  ],
   "path": "contracts/InflationTimeTracking.sol"
 }

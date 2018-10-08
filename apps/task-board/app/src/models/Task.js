@@ -1,16 +1,19 @@
+import { TASK_TYPES } from '../utils/appConstants'
 class Task {
-  constructor(id, workField, heading, description, project, tags, difficulty, column = 0, tokens = 0, date = 0, synced = false) {
+  constructor(id, workField, heading, description, project, tags, difficulty, column = 0, tokens = 0, assignee = null, issuer = null, type = TASK_TYPES.BASE, date = 0) {
     this.id = id
     this.workField = workField
     this.heading = heading
     this.description = description
     this.project = project
     this.tags = tags
+    this.assignee = assignee
+    this.issuer = issuer
     this.difficulty = difficulty
     this.column = column
     this.date = date
     this.tokens = tokens
-    this.synced = synced
+    this.type = type
   }
   set workField(workField) {
     this._workField = workField
@@ -19,13 +22,17 @@ class Task {
   get workField() {
     return this._workField
   }
+
   set heading(heading) {
+    if (!Task.isValidProject(heading)) {
+      throw new Error('Invalid Heading')
+    }
     this._heading = heading
   }
   get heading() {
     return this._heading
   }
-  
+
   set description(description) {
     this._description = description
   }
@@ -46,6 +53,21 @@ class Task {
     return this._project
   }
 
+  set assignee(assignee) {
+    this._assignee = assignee
+  }
+
+  get assignee() {
+    return this._assignee
+  }
+
+  set issuer(issuer) {
+    this._issuer = issuer
+  }
+
+  get issuer() {
+    return this._issuer
+  }
   set tags(tags) {
     this._tags = tags
   }
@@ -53,6 +75,7 @@ class Task {
   get tags() {
     return this._tags
   }
+
   set difficulty(difficulty) {
     this._difficulty = difficulty
   }
@@ -67,8 +90,15 @@ class Task {
   get column() {
     return this._column
   }
+  static isValidTask(task) {
+    return (this.isValidProject(task.project) && this.isValidHeading(task.heading))
+  }
   static isValidProject(name) {
-    return name.length > 0;
+    return name.length > 0
+  }
+  static isValidHeading(name) {
+    console.log('ioko', name)
+    return name.length > 0
   }
 
   set date(date) {
@@ -92,6 +122,14 @@ class Task {
 
   get tokens() {
     return this._tokens
+  }
+
+  set type(type) {
+    this._type = type
+  }
+
+  get type() {
+    return this._type
   }
 }
 

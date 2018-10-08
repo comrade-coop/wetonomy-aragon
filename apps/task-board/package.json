@@ -3,8 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
+    "@aragon/client": "^1.0.0-beta.8",
     "@aragon/os": "3.1.9",
-    "@aragon/client": "^1.0.0-beta.8"
+    "@aragon/ui": "^0.11.0",
+    "bs58": "^4.0.1",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "styled-components": "^3.2.6",
+    "typedarray-to-buffer": "^3.1.5"
   },
   "devDependencies": {
     "@aragon/cli": "^4.0.6",
@@ -18,7 +24,7 @@
     "start": "aragon run",
     "coverage": "npm run test",
     "test": "../shared/test-utils/truffle-test.sh",
-    "compile": "aragon contracts compile",    
+    "compile": "aragon contracts compile",
     "build": "npm run compile && cd app && npm run build",
     "publish": "aragon apm publish"
   },

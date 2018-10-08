@@ -7,13 +7,16 @@ import Aragon from '@aragon/client'
 const INITIALIZATION_TRIGGER = 'INITIALIZATION_TRIGGER'
 
 const app = new Aragon()
-
-app.store((state, event) => {
-  switch (event.event) {
+app.store(async (state, {event, returnValues}) => {
+  switch (event) {
     case 'HoursTracked':
-      return { count: "Synced" }
+      return onEvent({ count: "Synced" },returnValues)
+    case 'TokensClaimed':
+      return onTokensClaimed(state,returnValues)
+    case 'Balance':
+      return onEvent({ count: "Balans" },returnValues)
     default:
-      return { count: "Not OK" }
+      return log({ count: "Not OK" },event,state,returnValues)
   }
 })
 
@@ -27,4 +30,44 @@ app.store((state, event) => {
 /***********************
  * Read Handles        *
  ***********************/
+const log = async(ret,event,state, returnValues) => {
+  console.log("Ioko")
+  console.log(returnValues)
+  console.log(event)
+  console.log(state)
+  return ret
+}
+const onEvent = async (state, returnValues) => {
+  console.log("Ioko123")
+  console.log(returnValues)
 
+  return state
+}
+const onTokensClaimed = async (state, returnValues) => {
+  console.log("Tokens Claimed")
+  console.log(returnValues)
+  const tokens = await loadCurrentBalance(returnValues.from);
+  console.log({ rewardTokens: tokens})
+  console.log(state)
+  return { rewardTokens: tokens}
+}
+const loadCurrentBalance = async(from) => {
+  console.log("getBalance")
+  const balanceResult = await callReadMethod("getBalance", from)
+  const balance = parseInt(balanceResult)
+  return balance
+}
+const callReadMethod = (method, ...args) => {
+  return new Promise((resolve, reject) => {
+    try {
+      app
+        .call(method, ...args)
+        .first()
+        .subscribe(result => {
+          resolve(result)
+        })
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

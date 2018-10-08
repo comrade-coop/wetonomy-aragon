@@ -1,61 +1,77 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { Column } from '../components/Task Board/Column'
-export class BoardScreen extends React.Component {
-	constructor(props){
-		super(props)
-		this.state = {isOver: false}
-	}
-	allowDrop = (ev) => {
-		ev.preventDefault();
-	}
+import Column from '../components/Task Board/Column'
+import { COLUMNS, DELETE_TYPE, TASK_TYPES } from '../utils/appConstants'
+import { stageChangeActivity, deleteActivity } from '../actions/activities'
+import { moveTaskUI, acceptTaskUI, errorTask } from '../actions/tasks'
+class BoardScreen extends React.Component {
+  // Drag events are defined in TaskContainer
+  allowDrop = (ev) => {
+    ev.preventDefault()
+  }
+  drop = (ev) => {
+    ev.preventDefault()
+    var data = ev.dataTransfer.getData('dragged')
+    var target = ev.target.closest('.droppable')
+    var task = document.getElementById(data)
+    task.style.visibility = 'visible'
+    const stage = target.id[[target.id.length - 1]]
 
-	drag = (ev) => {
-			ev.dataTransfer.setData("dragged", ev.target.id);
-			ev.target.style.visibility = "hidden";
-	}
-	dragEnd = (ev) => {
-		ev.target.style.visibility = "visible";
-	}
+    task = this.props.tasks.filter(t => t.id == task.id.slice(4))[0]
 
-	drop = (ev) => {
-			ev.preventDefault();
-			var data = ev.dataTransfer.getData("dragged");
-			this.setState({isOver: !this.state.isOver})
-			var target = ev.target.closest(".droppable")
-			document.getElementById(data).style.visibility = "visible";
-			target.appendChild(document.getElementById(data));
-	}
+    const realTasks = this.props.realTasks.filter(t => t.id == task.id)[0]
+    const { dispatch } = this.props
+    if (realTasks && task.type == TASK_TYPES.BASE) {
+      if (realTasks.column != 4) {
+        if (task.column != 0) {
+          if (realTasks.column == stage) dispatch(deleteActivity(task, DELETE_TYPE.REMOVE_STAGE_CHANGE))
+          else dispatch(stageChangeActivity(task, stage))
+          dispatch(moveTaskUI(task, stage))
+        }
+        else {
+          if (realTasks.column == stage) {
+            dispatch(deleteActivity(task, DELETE_TYPE.REMOVE_STAGE_CHANGE))
+            dispatch(moveTaskUI(task, stage))
+          }
+          else {
+            dispatch(stageChangeActivity(task, stage))
+            dispatch(acceptTaskUI(task, stage))
+          }
+        }
+      }
+      else dispatch(errorTask(task, 'Can\'t revert rewarded task!'))
+    }
+    else dispatch(errorTask(task, 'Can\'t move this task!'))
+  }
+
   render() {
-		var Columns = undefined;
-		if(this.props.columns!=undefined && this.props.tasks!=undefined){
-			Columns = this
-				.props
-				.columns
-				.map(column => 
-				<Column
-					key = {this.props.columns.indexOf(column)}
-					id = {this.props.columns.indexOf(column)}
-					tasks = {this.props.tasks.filter(task => task.column == this.props.columns.indexOf(column))}
-					handleTaskPanelToggle={this.props.handleTaskPanelToggle} 
-					name={column} 
-					drag = {this.drag}
-					drop = {this.drop}
-					allowDrop = {this.allowDrop}
-					dragEnd = {this.dragEnd}
-				/>)
-		}
+    var Columns = undefined
+    var tasks = this.props.tasks
+    if (this.props.tasks != undefined) {
+      Columns = COLUMNS.map(column =>
+        <Column
+          key={COLUMNS.indexOf(column)}
+          id={COLUMNS.indexOf(column)}
+          tasks={tasks.filter(task => task.column == COLUMNS.indexOf(column))}
+          onEditTaskClick={this.props.onEditTaskClick}
+          name={column}
+          drop={this.drop}
+          allowDrop={this.allowDrop}
+        />)
+    }
     return (
       <Board>
-				<BoardColumns>
-					{Columns}
-				</BoardColumns>
+        <BoardColumns>
+          {Columns}
+        </BoardColumns>
       </Board>
     )
   }
 }
 
 const Board = styled.div`
+  /* margin-left: 30px; */
   width:100%;
 	margin-top:10px;
 	overflow-x: scroll;
@@ -65,14 +81,21 @@ const Board = styled.div`
     width: 10px;
 	}
 	::-webkit-scrollbar-track {
-    background: #f1f1f1; 
+    background: #f1f1f1;
 	}
-::-webkit-scrollbar-thumb {
-	background: #FFF; 
+::-webkit-scrollbar-thumb{
+	background: #FFF;
 	}
 `
 
 const BoardColumns = styled.div`
-	min-height: 900px;
+  min-height: 800px;
+  margin-left: 30px;
 	position: relative;
 `
+const mapStateToProps = state => ({
+  tasks: state.tasks.tasks,
+  realTasks: state.tasks.realTasks
+})
+
+export default connect(mapStateToProps)(BoardScreen)

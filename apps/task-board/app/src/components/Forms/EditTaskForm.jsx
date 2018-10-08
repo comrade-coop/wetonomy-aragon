@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import BaseTaskForm from "./BaseTaskForm"
-import {PROJCETS} from '../../utils/dummyDataProvider'
+import BaseTaskForm from './BaseTaskForm'
+import { PROJCETS } from '../../utils/dummyDataProvider'
 
 class EditTaskForm extends React.Component {
   constructor(props) {
@@ -16,6 +16,9 @@ class EditTaskForm extends React.Component {
       difficulty: this.props.selectedTask.difficulty,
       column: this.props.selectedTask.column || 0,
       tokens: this.props.selectedTask.tokens || 0,
+      originalTokens: this.props.selectedTask.tokens || 0,
+      issuer: this.props.selectedTask.issuer,
+      assignee: this.props.selectedTask.assignee,
       tag: '',
       error: null
     }
@@ -23,19 +26,20 @@ class EditTaskForm extends React.Component {
 
   render() {
     return (
-			<BaseTaskForm 
-				delete = {true}
-				handleNewTask={this.props.handleNewTask}
-				handleDeleteTask = {this.props.handleDeleteTask}
+      <BaseTaskForm
+        delete={true}
+        onAddTask={this.props.onUpdateTask}
+        onDeleteTask={this.props.onDeleteTask}
         onClose={this.props.onClose}
-        state = {this.state}
+        state={this.state}
       />
     )
   }
 }
 
 EditTaskForm.propTypes = {
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  onAddTask: PropTypes.func.isRequired
 }
 
 export default EditTaskForm

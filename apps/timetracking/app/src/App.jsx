@@ -11,7 +11,6 @@ const initialState = {
   workedHours: undefined,
   memberDebt: 0,
   selectedTrack: 0,
-  count: "Track",
   panelMode: PanelMode.BASE,
   rewardTokens: 0,
   isNewTrackPanelOpened: false
@@ -111,7 +110,7 @@ class App extends Component {
       <AragonApp>
         <AppHeader
           memberDebt={this.state.memberDebt}
-          rewardTokens={this.state.rewardTokens} 
+          rewardTokens={this.props.rewardTokens} 
         />
         <Week>
           {this.state.workedHours==undefined ? (<div></div>) : (
@@ -142,6 +141,6 @@ const Week = styled.div`
 
 export default observe(
   observable => observable.map(state => ({...state})),
-  ({count:"Sync Blockhcain"}),
+  ({count:"Sync", rewardTokens: 0}),
   {}
 )(App)
