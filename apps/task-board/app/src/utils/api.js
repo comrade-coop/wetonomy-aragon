@@ -46,9 +46,9 @@ export const encodeActivities = (activities) => {
   let ia = []
   let hs = []
   let digest = []
-  ia.push(activities.crudActivity.filter((task) => task.type == TASK_TYPES.NEW).length)
+  ia.push(activities.crudActivity.filter((task) => task.type === TASK_TYPES.NEW).length)
   activities.crudActivity.forEach((task) => {
-    if (task.type == TASK_TYPES.NEW) {
+    if (task.type === TASK_TYPES.NEW) {
       iaa.push('0xb4124ceb3451635dacedd11767f004d8a28c6ee7')
       iaa.push('0x0')
       const data = getBytes32FromMultiash('QmejGNNbBk62b51KVXCYNJKjPnhx7t6BckAzicSqKKqRtE')
@@ -58,9 +58,9 @@ export const encodeActivities = (activities) => {
       ia.push(task.tokens)
     }
   })
-  ia.push(activities.crudActivity.filter((task) => task.type == TASK_TYPES.BASE).length)
+  ia.push(activities.crudActivity.filter((task) => task.type === TASK_TYPES.BASE).length)
   activities.crudActivity.forEach((task) => {
-    if (task.type == TASK_TYPES.BASE) {
+    if (task.type === TASK_TYPES.BASE) {
       const data = getBytes32FromMultiash('QmejGNNbBk62b51KVXCYNJKjPnhx7t6BckAzicSqKKqRtE')
       digest.push(data.digest)
       ia.push(task.id)
@@ -68,9 +68,9 @@ export const encodeActivities = (activities) => {
       hs.push(data.size)
     }
   })
-  ia.push(activities.crudActivity.filter((task) => task.type == TASK_TYPES.DELETED).length)
+  ia.push(activities.crudActivity.filter((task) => task.type === TASK_TYPES.DELETED).length)
   activities.crudActivity.forEach((task) => {
-    if (task.type == TASK_TYPES.DELETED) {
+    if (task.type === TASK_TYPES.DELETED) {
       ia.push(task.id)
     }
   })
@@ -122,7 +122,6 @@ export const syncContributeActivities = (activities) => {
 
 export const updateTask = (oldTask, newTask) => {
   if (!Task.isValidTask(newTask) || Task.equals(oldTask, newTask)) {
-    return
   }
 
   const taskId = oldTask.id

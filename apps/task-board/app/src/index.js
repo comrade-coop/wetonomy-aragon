@@ -1,16 +1,16 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { BrowserRouter } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom'
 
 import store from './store'
 import ConnectedApp from './ConnectedApp'
 
 ReactDOM.render(  
   <Provider store={store}>
-    <BrowserRouter>
+    <HashRouter>
       <ConnectedApp />
-    </BrowserRouter>      
+    </HashRouter>
   </Provider>,
   document.getElementById('root')
 )

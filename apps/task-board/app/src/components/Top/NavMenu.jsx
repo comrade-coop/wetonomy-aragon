@@ -5,9 +5,15 @@ import styled from 'styled-components'
 
 const NavMenu = () => (
   <NavMenuRoot>
-    <StyledNavLink exact to="/timeline">Timeline</StyledNavLink>
-    <StyledNavLink exact to="/dashboard">Dashboard</StyledNavLink>
-    <StyledNavLink exact to="/my-tasks">My Tasks</StyledNavLink>
+    <StyledNavLink exact to="/explore">
+      Explore
+    </StyledNavLink>
+    <StyledNavLink exact to="/dashboard">
+      Dashboard
+    </StyledNavLink>
+    <StyledNavLink exact to="/my-tasks">
+      My Tasks
+    </StyledNavLink>
   </NavMenuRoot>
 )
 
@@ -19,7 +25,7 @@ const StyledNavLink = styled(NavLink)`
   text-decoration: none;
   margin-right: 7px;
   color: ${theme.textSecondary};
-  font-size: 20px;  
+  font-size: 20px;
   line-height: 2;
   padding: 0px 20px;
   border-radius: 5px;
@@ -32,7 +38,7 @@ const StyledNavLink = styled(NavLink)`
   &.active {
     color: ${theme.gradientStart};
     background-color: white;
-    box-shadow: 0 0px 6px rgba(0, 0, 0, 0.16);    
+    box-shadow: 0 0px 6px rgba(0, 0, 0, 0.16);
   }
 `
 

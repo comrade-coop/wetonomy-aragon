@@ -118,7 +118,7 @@ const Header = styled.div`
 	border-radius: 10px 10px 0 0;
 	border-bottom: 1px solid #E6E6E6;
 	text-align: center;
-	font-size:20px;
+	font-size: 20px;
 `
 const Footer = styled.div`
 	background: linear-gradient( 130deg,#00B4E6,#00F0E0 );

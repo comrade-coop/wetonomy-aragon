@@ -17,7 +17,6 @@ class ConnectedApp extends React.Component {
     if (data.from !== 'wrapper') {
       return
     }
-
     if (data.name === 'ready') {
       this.sendMessageToWrapper('ready', true)
       const { dispatch } = this.props

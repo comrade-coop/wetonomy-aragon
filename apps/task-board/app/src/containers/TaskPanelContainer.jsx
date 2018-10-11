@@ -16,19 +16,19 @@ class TaskPanelContainer extends Component {
 
   handleUpdateTask = (task) => {
     const { dispatch } = this.props
-    const realTask = this.props.real.filter(t => t.id == task.id)[0]
+    const realTask = this.props.real.filter(t => t.id === task.id)[0]
     const contrubute = task.tokens - parseInt(realTask.tokens)
     if(contrubute > 0) dispatch(contributeActivity(task, contrubute))
     let check = false
     for(let prop in realTask) {
       console.log(prop)
-      console.log(task[prop] != realTask[prop] && prop != '_tokens' && prop != '_type' && prop != '_column')
-      if(task[prop] != realTask[prop] && prop != '_tokens'
-        && prop != '_type' && prop != '_column' && prop != '_assignee') check = true
+      console.log(task[prop] !== realTask[prop] && prop !== '_tokens' && prop !== '_type' && prop !== '_column')
+      if(task[prop] !== realTask[prop] && prop !== '_tokens'
+        && prop !== '_type' && prop !== '_column' && prop !== '_assignee') check = true
     }
     // in case we can choose the assignee in the sidebar
     // possible problems with contract sync
-    if( !check && task._column == realTask._column && task._assignee != realTask._assignee) check = true
+    if( !check && task._column === realTask._column && task._assignee !== realTask._assignee) check = true
     if(check) {
       dispatch(updateTaskUI(task))
       dispatch(updateActivity(task))

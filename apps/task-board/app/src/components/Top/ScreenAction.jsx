@@ -25,8 +25,7 @@ const MarginedButton = styled(Button)`
 const ScreenActionRoot = styled.section`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 30px;
-  padding: 25px 30px 0px 30px;
+  padding: 90px 30px 30px 30px;
 `
 
 

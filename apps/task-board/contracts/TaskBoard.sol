@@ -26,8 +26,6 @@ contract TaskBoard is AragonApp {
     event TaskChanged(uint taskId);
     event IssuerTransferred(uint _taskId, address indexed _newIssuer);
     event PayoutIncreased(uint _taskId, uint _newFulfillmentAmount);
-    event TrackEvent(uint current, uint taskId, uint stage);
-    event TrackEvent2(uint current, uint taskId, TaskStages stage);
 
 
     /*

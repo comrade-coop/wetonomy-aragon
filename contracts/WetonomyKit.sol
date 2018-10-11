@@ -36,11 +36,11 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         MiniMeToken debtToken = tokenManager.daoToken();
 
         // Voting voting = installVotingApp(dao, debtToken);
-
+        
         acl.createPermission(root, members, members.MANAGE_MEMBERS_ROLE(), root);
 
         acl.createPermission(timeTracking, tokenManager, tokenManager.MINT_ROLE(), root);
-
+        
         acl.createPermission(taskBoard, tokenManager, tokenManager.TRANSFER_ROLE(), root);
         acl.createPermission(taskBoard, tokenManager, tokenManager.REWARD_ROLE(), root);
 
@@ -90,10 +90,10 @@ contract WetonomyKit is KitBase, WetonomyConstants {
     }
 
     function installTimeTracking(
-        Kernel _dao,
-        IRewardTokenManager _tokenManager,
-        IMembers _members)
-        public
+        Kernel _dao, 
+        IRewardTokenManager _tokenManager, 
+        IMembers _members) 
+        public 
         returns (TimeTracking)
     {
         InflationTimeTracking timeTracking = InflationTimeTracking(
@@ -110,9 +110,9 @@ contract WetonomyKit is KitBase, WetonomyConstants {
 
         return timeTracking;
     }
-
+    
     function installTaskBoard(
-        Kernel _dao,
+        Kernel _dao, 
         address _root,
         IMembers _members,
         IRewardTokenManager _tokenManager
@@ -120,6 +120,12 @@ contract WetonomyKit is KitBase, WetonomyConstants {
 
         TaskBoard taskBoard = TaskBoard(
             _dao.newAppInstance(taskBoardId, latestVersionAppBase(taskBoardId)));
+
+        taskBoard.initialize(
+            _root,
+            _members,
+            _tokenManager
+        );
 
         taskBoard.initialize(
             _root,
