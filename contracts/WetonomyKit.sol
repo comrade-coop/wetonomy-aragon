@@ -35,7 +35,7 @@ contract WetonomyKit is KitBase, WetonomyConstants {
 
         MiniMeToken debtToken = tokenManager.daoToken();
 
-        // Voting voting = installVotingApp(dao, debtToken);
+        Voting voting = installVotingApp(dao, debtToken);
         
         acl.createPermission(root, members, members.MANAGE_MEMBERS_ROLE(), root);
 
@@ -44,7 +44,7 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         acl.createPermission(taskBoard, tokenManager, tokenManager.TRANSFER_ROLE(), root);
         acl.createPermission(taskBoard, tokenManager, tokenManager.REWARD_ROLE(), root);
 
-        // acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root);
+        acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root);
 
         acl.createPermission(root, timeTracking, timeTracking.MANAGE_TRACKING_ROLE(), root);
 
@@ -120,12 +120,6 @@ contract WetonomyKit is KitBase, WetonomyConstants {
 
         TaskBoard taskBoard = TaskBoard(
             _dao.newAppInstance(taskBoardId, latestVersionAppBase(taskBoardId)));
-
-        taskBoard.initialize(
-            _root,
-            _members,
-            _tokenManager
-        );
 
         taskBoard.initialize(
             _root,
