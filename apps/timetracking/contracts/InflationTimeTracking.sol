@@ -6,7 +6,6 @@ import "../../members/contracts/interfaces/IMembers.sol";
 
 
 contract InflationTimeTracking is TimeTracking {
-
     IRewardTokenManager public tokenManager;
 
     event TokensClaimed(address from);
@@ -30,7 +29,7 @@ contract InflationTimeTracking is TimeTracking {
         super.initialize(_members, _periodLength, _maxHoursPerPeriod);
         tokenManager = _tokenManager;
     }
-
+    
     function trackWork(uint _hours) external isInitialized onlyMember {
         _trackWork(_hours);
     }
@@ -48,12 +47,4 @@ contract InflationTimeTracking is TimeTracking {
         TimeTracking._trackWork(_hours);
         tokenManager.mint(_hours);
     }
-
-
-
-    // function inflation() external {
-    //     uint balance = tokenManager.inflationBalance();
-    //     uint released = tokenManager.totalInflationReleased();
-    //     Inflation(balance, released);
-    // }
 }

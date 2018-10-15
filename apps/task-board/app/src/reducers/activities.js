@@ -42,10 +42,10 @@ const handleRemove = (state, payload) => {
   var check = false
   var newState = state
   // removing the contributions and stateChanges (if we have ones) beacouse of the delete
-  if(state.contributions.filter(task => task.id == payload.task.id).length > 0) {
+  if(state.contributions.filter(task => task.id === payload.task.id).length > 0) {
     newState = handleDelete(state, { type: DELETE_TYPE.REMOVE_CONTRIBUTION, task: payload.task})
   }
-  if(state.stateChanges.filter(task => task.id == payload.task.id).length > 0) {
+  if(state.stateChanges.filter(task => task.id === payload.task.id).length > 0) {
     newState = handleDelete(newState, { type: DELETE_TYPE.REMOVE_STAGE_CHANGE, task: payload.task})
   }
 
@@ -130,7 +130,7 @@ const handleStateChange = (state, payload) => {
 }
 
 const handleDelete = (state, payload) => {
-  const index = state[payload.type].indexOf(state[payload.type].filter(task => task.id == payload.task.id)[0])
+  const index = state[payload.type].indexOf(state[payload.type].filter(task => task.id === payload.task.id)[0])
   return {
     ...state, [payload.type]: [...state[payload.type].slice(0, index),
       ...state[payload.type].slice(index + 1)], count: state.count-1

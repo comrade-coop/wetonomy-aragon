@@ -1,11 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import Task from '../components/Task Board/Task'
-import { clearError, acceptTaskUI, finishTaskUI, rewardTaskUI } from '../actions/tasks'
+import Task from '../components/TaskBoard/Task'
+import {
+  clearError,
+  acceptTaskUI,
+  finishTaskUI,
+  rewardTaskUI
+} from '../actions/tasks'
 import { contributeActivity, stageChangeActivity } from '../actions/activities'
 class TaskContainer extends Component {
-
   constructor(props) {
     super(props)
     this.state = {
@@ -36,7 +40,7 @@ class TaskContainer extends Component {
     dispatch(rewardTaskUI(this.props.task))
   }
 
-  handleOpen = (newPoints) => {
+  handleOpen = newPoints => {
     const id = 'star' + this.props.task.id
     var el = document.getElementById(id)
     if (parseInt(el.innerHTML))
@@ -50,7 +54,10 @@ class TaskContainer extends Component {
     }
   }
   mouseLeaveHandler = () => {
-    if (parseInt(this.props.task.tokens) !== parseInt(this.props.task.tokens) + parseInt(this.state.points)) {
+    if (
+      parseInt(this.props.task.tokens) !==
+      parseInt(this.props.task.tokens) + parseInt(this.state.points)
+    ) {
       const { dispatch } = this.props
       dispatch(contributeActivity(this.props.task, this.state.points))
 
@@ -62,12 +69,12 @@ class TaskContainer extends Component {
       this.setState({ points: 0 })
     }
   }
-  drag = (ev) => {
+  drag = ev => {
     ev.dataTransfer.setData('dragged', ev.target.id)
     ev.target.style.visibility = 'hidden'
   }
 
-  dragEnd = (ev) => {
+  dragEnd = ev => {
     ev.target.style.visibility = 'visible'
   }
 
@@ -77,7 +84,9 @@ class TaskContainer extends Component {
   }
 
   render() {
-    const error = this.props.errors.filter(er => er.id == this.props.task.id)[0]
+    const error = this.props.errors.filter(
+      er => er.id === this.props.task.id
+    )[0]
     return (
       <Task
         error={error}
@@ -93,7 +102,8 @@ class TaskContainer extends Component {
         task={this.props.task}
         drag={this.drag}
         dragEnd={this.dragEnd}
-        onEditTaskClick={this.props.onEditTaskClick} />
+        onEditTaskClick={this.props.onEditTaskClick}
+      />
     )
   }
 }

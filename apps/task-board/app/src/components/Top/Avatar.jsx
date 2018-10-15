@@ -4,13 +4,15 @@ import PropTypes from 'prop-types'
 import Blockies from 'react-blockies'
 import {theme} from '@aragon/ui'
 
-const AvatarRoot = styled.div`
-  margin-right: 18px;
+const AvatarRoot = styled.div`  
   overflow: hidden;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
 `
 
 const Avatar = (props) => (
-  <AvatarRoot style={{borderRadius: props.radius, width: props.width, height: props.width}}>
+  <AvatarRoot>
     <Blockies
       seed={props.seed}
       size={10}

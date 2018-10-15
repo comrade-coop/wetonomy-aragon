@@ -10,35 +10,32 @@ import debtLogo from '../../assets/debt.svg'
 import rewardLogo from '../../assets/reward-token.svg'
 import OutsideAlerter from './OutsideAlerter'
 
-const MemberProfile = (props) => {
+const MemberProfile = props => {
   return (
     <ProfileRoot>
       <OutsideAlerter outsideFunc={props.onOutsideClick}>
         <MemberInfoContainer>
           <Activity>
-            <i onClick={props.onActivityClick} className="fas fa-list-ul"></i>
+            <i onClick={props.onActivityClick} className="fas fa-list-ul" />
           </Activity>
-          {props.activities.count > 0 ? ((
+          {props.activities.count > 0 ? (
             <Count> {props.activities.count} </Count>
-          )) : ('')}
-          {props.activities.opened ? ((
+          ) : (
+            ''
+          )}
+          {props.activities.opened ? (
             <ActivityWindow activities={props.activities} />
-          )) : ('')}
-
+          ) : (
+            ''
+          )}
         </MemberInfoContainer>
       </OutsideAlerter>
 
-      <MemberInfoContainer>
-        <BlueIcon src={debtLogo} alt="Debt:" />
-        <Text size="large" weight="bold" color={theme.accent}>${props.debt}</Text>
-      </MemberInfoContainer>
+      <MemberInfo logo={debtLogo} alt="Debt:" info={props.debt} color={theme.accent} />
 
-      <MemberInfoContainer>
-        <Icon src={rewardLogo} alt="Reward Tokens:" />
-        <Text size="large" weight="bold" color={theme.textDimmed}>{props.rewardTokens}</Text>
-      </MemberInfoContainer>
+      <MemberInfo logo={rewardLogo} alt="Rewards:" info={props.rewardTokens} />
 
-      <MemberAvatar seed={props.member} radius={'50%'} width={'40px'} />
+      <MemberAvatar seed={props.member} />
       <Text size="large">{props.member.name}</Text>
     </ProfileRoot>
   )
@@ -49,6 +46,15 @@ MemberProfile.propTypes = {
   rewardTokens: PropTypes.number,
   member: PropTypes.string.isRequired
 }
+
+const MemberInfo = ({ logo, alt, info = 0, color = theme.textDimmed }) => (
+  <MemberInfoContainer>
+    <Icon src={logo} alt={alt} />
+    <Text size="large" weight="bold" color={color}>
+      {info}
+    </Text>
+  </MemberInfoContainer>
+)
 
 const Count = styled.div`
   color: white;
@@ -64,7 +70,7 @@ const Count = styled.div`
 `
 
 const Activity = styled.div`
-  color: #00CBE6;
+  color: #00cbe6;
   font-size: 22px;
 `
 
@@ -78,10 +84,6 @@ const MemberInfoContainer = styled.span`
   display: flex;
   align-items: center;
   cursor: pointer;
-`
-
-const BlueIcon = styled(Icon)`
-  fill: ${theme.accent};
 `
 
 const MemberAvatar = styled(Avatar)`

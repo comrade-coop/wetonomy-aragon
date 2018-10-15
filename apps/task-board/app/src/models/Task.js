@@ -1,6 +1,20 @@
 import { TASK_TYPES } from '../utils/appConstants'
 class Task {
-  constructor(id, workField, heading, description, project, tags, difficulty, column = 0, tokens = 0, assignee = null, issuer = null, type = TASK_TYPES.BASE, date = 0) {
+  constructor(
+    id,
+    workField,
+    heading,
+    description,
+    project,
+    tags,
+    difficulty,
+    column = 0,
+    tokens = 0,
+    assignee = null,
+    issuer = null,
+    type = TASK_TYPES.BASE,
+    date = 0
+  ) {
     this.id = id
     this.workField = workField
     this.heading = heading
@@ -15,6 +29,7 @@ class Task {
     this.tokens = tokens
     this.type = type
   }
+
   set workField(workField) {
     this._workField = workField
   }
@@ -29,6 +44,7 @@ class Task {
     }
     this._heading = heading
   }
+
   get heading() {
     return this._heading
   }
@@ -68,6 +84,7 @@ class Task {
   get issuer() {
     return this._issuer
   }
+
   set tags(tags) {
     this._tags = tags
   }
@@ -83,6 +100,7 @@ class Task {
   get difficulty() {
     return this._difficulty
   }
+
   set column(column) {
     this._column = column
   }
@@ -90,12 +108,17 @@ class Task {
   get column() {
     return this._column
   }
+
   static isValidTask(task) {
-    return (this.isValidProject(task.project) && this.isValidHeading(task.heading))
+    return (
+      this.isValidProject(task.project) && this.isValidHeading(task.heading)
+    )
   }
+
   static isValidProject(name) {
     return name.length > 0
   }
+  
   static isValidHeading(name) {
     console.log('ioko', name)
     return name.length > 0

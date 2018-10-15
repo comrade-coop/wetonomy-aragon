@@ -28,12 +28,18 @@ class AppHeader extends React.Component {
 
 
   render() {
-    return <AppBar title={APP_NAME} endContent={this.getEndContent()} />
+    return <FixedAppBar title={APP_NAME} endContent={this.getEndContent()} />
   }
 }
 
 const EndContent = styled.div`
   display: flex;
+`
+
+const FixedAppBar = styled(AppBar)`
+  position: fixed;
+  top: 0;
+  z-index: 3;
 `
 
 export default AppHeader

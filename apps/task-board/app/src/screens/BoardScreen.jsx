@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import Column from '../components/Task Board/Column'
+import Column from '../components/TaskBoard/Column'
 import { COLUMNS, DELETE_TYPE, TASK_TYPES } from '../utils/appConstants'
 import { stageChangeActivity, deleteActivity } from '../actions/activities'
 import { moveTaskUI, acceptTaskUI, errorTask } from '../actions/tasks'
+
 class BoardScreen extends React.Component {
   // Drag events are defined in TaskContainer
   allowDrop = (ev) => {
@@ -18,19 +19,19 @@ class BoardScreen extends React.Component {
     task.style.visibility = 'visible'
     const stage = target.id[[target.id.length - 1]]
 
-    task = this.props.tasks.filter(t => t.id == task.id.slice(4))[0]
+    task = this.props.tasks.filter(t => t.id === task.id.slice(4))[0]
 
-    const realTasks = this.props.realTasks.filter(t => t.id == task.id)[0]
+    const realTasks = this.props.realTasks.filter(t => t.id === task.id)[0]
     const { dispatch } = this.props
-    if (realTasks && task.type == TASK_TYPES.BASE) {
-      if (realTasks.column != 4) {
-        if (task.column != 0) {
-          if (realTasks.column == stage) dispatch(deleteActivity(task, DELETE_TYPE.REMOVE_STAGE_CHANGE))
+    if (realTasks && task.type === TASK_TYPES.BASE) {
+      if (realTasks.column !== 4) {
+        if (task.column !== 0) {
+          if (realTasks.column === stage) dispatch(deleteActivity(task, DELETE_TYPE.REMOVE_STAGE_CHANGE))
           else dispatch(stageChangeActivity(task, stage))
           dispatch(moveTaskUI(task, stage))
         }
         else {
-          if (realTasks.column == stage) {
+          if (realTasks.column === stage) {
             dispatch(deleteActivity(task, DELETE_TYPE.REMOVE_STAGE_CHANGE))
             dispatch(moveTaskUI(task, stage))
           }
@@ -48,12 +49,12 @@ class BoardScreen extends React.Component {
   render() {
     var Columns = undefined
     var tasks = this.props.tasks
-    if (this.props.tasks != undefined) {
+    if (this.props.tasks !== undefined) {
       Columns = COLUMNS.map(column =>
         <Column
           key={COLUMNS.indexOf(column)}
           id={COLUMNS.indexOf(column)}
-          tasks={tasks.filter(task => task.column == COLUMNS.indexOf(column))}
+          tasks={tasks.filter(task => task.column === COLUMNS.indexOf(column))}
           onEditTaskClick={this.props.onEditTaskClick}
           name={column}
           drop={this.drop}
