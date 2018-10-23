@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.18;
 
 import "./TimeTracking.sol";
 import "../../token-rewards-manager/contracts/interfaces/IRewardTokenManager.sol";
@@ -39,8 +39,8 @@ contract InflationTimeTracking is TimeTracking {
         TokensClaimed(msg.sender);
     }
 
-    function getBalance(address from) external view returns (uint) {
-        return tokenManager.getBalance(from);
+    function getBalance(address from) external view returns (uint, uint) {
+        return tokenManager.getUserBalance(from);
     }
 
     function _trackWork(uint _hours) internal {

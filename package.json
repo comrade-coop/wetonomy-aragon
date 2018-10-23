@@ -25,15 +25,16 @@
   "scripts": {
     "bootstrap": "lerna bootstrap --no-hoist=@aragon/os",
     "clean": "git clean -fdxi",
-    "start": "npm run publish && npm run start:kit",
+    "start": "npm run build:project && npm run publish && npm run start:kit",
+    "start:nb": "npm run publish && npm run start:kit",
     "start:kit": "aragon run --kit WetonomyKit --kit-init @ARAGON_ENS",
     "test": "lerna run --scope=wetonomy-* --concurrency=1 --stream test",
     "coverage": "lerna run --scope=wetonomy-* --concurrency=1 --stream coverage",
     "lint": "solhint apps/**/contracts/*.sol contracts/*.sol",
     "compile": "aragon contracts compile && npm run lint",
-    "build:project": "npm run compile && lerna run --stream build",
+    "build:project": "npm run compile && lerna run --stream build:project",
     "publish": "lerna run --concurrency=1 --stream publish",
-    "devchain": "ganache-cli --db C:/Users/ioan6/.aragon/ganache-db-8545 --mnemonic \"explain tackle mirror kit van hammer degree position ginger unfair soup bonus\" --gasLimit 50000000"
+    "devchain": "ganache-cli --db ~/.aragon/ganache-db-8545 --mnemonic \"explain tackle mirror kit van hammer degree position ginger unfair soup bonus\" --gasLimit 50000000"
   },
   "keywords": [],
   "license": "MIT"

@@ -1,0 +1,12 @@
+{
+  "appName": "parameters.aragonpm.eth",
+  "version": "1.0.0",
+  "roles": [    
+    {
+      "name": "Manage parameters of the DAO",
+      "id": "CHANGE_PARAMETERS_ROLE",
+      "params": []
+    }
+  ],
+  "path": "contracts/Parameters.sol"
+}

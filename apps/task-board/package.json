@@ -25,7 +25,7 @@
     "coverage": "npm run test",
     "test": "../shared/test-utils/truffle-test.sh",
     "compile": "aragon contracts compile",
-    "build": "npm run compile && cd app && npm run build",
+    "build:project": "npm run compile && cd app && npm run build",
     "publish": "aragon apm publish"
   },
   "keywords": [],

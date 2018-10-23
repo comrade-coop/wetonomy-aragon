@@ -1,0 +1,29 @@
+{
+  "name": "wetonomy-parameters",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "@aragon/client": "^1.0.0-beta.8",
+    "@aragon/os": "3.1.9",
+    "ethereumjs-abi": "^0.6.5",
+    "typedarray-to-buffer": "^3.1.5"
+  },
+  "devDependencies": {
+    "@aragon/cli": "^4.0.6",
+    "@aragon/test-helpers": "^1.0.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "truffle": "4.0.5"
+  },
+  "scripts": {
+    "start": "aragon run",
+    "coverage": "npm run test",
+    "test": "../shared/test-utils/truffle-test.sh",
+    "compile": "aragon contracts compile",
+    "build:project": "npm run compile && cd app && npm run build",
+    "publish": "aragon apm publish"
+  },
+  "keywords": [],
+  "license": "MIT"
+}

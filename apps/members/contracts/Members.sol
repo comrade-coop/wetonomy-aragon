@@ -29,7 +29,7 @@ contract Members is IMembers, AragonApp {
      */
     function setInitialReputation(uint _initialReputation) 
         external        
-        auth(MANAGE_MEMBERS_ROLE)        
+        // auth(MANAGE_MEMBERS_ROLE)        
     {
         initialReputation = _initialReputation;
     }

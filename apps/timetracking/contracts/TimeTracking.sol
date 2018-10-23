@@ -43,7 +43,7 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
         isInitialized
         auth(MANAGE_TRACKING_ROLE)
     {
-        require(_periodLength > 0);
+        require(_periodLength > 1);
         periodLength = _periodLength;
     }
 
@@ -83,9 +83,8 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
     function initialize(
         IMembers _members,
         uint _periodLength,
-        uint _maxHoursPerPeriod)
-        public
-      //  onlyInit
+        uint _maxHoursPerPeriod
+        ) public onlyInit
     {
         members = _members;
         maxHoursPerPeriod = _maxHoursPerPeriod;

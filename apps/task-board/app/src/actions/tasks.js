@@ -26,7 +26,7 @@ export const loadFullState = (window) => async(dispatch) => {
   const acc = await Api.callReadMethod('getAccount','0xb4124ceb3451635dacedd11767f004d8a28c6ee7')
   dispatch({
     type: LOAD_ACCOUNT,
-    payload: { account: acc }
+    payload: { account: acc[0] }
   })
 }
 export const reloadFullState = () => dispatch => {
