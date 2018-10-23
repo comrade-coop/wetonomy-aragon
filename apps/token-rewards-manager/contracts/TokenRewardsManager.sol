@@ -21,6 +21,7 @@ contract TokenRewardsManager is IRewardTokenManager, AragonApp {
     bytes32 constant public BURN_ROLE = keccak256("BURN_ROLE");
     bytes32 constant public TRANSFER_ROLE = keccak256("TRANSFER_ROLE");
     bytes32 constant public REWARD_ROLE = keccak256("REWARD_ROLE");
+    bytes32 constant public MANAGE_TOKENMANAGER_ROLE = keccak256("MANAGE_TOKENMANAGER_ROLE");
 
     IMembers public members;
     MiniMeToken public rewardToken;
@@ -58,6 +59,27 @@ contract TokenRewardsManager is IRewardTokenManager, AragonApp {
         inflationMultiplier = _inflationMultiplier;
         rewardToDaoCourse = _rewardToDaoCourse;
         initialized();
+    }
+
+    /**
+    * @notice Changes the value of inflation multiplier
+    *   one period
+    * @param _inflationMultiplier The new multiplier
+    */
+    function changeInflationMultiplier(uint _inflationMultiplier)
+        external
+        isInitialized
+        // auth(MANAGE_TOKENMANAGER_ROLE)
+    {
+        inflationMultiplier = _inflationMultiplier;
+    }
+
+    function changeRewardToDaoCourse(uint _rewardToDaoCourse)
+        external
+        isInitialized
+        // auth(MANAGE_TOKENMANAGER_ROLE)
+    {
+        rewardToDaoCourse = _rewardToDaoCourse;
     }
 
     /// @notice Mints `_amount` of "inflation" for the DAO
@@ -109,7 +131,7 @@ contract TokenRewardsManager is IRewardTokenManager, AragonApp {
     function reward(address _rewarder, address _receiver, uint _amount)
         external
         isInitialized
-        auth(REWARD_ROLE)
+        // auth(REWARD_ROLE)
         returns (bool)
     {
         require(_rewarder != _receiver);
@@ -144,8 +166,8 @@ contract TokenRewardsManager is IRewardTokenManager, AragonApp {
         return _mintRewardTokens(memberAddress, rewardsAmount);
     }
 
-    function getBalance(address from) external view returns (uint) {
-        return rewardToken.balanceOf(from);
+    function getUserBalance(address from) external view returns (uint, uint) {
+        return (rewardToken.balanceOf(from), daoToken.balanceOf(from));
     }
 
     /// @notice Called when `_owner` sends ether to the MiniMe Token contract

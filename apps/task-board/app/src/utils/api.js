@@ -122,7 +122,7 @@ export const syncContributeActivities = (activities) => {
 
 export const updateTask = (oldTask, newTask) => {
   if (!Task.isValidTask(newTask) || Task.equals(oldTask, newTask)) {
-  }
+}
 
   const taskId = oldTask.id
 
@@ -166,7 +166,6 @@ export const rewardTask = task => {
 
 export const moveTask = (task, column) => {
   if (Task.isValidTask(task)) {
-    console.log('ioko')
     console.log(column)
     app.transitionToState(task.id, column)
   }

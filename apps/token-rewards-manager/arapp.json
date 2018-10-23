@@ -26,6 +26,11 @@
       "name": "Gives Rights to reward someone with DAO tokens",
       "id": "REWARD_ROLE",
       "params": []
+    },
+    {
+      "name": "Gives Rights to manage the Token Manager",
+      "id": "MANAGE_TOKENMANAGER_ROLE",
+      "params": []
     }
   ],
   "path": "contracts/TokenRewardsManager.sol"

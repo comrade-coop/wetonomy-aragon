@@ -362,8 +362,8 @@ contract TaskBoard is AragonApp {
         return tasks.length;
     }
 
-    function getAccount(address from) external view returns (uint balance) {
-        balance = tokenManager.getBalance(from);
+    function getAccount(address from) external view returns (uint, uint) {
+        return tokenManager.getUserBalance(from);
     }
 
     /*
