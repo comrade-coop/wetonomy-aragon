@@ -1,0 +1,10 @@
+{
+  "name": "Parameters",
+  "description": "Aragon application to manage members in an organisation.",
+  "icons": [{
+    "src": "/dist/images/icon.png",
+    "sizes": "22x22"
+  }],
+  "start_url": "/app/build/index.html",
+  "script": "/app/build/script.js"
+}

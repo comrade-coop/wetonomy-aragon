@@ -118,7 +118,7 @@ const loadTask = async(id) => {
 const loadCurrentBalance = async(from) => {
   const balanceResult = await callReadMethod('getAccount', from)
   console.log('getBalance', balanceResult)
-  const balance = parseInt(balanceResult)
+  const balance = parseInt(balanceResult[0])
   return balance
 }
 const loadCurrentAccount = () => {

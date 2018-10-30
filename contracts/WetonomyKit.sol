@@ -11,6 +11,7 @@ import "../apps/members/contracts/Members.sol";
 import "../apps/timetracking/contracts/InflationTimeTracking.sol";
 import "../apps/task-board/contracts/TaskBoard.sol";
 import "../apps/token-rewards-manager/contracts/TokenRewardsManager.sol";
+import "../apps/parameters/contracts/Parameters.sol";
 
 
 contract WetonomyKit is KitBase, WetonomyConstants {
@@ -32,12 +33,18 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         TokenRewardsManager tokenManager = installTokenManager(dao, members);
         TimeTracking timeTracking = installTimeTracking(dao, tokenManager, members);
         TaskBoard taskBoard = installTaskBoard(dao, root, members, tokenManager);
-
-        MiniMeToken debtToken = tokenManager.daoToken();
+        //Change this to tokenManager.daoToken() 
+        MiniMeToken debtToken = tokenManager.rewardToken();
 
         Voting voting = installVotingApp(dao, debtToken);
+        Parameters parameters = installParametersApp(dao, voting, members, timeTracking, tokenManager);
         
         acl.createPermission(root, members, members.MANAGE_MEMBERS_ROLE(), root);
+
+        acl.createPermission(root, parameters, parameters.CHANGE_PARAMETERS_ROLE(), root);
+        // acl.createPermission(parameters, members, members.MANAGE_MEMBERS_ROLE(), root);
+        // acl.createPermission(parameters, timeTracking, timeTracking.MANAGE_TRACKING_ROLE(), root);
+        acl.createPermission(parameters, tokenManager, tokenManager.MANAGE_TOKENMANAGER_ROLE(), root);
 
         acl.createPermission(timeTracking, tokenManager, tokenManager.MINT_ROLE(), root);
         
@@ -116,7 +123,8 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         address _root,
         IMembers _members,
         IRewardTokenManager _tokenManager
-        ) public returns (TaskBoard) {
+        ) public returns (TaskBoard) 
+    {
 
         TaskBoard taskBoard = TaskBoard(
             _dao.newAppInstance(taskBoardId, latestVersionAppBase(taskBoardId)));
@@ -128,6 +136,17 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         );
 
         return taskBoard;
+    }
+    function installParametersApp(Kernel _dao, Voting _voting, Members _members, TimeTracking _timeTracking, 
+            TokenRewardsManager _tokenManager) public returns (Parameters) 
+    {
+
+        Parameters parameters = Parameters(
+            _dao.newAppInstance(parametersId, latestVersionAppBase(parametersId)));
+
+        parameters.initialize(_voting, _members, _timeTracking, _tokenManager);
+
+        return parameters;
     }
 
     function installVotingApp(Kernel _dao, MiniMeToken _token) public returns(Voting) {

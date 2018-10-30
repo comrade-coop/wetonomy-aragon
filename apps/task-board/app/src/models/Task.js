@@ -120,7 +120,6 @@ class Task {
   }
   
   static isValidHeading(name) {
-    console.log('ioko', name)
     return name.length > 0
   }
 

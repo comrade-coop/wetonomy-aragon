@@ -16,7 +16,7 @@ const MEMBERS_INITIAL_REPUTATION = 1
 const NEW_MEMBER_REPUTATION = 8
 const MINT_PER_MEMBER = 10
 
-contract('TokenRewardsManager', async (accounts) => {
+contract('Task Board', async (accounts) => {
   let app
   let membersApp
   let tokenManagerApp
