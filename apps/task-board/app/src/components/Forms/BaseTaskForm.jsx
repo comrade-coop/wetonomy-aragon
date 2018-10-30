@@ -348,6 +348,10 @@ const NewButton = styled(Button)`
   display: block;
   margin-left: auto;
   margin-right: auto;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+  :hover {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
 `
 const NewField = styled.div`
   margin-left: auto;

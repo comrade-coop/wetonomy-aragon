@@ -62,8 +62,8 @@ const Count = styled.div`
   width: 15px;
   height: 15px;
   position: absolute;
-  top: 12px;
-  right: 292px;
+  top: -3px;
+  right: -10px;
   border-radius: 25px;
   text-align: center;
   font-size: 11px;
@@ -80,6 +80,7 @@ const ProfileRoot = styled.div`
 `
 
 const MemberInfoContainer = styled.span`
+  position: relative;
   margin: 0px 20px;
   display: flex;
   align-items: center;

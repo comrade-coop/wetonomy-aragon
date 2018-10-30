@@ -23,7 +23,7 @@ export const initialState = {
   currentTask: null,
   currentUser: '',
   errors: [],
-  balance: 0
+  userTokens: {reward: 0, dao: 0}
 }
 
 export default (state = initialState, action) => {
@@ -61,7 +61,7 @@ export default (state = initialState, action) => {
 
 const loadAccount = (state, payload) => {
   console.log(payload)
-  return { ...state, balance: parseInt(payload.account) }
+  return { ...state, userTokens: payload.account, currentUser: payload.user }
 }
 
 const reduceFullState = (state, contractState) => {
@@ -109,7 +109,7 @@ const acceptTask = (state, payload) => {
       item._project,
       item._tags,
       item._difficulty,
-      payload.stage, //updating column
+      parseInt(payload.stage), //updating column
       item._tokens,
       state.currentUser, //updating assignee
       item._issuer
@@ -229,7 +229,7 @@ const moveTask = (state, payload) => {
       item._project,
       item._tags,
       item._difficulty,
-      payload.stage, //updating column
+      parseInt(payload.stage), //updating column
       item._tokens,
       item.assignee,
       item._issuer

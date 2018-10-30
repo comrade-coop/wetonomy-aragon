@@ -9,6 +9,7 @@ class AppHeader extends React.Component {
 
   static propTypes = {
     rewardTokens: PropTypes.number,
+    daoTokens: PropTypes.number,
     currentMember: PropTypes.string,
     opened: PropTypes.bool,
     onActivityClick: PropTypes.func.isRequired,
@@ -20,7 +21,7 @@ class AppHeader extends React.Component {
       {<MemberProfile
         onActivityClick={this.props.onActivityClick}
         onOutsideClick={this.props.onOutsideClick}
-        debt={this.props.memberDebt}
+        debt={this.props.daoTokens}
         rewardTokens={this.props.rewardTokens}
         member={this.props.currentMember} />}
     </EndContent>

@@ -20,7 +20,6 @@ contract('Task Board', async (accounts) => {
   let app
   let membersApp
   let tokenManagerApp
-  let single = 0
 
   beforeEach(async () => {
     const rewardTokenInstance = await createToken('Reward Token', 18, 'RWD', false)
@@ -92,21 +91,21 @@ contract('Task Board', async (accounts) => {
       'The contract\'s balance should have increased in the Reward Token contract')
 
     var task = await app.getTask(0)
-    var check = compareTask(task[0], task[1].c[0], task[2].c[0], task[3], task[4].c[0], task[5].c[0], task[6],
+    var check = compareTask(task[0], task[1].toNumber(), task[2].toNumber(), task[3], task[4].toNumber(), task[5].toNumber(), task[6],
        accounts[0], reward, 0, digest, hashFunction, size, account(0))
     assert.equal(true , check, 'The task should have been issued')
 
     const check2 = await app.issueMultipleTasks(accounts[0], [digest, digest, digest], [hashFunction, hashFunction, hashFunction], [size, size, size], [reward, reward, reward], [accounts[0], accounts[0], accounts[0]])
     task = await app.getTask(1)
-    check = compareTask(task[0], task[1].c[0], task[2].c[0], task[3], task[4].c[0], task[5].c[0], task[6],
+    check = compareTask(task[0], task[1].toNumber(), task[2].toNumber(), task[3], task[4].toNumber(), task[5].toNumber(), task[6],
       accounts[0], reward, 0, digest, hashFunction, size, account(0))
     assert.equal(true , check, 'The task should have been issued')
     task = await app.getTask(2)
-    check = compareTask(task[0], task[1].c[0], task[2].c[0], task[3], task[4].c[0], task[5].c[0], task[6],
+    check = compareTask(task[0], task[1].toNumber(), task[2].toNumber(), task[3], task[4].toNumber(), task[5].toNumber(), task[6],
       accounts[0], reward, 0, digest, hashFunction, size, account(0))
     assert.equal(true , check, 'The task should have been issued')
     task = await app.getTask(3)
-    check = compareTask(task[0], task[1].c[0], task[2].c[0], task[3], task[4].c[0], task[5].c[0], task[6],
+    check = compareTask(task[0], task[1].toNumber(), task[2].toNumber(), task[3], task[4].toNumber(), task[5].toNumber(), task[6],
       accounts[0], reward, 0, digest, hashFunction, size, account(0))
     assert.equal(true , check, 'The task should have been issued')
 
@@ -115,15 +114,15 @@ contract('Task Board', async (accounts) => {
       [3, reward, reward, reward, 0, 0, 0, 0],
       [hashFunction, size, hashFunction, size, hashFunction, size] , [digest, digest, digest])
     task = await app.getTask(4)
-    check = compareTask(task[0], task[1].c[0], task[2].c[0], task[3], task[4].c[0], task[5].c[0], task[6],
+    check = compareTask(task[0], task[1].toNumber(), task[2].toNumber(), task[3], task[4].toNumber(), task[5].toNumber(), task[6],
       accounts[0], reward, 0, digest, hashFunction, size, account(0))
     assert.equal(true , check, 'The task should have been issued')
     task = await app.getTask(5)
-    check = compareTask(task[0], task[1].c[0], task[2].c[0], task[3], task[4].c[0], task[5].c[0], task[6],
+    check = compareTask(task[0], task[1].toNumber(), task[2].toNumber(), task[3], task[4].toNumber(), task[5].toNumber(), task[6],
       accounts[0], reward, 0, digest, hashFunction, size, account(0))
     assert.equal(true , check, 'The task should have been issued')
     task = await app.getTask(6)
-    check = compareTask(task[0], task[1].c[0], task[2].c[0], task[3], task[4].c[0], task[5].c[0], task[6],
+    check = compareTask(task[0], task[1].toNumber(), task[2].toNumber(), task[3], task[4].toNumber(), task[5].toNumber(), task[6],
       accounts[0], reward, 0, digest, hashFunction, size, account(0))
     assert.equal(true , check, 'The task should have been issued')
     console.log('Single  : ', check1.receipt.gasUsed)
@@ -142,29 +141,29 @@ contract('Task Board', async (accounts) => {
     await app.issueTask(accounts[0], digest, hashFunction, size, reward, accounts[0])
     const check1 = await app.singleContribute(0, contribution)
     var task = await app.getTask(0)
-    assert.equal(task[1].c[0], reward + contribution, 'The contribution should have been added')
+    assert.equal(task[1].toNumber(), reward + contribution, 'The contribution should have been added')
 
     await app.issueTask(accounts[0], digest, hashFunction, size, reward, accounts[0])
     await app.issueTask(accounts[0], digest, hashFunction, size, reward, accounts[0])
     const check2 = await app.multipleContribute([1,2],[40,40])
     task = await app.getTask(1)
-    assert.equal(task[1].c[0], reward + contribution, 'The contribution should have been added')
+    assert.equal(task[1].toNumber(), reward + contribution, 'The contribution should have been added')
     task = await app.getTask(1)
-    assert.equal(task[1].c[0], reward + contribution, 'The contribution should have been added')
+    assert.equal(task[1].toNumber(), reward + contribution, 'The contribution should have been added')
     await app.sync(["0xb4124ceb3451635dacedd11767f004d8a28c6ee7"], [0, 0, 0, 3, 2, reward, 1, reward, 0, reward, 0], [], [])
     task = await app.getTask(0)
-    assert.equal(task[1].c[0], reward*2 + contribution, 'The contribution should have been added')
+    assert.equal(task[1].toNumber(), reward*2 + contribution, 'The contribution should have been added')
     task = await app.getTask(1)
-    assert.equal(task[1].c[0], reward*2 + contribution, 'The contribution should have been added')
+    assert.equal(task[1].toNumber(), reward*2 + contribution, 'The contribution should have been added')
     task = await app.getTask(2)
-    assert.equal(task[1].c[0], reward*2 + contribution, 'The contribution should have been added')
+    assert.equal(task[1].toNumber(), reward*2 + contribution, 'The contribution should have been added')
 
     //sync
     const check3 = await app.sync([accounts[0]],  [0, 0, 0, 2, 1, reward, 0, reward, 0], [], [])
     task = await app.getTask(0)
-    assert.equal(task[1].c[0], reward*3 + contribution, 'The contribution should have been added')
+    assert.equal(task[1].toNumber(), reward*3 + contribution, 'The contribution should have been added')
     task = await app.getTask(1)
-    assert.equal(task[1].c[0], reward*3 + contribution, 'The contribution should have been added')
+    assert.equal(task[1].toNumber(), reward*3 + contribution, 'The contribution should have been added')
     console.log('Single  : ', check1.receipt.gasUsed)
     console.log('Multiple: ', check2.receipt.gasUsed)
     console.log('Sync    : ', check3.receipt.gasUsed)
@@ -180,7 +179,7 @@ contract('Task Board', async (accounts) => {
     const check1 = await app.assignTask(0, accounts[1])
     var task = await app.getTask(0)
     assert.equal(task[6], accounts[1], 'ThetTask should have had assignee')
-    assert.equal(task[2].c[0], 1, 'The task should have been mooved in stage assigned')
+    assert.equal(task[2].toNumber(), 1, 'The task should have been mooved in stage assigned')
 
     await app.issueTask(accounts[0], digest, hashFunction, size, reward, accounts[0])
     await app.issueTask(accounts[0], digest, hashFunction, size, reward, accounts[0])
@@ -188,20 +187,20 @@ contract('Task Board', async (accounts) => {
 
     task = await app.getTask(1)
     assert.equal(task[6], accounts[1], 'ThetTask should have had assignee')
-    assert.equal(task[2].c[0], 1, 'The task should have been mooved in stage assigned')
+    assert.equal(task[2].toNumber(), 1, 'The task should have been mooved in stage assigned')
     task = await app.getTask(2)
     assert.equal(task[6], accounts[1], 'ThetTask should have had assignee')
-    assert.equal(task[2].c[0], 1, 'The task should have been mooved in stage assigned')
+    assert.equal(task[2].toNumber(), 1, 'The task should have been mooved in stage assigned')
     await app.issueTask(accounts[0], digest, hashFunction, size, reward, accounts[0])
     await app.issueTask(accounts[0], digest, hashFunction, size, reward, accounts[0])
     //sync
     const check3 = await app.sync([accounts[0]],  [0, 0, 0, 0, 2, 4, 3], [1, 1], [])
     task = await app.getTask(3)
     assert.equal(task[6], accounts[0], 'ThetTask should have had assignee')
-    assert.equal(task[2].c[0], 1, 'The task should have been mooved in stage assigned')
+    assert.equal(task[2].toNumber(), 1, 'The task should have been mooved in stage assigned')
     task = await app.getTask(4)
     assert.equal(task[6], accounts[0], 'ThetTask should have had assignee')
-    assert.equal(task[2].c[0], 1, 'The task should have been mooved in stage assigned')
+    assert.equal(task[2].toNumber(), 1, 'The task should have been mooved in stage assigned')
 
     console.log('Single  : ', check1.receipt.gasUsed)
     console.log('Multiple: ', check2.receipt.gasUsed)
@@ -219,20 +218,20 @@ contract('Task Board', async (accounts) => {
     await app.assignMultipleTasks([0,1,2], [accounts[1],accounts[1],accounts[1]])
     const check1 = await app.changeSingleState(0, stage)
     var task = await app.getTask(0)
-    assert.equal(task[2].c[0], stage, 'The task\'s stage should have been changed')
+    assert.equal(task[2].toNumber(), stage, 'The task\'s stage should have been changed')
     const check2 = await app.changeMultipleState([1,2], [2,2])
     task = await app.getTask(1)
-    assert.equal(task[2].c[0], 2, 'The task\'s stage should have been changed')
+    assert.equal(task[2].toNumber(), 2, 'The task\'s stage should have been changed')
     task = await app.getTask(2)
-    assert.equal(task[2].c[0], 2, 'The task\'s stage should have been changed')
+    assert.equal(task[2].toNumber(), 2, 'The task\'s stage should have been changed')
 
     //sync
     const check3 = await app.sync(["0xb4124ceb3451635dacedd11767f004d8a28c6ee7"], [0, 0, 0, 0, 2, 1, 0], [stage, stage], [])
 
     task = await app.getTask(1)
-    assert.equal(task[2].c[0], stage, 'The task\'s stage should have been changed')
+    assert.equal(task[2].toNumber(), stage, 'The task\'s stage should have been changed')
     task = await app.getTask(0)
-    assert.equal(task[2].c[0], stage, 'The task\'s stage should have been changed')
+    assert.equal(task[2].toNumber(), stage, 'The task\'s stage should have been changed')
     console.log('Single  : ', check1.receipt.gasUsed)
     console.log('Multiple: ', check2.receipt.gasUsed)
     console.log('Sync    : ', check3.receipt.gasUsed)
@@ -248,17 +247,17 @@ contract('Task Board', async (accounts) => {
 
     const check1 = await app.changeSingleTaskData(0, newDigest, hashFunction+1, size+1)
     var task = await app.getTask(0)
-    var check = compareTask(task[0], task[1].c[0], task[2].c[0], task[3], task[4].c[0], task[5].c[0], task[6],
+    var check = compareTask(task[0], task[1].toNumber(), task[2].toNumber(), task[3], task[4].toNumber(), task[5].toNumber(), task[6],
       accounts[0], reward, 0, newDigest, hashFunction+1, size+1, account(0))
     assert.equal(true , check, 'The task\'s data should have been updated')
 
     const check2 = await app.changeMultipleTaskData([0,1,2], [newDigest,newDigest,newDigest], [hashFunction+1,hashFunction+1,hashFunction+1], [size+1,size+1,size+1])
     task = await app.getTask(1)
-    check = compareTask(task[0], task[1].c[0], task[2].c[0], task[3], task[4].c[0], task[5].c[0], task[6],
+    check = compareTask(task[0], task[1].toNumber(), task[2].toNumber(), task[3], task[4].toNumber(), task[5].toNumber(), task[6],
       accounts[0], reward, 0, newDigest, hashFunction+1, size+1, account(0))
     assert.equal(true , check, 'The task\'s data should have been updated')
     task = await app.getTask(2)
-    check = compareTask(task[0], task[1].c[0], task[2].c[0], task[3], task[4].c[0], task[5].c[0], task[6],
+    check = compareTask(task[0], task[1].toNumber(), task[2].toNumber(), task[3], task[4].toNumber(), task[5].toNumber(), task[6],
       accounts[0], reward, 0, newDigest, hashFunction+1, size+1, account(0))
     assert.equal(true , check, 'The task\'s data should have been updated')
 
@@ -267,15 +266,15 @@ contract('Task Board', async (accounts) => {
     const check3 = await app.sync(["0xb4124ceb3451635dacedd11767f004d8a28c6ee7"],
     [0, 3, 0, 1, 2, 0, 0, 0], [19, 33, 19, 33, 19, 33], [newDigest, newDigest, newDigest])
     task = await app.getTask(0)
-    var check = compareTask(task[0], task[1].c[0], task[2].c[0], task[3], task[4].c[0], task[5].c[0], task[6],
+    var check = compareTask(task[0], task[1].toNumber(), task[2].toNumber(), task[3], task[4].toNumber(), task[5].toNumber(), task[6],
       accounts[0], reward, 0, newDigest, hashFunction+1, size+1, account(0))
     assert.equal(true , check, 'The task\'s data should have been updated')
     task = await app.getTask(1)
-    check = compareTask(task[0], task[1].c[0], task[2].c[0], task[3], task[4].c[0], task[5].c[0], task[6],
+    check = compareTask(task[0], task[1].toNumber(), task[2].toNumber(), task[3], task[4].toNumber(), task[5].toNumber(), task[6],
       accounts[0], reward, 0, newDigest, hashFunction+1, size+1, account(0))
     assert.equal(true , check, 'The task\'s data should have been updated')
     task = await app.getTask(2)
-    check = compareTask(task[0], task[1].c[0], task[2].c[0], task[3], task[4].c[0], task[5].c[0], task[6],
+    check = compareTask(task[0], task[1].toNumber(), task[2].toNumber(), task[3], task[4].toNumber(), task[5].toNumber(), task[6],
       accounts[0], reward, 0, newDigest, hashFunction+1, size+1, account(0))
     assert.equal(true , check, 'The task\'s data should have been updated')
     console.log('Single  : ', check1.receipt.gasUsed)
@@ -292,8 +291,8 @@ contract('Task Board', async (accounts) => {
 
     const check1 = await app.killSingleTask(0)
     var task = await app.getTask(0)
-    assert.equal(task[2].c[0], 5, 'The task should have been deleted')
-    assert.equal(task[1].c[0], 0, 'The task should have been deleted')
+    assert.equal(task[2].toNumber(), 5, 'The task should have been deleted')
+    assert.equal(task[1].toNumber(), 0, 'The task should have been deleted')
 
     const rewardTokenAddress = await tokenManagerApp.rewardToken.call()
     const rewardTokenInstance = MiniMeToken.at(rewardTokenAddress)
@@ -302,11 +301,11 @@ contract('Task Board', async (accounts) => {
       'The contract\'s balance should have increased in the Reward Token contract')
     const check2 = await app.killMultipleTask([1,2])
     task = await app.getTask(1)
-    assert.equal(task[2].c[0], 5, 'The task should have been deleted')
-    assert.equal(task[1].c[0], 0, 'The task should have been deleted')
+    assert.equal(task[2].toNumber(), 5, 'The task should have been deleted')
+    assert.equal(task[1].toNumber(), 0, 'The task should have been deleted')
     task = await app.getTask(2)
-    assert.equal(task[2].c[0], 5, 'The task should have been deleted')
-    assert.equal(task[1].c[0], 0, 'The task should have been deleted')
+    assert.equal(task[2].toNumber(), 5, 'The task should have been deleted')
+    assert.equal(task[1].toNumber(), 0, 'The task should have been deleted')
     contractBalance = await rewardTokenInstance.balanceOf.call(app.address)
     assert.equal(0, contractBalance.toNumber(),
       'The contract\'s balance should have increased in the Reward Token contract')
@@ -317,11 +316,11 @@ contract('Task Board', async (accounts) => {
     //sync
     const check3 = await app.sync(["0xb4124ceb3451635dacedd11767f004d8a28c6ee7"], [0, 0, 2, 3, 4, 0, 0], [], [])
     task = await app.getTask(3)
-    assert.equal(task[2].c[0], 5, 'The task should have been deleted')
-    assert.equal(task[1].c[0], 0, 'The task should have been deleted')
+    assert.equal(task[2].toNumber(), 5, 'The task should have been deleted')
+    assert.equal(task[1].toNumber(), 0, 'The task should have been deleted')
     task = await app.getTask(4)
-    assert.equal(task[2].c[0], 5, 'The task should have been deleted')
-    assert.equal(task[1].c[0], 0, 'The task should have been deleted')
+    assert.equal(task[2].toNumber(), 5, 'The task should have been deleted')
+    assert.equal(task[1].toNumber(), 0, 'The task should have been deleted')
     contractBalance = await rewardTokenInstance.balanceOf.call(app.address)
     assert.equal(0, contractBalance.toNumber(),
       'The contract\'s balance should have increased in the Reward Token contract')
@@ -343,27 +342,27 @@ contract('Task Board', async (accounts) => {
     await app.changeMultipleState([0,1,2,3,4], [stage,stage,stage,stage,stage])
     const check1 = await app.giveSingleReward(0);
     var task = await app.getTask(0)
-    assert.equal(task[2].c[0], 4, 'The task\'s stage should have been changed')
-    assert.equal(task[1].c[0], 0, 'The task\'s balance should have been changed to 0')
+    assert.equal(task[2].toNumber(), 4, 'The task\'s stage should have been changed')
+    assert.equal(task[1].toNumber(), 0, 'The task\'s balance should have been changed to 0')
 
     const check2 = await app.giveMultipleReward([1,2]);
     task = await app.getTask(1)
-    assert.equal(task[2].c[0], 4, 'The task\'s stage should have been changed')
-    assert.equal(task[1].c[0], 0, 'The task\'s balance should have been changed to 0')
+    assert.equal(task[2].toNumber(), 4, 'The task\'s stage should have been changed')
+    assert.equal(task[1].toNumber(), 0, 'The task\'s balance should have been changed to 0')
 
     task = await app.getTask(2)
-    assert.equal(task[2].c[0], 4, 'The task\'s stage should have been changed')
-    assert.equal(task[1].c[0], 0, 'The task\'s balance should have been changed to 0')
+    assert.equal(task[2].toNumber(), 4, 'The task\'s stage should have been changed')
+    assert.equal(task[1].toNumber(), 0, 'The task\'s balance should have been changed to 0')
 
     //sync
     const check3 =  await app.sync(["0xb4124ceb3451635dacedd11767f004d8a28c6ee7"], [0, 0, 0, 0, 2, 3, 4], [4,4], [])
     task = await app.getTask(3)
-    assert.equal(task[2].c[0], 4, 'The task\'s stage should have been changed')
-    assert.equal(task[1].c[0], 0, 'The task\'s balance should have been changed to 0')
+    assert.equal(task[2].toNumber(), 4, 'The task\'s stage should have been changed')
+    assert.equal(task[1].toNumber(), 0, 'The task\'s balance should have been changed to 0')
 
     task = await app.getTask(4)
-    assert.equal(task[2].c[0], 4, 'The task\'s stage should have been changed')
-    assert.equal(task[1].c[0], 0, 'The task\'s balance should have been changed to 0')
+    assert.equal(task[2].toNumber(), 4, 'The task\'s stage should have been changed')
+    assert.equal(task[1].toNumber(), 0, 'The task\'s balance should have been changed to 0')
 
     console.log('Single  : ', check1.receipt.gasUsed)
     console.log('Multiple: ', check2.receipt.gasUsed)

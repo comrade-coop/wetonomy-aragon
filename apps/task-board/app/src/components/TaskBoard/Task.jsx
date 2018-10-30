@@ -27,11 +27,14 @@ const assignee = (user, props) => {
   if (user === props.task.assignee && props.task.column < 3) {
     return <Finish onClick={props.onFinishTask}>Finish</Finish>
   }
-  return (
-    <UserAvatar>
-      <Avatar seed={props.task.assignee} />
-    </UserAvatar>
-  )
+  if(props.task.assignee !== null) {
+    return (
+      <UserAvatar>
+        <Avatar seed={props.task.assignee} />
+      </UserAvatar>
+    )
+  }
+  else return ''
 }
 
 const getBackground = props => {
@@ -59,11 +62,10 @@ const getErrorMsg = error => {
 
 const Task = props => (
   <TaskHolder
+    id={'task' + props.task.id}
     draggable="true"
     onDragStart={event => props.drag(event)}
-    onDragEnd={event => props.dragEnd(event)}
-    // onClick = {props.handleTaskPanelToggle}
-    id={'task' + props.task.id}>
+    onDragEnd={event => props.dragEnd(event)}>
     {props.error || props.task.type ? (
       <Fade onClick={props.clearError} style={getBackground(props)}>
         <Error style={getBackground(props)}>
@@ -139,7 +141,7 @@ const Task = props => (
           </TopContainer>
         </Div>
       </Absolut>
-      {props.task.assignee === null ? (
+      {props.task.assignee === null && props.task.issuer !== props.user ? (
         <Accept onClick={props.onAcceptTask}>Accept Task</Accept>
       ) : (
         assignee(props.user, props)

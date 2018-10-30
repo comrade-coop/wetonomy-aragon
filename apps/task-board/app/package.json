@@ -41,7 +41,7 @@
     "prettier-eslint": "^8.8.2"
   },
   "scripts": {
-    "start": "npm run sync-assets && react-scripts start",
+    "start": "npm run sync-assets && PORT=3001 react-scripts start",
     "build": "npm run sync-assets && npm run build:script && react-scripts build",
     "build:script": "parcel build src/contractWorker.js -d public/ --out-file script.js",
     "sync-assets": "copy-aragon-ui-assets ./public",
