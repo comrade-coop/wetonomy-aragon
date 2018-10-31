@@ -9,6 +9,7 @@ class ExploreScreen extends Component {
   renderPosts() {
     return this.props.tasks.map(task => (
       <ExplorePost
+        user={this.props.user}
         task={task}
         onAcceptClick={this.handleAcceptClick}
         key={task.id}
@@ -70,7 +71,8 @@ const ExploreScreenContainer = styled.section`
 
 const mapStateToProps = state => ({
   tasks: state.tasks.tasks,
-  realTasks: state.tasks.realTasks
+  realTasks: state.tasks.realTasks,
+  user: state.tasks.currentUser
 })
 
 export default connect(mapStateToProps)(ExploreScreen)

@@ -17,11 +17,11 @@ class BoardScreen extends React.Component {
     var target = ev.target.closest('.droppable')
     var task = document.getElementById(data)
     task.style.visibility = 'visible'
-    const stage = target.id[[target.id.length - 1]]
-
-    task = this.props.tasks.filter(t => t.id === task.id.slice(4))[0]
-
-    const realTasks = this.props.realTasks.filter(t => t.id === task.id)[0]
+    const stage = parseInt(target.id[[target.id.length - 1]])
+    var id = parseInt(task.id.slice(4))
+    task = this.props.tasks.find(t => t.id === id)
+    
+    const realTasks = this.props.realTasks.find(t => t.id === id)
     const { dispatch } = this.props
     if (realTasks && task.type === TASK_TYPES.BASE) {
       if (realTasks.column !== 4) {

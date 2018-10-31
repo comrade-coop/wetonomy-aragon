@@ -23,7 +23,7 @@ export const initialState = {
   currentTask: null,
   currentUser: '',
   errors: [],
-  balance: 0
+  userTokens: {reward: 0, dao: 0}
 }
 
 export default (state = initialState, action) => {
@@ -61,7 +61,7 @@ export default (state = initialState, action) => {
 
 const loadAccount = (state, payload) => {
   console.log(payload)
-  return { ...state, balance: parseInt(payload.account) }
+  return { ...state, userTokens: payload.account, currentUser: payload.user }
 }
 
 const reduceFullState = (state, contractState) => {
@@ -109,7 +109,7 @@ const acceptTask = (state, payload) => {
       item._project,
       item._tags,
       item._difficulty,
-      payload.stage, //updating column
+      parseInt(payload.stage), //updating column
       item._tokens,
       state.currentUser, //updating assignee
       item._issuer
@@ -196,7 +196,7 @@ const finishTask = (state, payload) => {
 }
 const reloadTask = (state, payload) => {
   if (payload.task.type !== TASK_TYPES.NEW) {
-    const task = state.realTasks.filter(task => task.id === payload.task.id)[0]
+    const task = state.realTasks.find(task => task.id === payload.task.id)
     var newTasks = state.tasks.map(item => {
       if (item.id !== payload.task.id) {
         // This isn't the item we care about - keep it as-is
@@ -207,7 +207,7 @@ const reloadTask = (state, payload) => {
     return { ...state, tasks: [...newTasks] }
   } else {
     const index = state.tasks.indexOf(
-      state.tasks.filter(task => task.id === payload.task.id)[0]
+      state.tasks.find(task => task.id === payload.task.id)
     )
     return {
       ...state,
@@ -229,7 +229,7 @@ const moveTask = (state, payload) => {
       item._project,
       item._tags,
       item._difficulty,
-      payload.stage, //updating column
+      parseInt(payload.stage), //updating column
       item._tokens,
       item.assignee,
       item._issuer
@@ -286,7 +286,7 @@ const errorTask = (state, payload) => {
 }
 const clearError = (state, payload) => {
   const index = state.errors.indexOf(
-    state.errors.filter(error => error.id === payload.task.id)[0]
+    state.errors.find(error => error.id === payload.task.id)
   )
   return {
     ...state,

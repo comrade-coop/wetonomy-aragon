@@ -125,6 +125,7 @@ const loadCurrentAccount = () => {
   return new Promise((resolve, reject) => {
     try {
       app.accounts().subscribe(accounts => {
+        console.log('Accounts: ', accounts)
         const currentAccount = accounts[0]
         if (currentAccount) {
           resolve(currentAccount)

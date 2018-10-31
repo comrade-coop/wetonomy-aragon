@@ -84,9 +84,7 @@ class TaskContainer extends Component {
   }
 
   render() {
-    const error = this.props.errors.filter(
-      er => er.id === this.props.task.id
-    )[0]
+    const error = this.props.errors.find(er => er.id === this.props.task.id)
     return (
       <Task
         error={error}

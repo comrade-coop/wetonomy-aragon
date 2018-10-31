@@ -23,10 +23,29 @@ export const loadFullState = (window) => async(dispatch) => {
       payload: { ...state }
     })
   })
-  const acc = await Api.callReadMethod('getAccount','0xb4124ceb3451635dacedd11767f004d8a28c6ee7')
+  var user = await Api.loadCurrentAccount()
+  // Maybe remove in the future, for now needed for test purposes
+  setInterval(async() =>{
+    if (await  Api.loadCurrentAccount() !== user) {
+      user = await  Api.loadCurrentAccount()
+      const acc = await Api.callReadMethod('getAccount',user )
+      dispatch({
+        type: LOAD_ACCOUNT,
+        payload: { 
+          account: {reward: parseInt(acc[0]), dao: parseInt(acc[1])},
+          user: user
+        }
+      })
+    }
+  }, 100)
+
+  const acc = await Api.callReadMethod('getAccount',user )
   dispatch({
     type: LOAD_ACCOUNT,
-    payload: { account: acc[0] }
+    payload: { 
+      account: {reward: parseInt(acc[0]), dao: parseInt(acc[1])},
+      user: user
+    }
   })
 }
 export const reloadFullState = () => dispatch => {

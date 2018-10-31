@@ -16,7 +16,7 @@ class TaskPanelContainer extends Component {
 
   handleUpdateTask = (task) => {
     const { dispatch } = this.props
-    const realTask = this.props.real.filter(t => t.id === task.id)[0]
+    const realTask = this.props.real.find(t => t.id === task.id)
     const contrubute = task.tokens - parseInt(realTask.tokens)
     if(contrubute > 0) dispatch(contributeActivity(task, contrubute))
     let check = false
