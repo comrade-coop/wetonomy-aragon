@@ -9,7 +9,6 @@ contract InflationTimeTracking is TimeTracking {
     IRewardTokenManager public tokenManager;
 
     event TokensClaimed(address from);
-    event Balance(address from, uint totalSupply, uint amount);
     event Inflation(uint inflationBalance, uint totalInflationReleased);
 
     /**
@@ -35,6 +34,12 @@ contract InflationTimeTracking is TimeTracking {
     }
 
     function claim() external isInitialized onlyMember {
+        require(tokenManager.claimRewardTokensFor(msg.sender));
+        emit TokensClaimed(msg.sender);
+    }
+
+    function trackAndClaim(uint _hours) external isInitialized onlyMember {
+        _trackWork(_hours);
         require(tokenManager.claimRewardTokensFor(msg.sender));
         emit TokensClaimed(msg.sender);
     }

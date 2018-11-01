@@ -25,7 +25,7 @@
     "coverage": "npm run test",
     "test": "../shared/test-utils/truffle-test.sh",
     "compile": "aragon contracts compile --network rpc",
-    "build": "npm run compile && cd app && npm run build",
+    "build:project": "npm run compile && cd app && npm run build",
     "publish": "aragon apm publish --network rpc",
     "publish:rinkeby": "export LIVE_NETWORKS=true && aragon apm publish --network rinkeby --apm.ens-registry \"0xfbae32d1cde62858bc45f51efc8cc4fa1415447e\" --apm.ipfs.rpc \"http://ipfs.aragon.network:5001\"  --no-ipfs-check"
   },

@@ -1,7 +1,7 @@
 class TrackedHour {
   static MIN_NAME_LENGTH = 3
   static MAX_NAME_LENGTH = 30
-
+  
   constructor(id ,description, project, hours, date, tokens = 0, synced = false) {
     this.id = id
     this.description = description
@@ -45,11 +45,11 @@ class TrackedHour {
   }
 
   static isValidProject(name) {
-    return name.length > 0;
+    return name.length > 0
   }
 
   static isValidHours(hours) {
-    return hours > 0;
+    return hours > 0
   }
   set date(date) {
     this._date = date

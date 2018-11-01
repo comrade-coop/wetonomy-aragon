@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import TrackedHour from '../../models/TrackedHour'
 
 import {WORK_HOURS, WORK_MINUTES} from '../../utils/appConstants'
-import {PROJCETS} from '../../utils/dummyDataProvider'
+import {PROJECTS} from '../../utils/dummyDataProvider'
 
 
 class BaseTrackForm extends React.Component {
@@ -13,7 +13,7 @@ class BaseTrackForm extends React.Component {
     super(props)
     
     this.state = {
-        ...this.props.state, newProject: ''
+      ...this.props.state, newProject: ''
     }
   }
 
@@ -32,15 +32,13 @@ class BaseTrackForm extends React.Component {
   }
 
   _resetState = () => {
-    document.getElementById("new").style.display = 'none';
-    document.getElementById("new-btn").style.display = 'block';
+    document.getElementById('new').style.display = 'none'
+    document.getElementById('new-btn').style.display = 'block'
   }
 
   handleInputChange = (event) => {
     const target = event.target
-    const value = target.type === 'checkbox'
-      ? target.checked
-      : target.value
+    const value = target.value
     const name = target.name
 
     this.setState({[name]: value})
@@ -50,23 +48,18 @@ class BaseTrackForm extends React.Component {
     let {description, project, hours, minutes} = this.state
     hours = WORK_HOURS[hours]
     minutes = WORK_MINUTES[minutes]
-    project = PROJCETS[project]
+    project = PROJECTS[project]
     const parsedHours = parseInt(hours) + minutes/100
-    let date = new Date()
-    date.setDate(this.props.day)
-    console.log(parsedHours)
-    console.log(this.state)
-    date.setHours(0,0,0)
-    // setting id for test purpose
-    if(this.state.newProject != ''){
-        //project = this.state.newProject;
+    let date = this.props.day
+    if(this.state.newProject !== '') {
+      //project = this.state.newProject;
     }
-    let id = this.state.id;
-    if(id == 0 ) id = Date.now();
+    let id = this.state.id
+    if(id === 0 ) id = Date.now()
     try {
-      const trakcedHour = new TrackedHour(id, description, project, parsedHours, date)
-      console.log(trakcedHour)
-      this.props.handleTrackHour(trakcedHour);
+      const trackedHour = new TrackedHour(id, description, project, parsedHours, date)
+      console.log(trackedHour)
+      this.props.onTrackHour(trackedHour)
       this._resetState()
     } catch (error) {
       this.setState({error: error.message})
@@ -74,20 +67,20 @@ class BaseTrackForm extends React.Component {
     }
   }
   newProject= (event) => {
-    document.getElementById("new").style.display = 'block';
-    document.getElementById("new-btn").style.display = 'none';
-    event.target.style.width = "100px";
+    document.getElementById('new').style.display = 'block'
+    document.getElementById('new-btn').style.display = 'none'
+    event.target.style.width = '100px'
   }
   cancelNewProject= (event) => {
-    document.getElementById("new").style.display = 'none';
-    document.getElementById("new-btn").style.display = 'block';
-    event.target.style.width = "100px";
+    document.getElementById('new').style.display = 'none'
+    document.getElementById('new-btn').style.display = 'block'
+    event.target.style.width = '100px'
   }
   render() {
     return (
       <form>
         <Field label="Description:">
-          <TextInput.Multiline
+          <Description
             wide
             type="text"
             name="description"
@@ -95,14 +88,14 @@ class BaseTrackForm extends React.Component {
             onChange={this.handleInputChange}/>
         </Field>
         <Field label="Project">
-            <DropDown
-              wide
-              items={PROJCETS}
-              active={this.state.project}
-              onChange={this.handleProjectChange}
-            />            
+          <DropDown
+            wide
+            items={PROJECTS}
+            active={this.state.project}
+            onChange={this.handleProjectChange}
+          />            
         </Field>
-        <NewButton onClick={this.newProject}>New Project</NewButton>
+        {/* <NewButton onClick={this.newProject}>New Project</NewButton> */}
         <NewField id="new">
           <Field label="NewProject">
             <TextInput
@@ -133,10 +126,10 @@ class BaseTrackForm extends React.Component {
 
         <ActionButtonsContainer>
           <ActionButton mode="secondary" onClick={this.handleCancelClick}>Cancel</ActionButton>
-          <ActionButton mode="strong" onClick={this.handleNewTrackClick}>Add</ActionButton>
+          <ActionButton mode="strong" onClick={this.handleNewTrackClick}>Save</ActionButton>
         </ActionButtonsContainer>
         { this.props.delete &&
-          <Delete mode="strong" emphasis="negative" onClick={() => this.props.handleDeleteTrackHour(this.state.id)}>Delete</Delete>
+          <Delete mode="strong" emphasis="negative" onClick={() => this.props.onDeleteHour()}>Delete</Delete>
         }
       </form>
     )
@@ -144,8 +137,17 @@ class BaseTrackForm extends React.Component {
 }
 
 BaseTrackForm.propTypes = {
-  onClose: PropTypes.func.isRequired
+  day: PropTypes.instanceOf(Date).isRequired,
+  state: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onTrackHour: PropTypes.func.isRequired,
+  onDeleteHour: PropTypes.func,
+  delete: PropTypes.bool.isRequired
 }
+const Description = styled(TextInput.Multiline)`
+  min-height: 100px;
+`
+
 const CancelButton = styled(Button)`
   display:block;
   margin-left: auto;
@@ -166,11 +168,11 @@ const ActionButtonsContainer = styled.div `
 const Inbox = styled(Text)`
   margin: 15px;
 `
-const NewButton = styled(Button)`
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-`
+// const NewButton = styled(Button)`
+//   display: block;
+//   margin-left: auto;
+//   margin-right: auto;
+// `
 const NewField = styled.div`
   margin-left: auto;
   margin-right: auto;
