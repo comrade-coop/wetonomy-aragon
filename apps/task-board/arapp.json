@@ -3,13 +3,8 @@
   "version": "1.0.0",
   "roles": [
     {
-      "name": "Increment the counter",
-      "id": "INCREMENT_ROLE",
-      "params": []
-    },
-    {
-      "name": "Decrement the counter",
-      "id": "DECREMENT_ROLE",
+      "name": "Manage TaskBoard parameters",
+      "id": "TASKBOARD_MANAGER_ROLE",
       "params": []
     }
   ],

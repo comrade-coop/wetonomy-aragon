@@ -1,7 +1,6 @@
-pragma solidity 0.4.18;
+pragma solidity 0.4.24;
 
-
-import "@aragon/os/contracts/lib/minime/ITokenController.sol";
+import "@aragon/apps-shared-minime/contracts/ITokenController.sol";
 
 
 contract ITokenManager is ITokenController {

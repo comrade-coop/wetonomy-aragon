@@ -1,4 +1,4 @@
-pragma solidity 0.4.18;
+pragma solidity 0.4.24;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
 import "./interfaces/IMembers.sol";
@@ -28,8 +28,8 @@ contract Members is IMembers, AragonApp {
      * @param _initialReputation The new initial repuation
      */
     function setInitialReputation(uint _initialReputation) 
-        external        
-        // auth(MANAGE_MEMBERS_ROLE)        
+        external
+        auth(MANAGE_MEMBERS_ROLE)
     {
         initialReputation = _initialReputation;
     }
@@ -65,7 +65,7 @@ contract Members is IMembers, AragonApp {
         auth(MANAGE_MEMBERS_ROLE)
     {
         _setMemberLevel(_id, _level);
-        MemberUpdated(_id);
+        emit MemberUpdated(_id);
     }
     
     /**
@@ -78,7 +78,7 @@ contract Members is IMembers, AragonApp {
         auth(MANAGE_MEMBERS_ROLE)
     {
         _setMemberAddress(_id, _address);
-        MemberUpdated(_id);
+        emit MemberUpdated(_id);
     }
     
     /**
@@ -91,7 +91,7 @@ contract Members is IMembers, AragonApp {
         auth(MANAGE_MEMBERS_ROLE)
     {
         _setMemberName(_id, _name);
-        MemberUpdated(_id);
+        emit MemberUpdated(_id);
     }
     
     /**
@@ -104,7 +104,7 @@ contract Members is IMembers, AragonApp {
         auth(MANAGE_MEMBERS_ROLE)
     {
         _setMemberReputation(_id, _reputation);
-        MemberUpdated(_id);
+        emit MemberUpdated(_id);
     }
     
     function updateMember(uint _id, address _address, string _name, Level _level)
@@ -119,7 +119,7 @@ contract Members is IMembers, AragonApp {
         if (!member.name.compareTo(_name)) _setMemberName(_id, _name);
         if (member.level != _level) _setMemberLevel(_id, _level);
         
-        MemberUpdated(_id);
+        emit MemberUpdated(_id);
     }
     
     function getMembersCount() external view returns (uint) {
@@ -157,7 +157,7 @@ contract Members is IMembers, AragonApp {
         uint id = memberAddresses.push(_address) - 1;
         
         addressToMember[_address] = member;
-        MemberAdded(id, _address, _name);
+        emit MemberAdded(id, _address, _name);
     }
     
     function _removeMember(uint _id) 
@@ -175,7 +175,7 @@ contract Members is IMembers, AragonApp {
         }
         memberAddresses.length--;
         
-        MemberRemoved(memberAddress, member.name);
+        emit MemberRemoved(memberAddress, member.name);
     }
     
     function _setMemberLevel(uint _id, Level _level) 

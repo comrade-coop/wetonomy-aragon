@@ -1,9 +1,9 @@
-pragma solidity 0.4.18;
+pragma solidity 0.4.24;
 
 import "../../token-rewards-manager/contracts/interfaces/IRewardTokenManager.sol";
 import "../../members/contracts/interfaces/IMembers.sol";
 import "@aragon/os/contracts/apps/AragonApp.sol";
-import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
+import "@aragon/os/contracts/lib/math/SafeMath.sol";
 /// @title TaskBoard
 /// @dev Used to pay out individuals or groups for task fulfillment through
 /// stepwise work submission, acceptance, and payment
@@ -12,8 +12,7 @@ import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
 
 contract TaskBoard is AragonApp {
     using SafeMath for uint256;
-    bytes32 constant public INCREMENT_ROLE = keccak256("INCREMENT_ROLE");
-    // bytes32 constant public DECREMENT_ROLE = keccak256("DECREMENT_ROLE");
+    
     /*
     * Events
     */
@@ -27,12 +26,11 @@ contract TaskBoard is AragonApp {
     event IssuerTransferred(uint _taskId, address indexed _newIssuer);
     event PayoutIncreased(uint _taskId, uint _newFulfillmentAmount);
 
+    bytes32 constant public TASKBOARD_MANAGER_ROLE = keccak256("TASKBOARD_MANAGER_ROLE");
 
     /*
     * Storage
     */
-
-    address public owner;
 
     Task[] public tasks;
     mapping (uint => Multihash) private data;
@@ -172,7 +170,7 @@ contract TaskBoard is AragonApp {
             }  else {
                 // transitionToState will remove assignee if moveing from Assigned to Unassigned
                 transitionToState(ia[i], stages[hss[p]]);
-                TaskStageChange(ia[i], stages[hss[p]]);
+                emit TaskStageChange(ia[i], stages[hss[p]]);
             }
             p++;
         }
@@ -229,7 +227,7 @@ contract TaskBoard is AragonApp {
         Multihash memory entry = Multihash(_digest, _hashFunction, _size);
         data[tasks.length - 1] = entry;
         _transferTokensToContract(_amount);
-        TaskIssued(tasks.length - 1);
+        emit TaskIssued(tasks.length - 1);
         return (tasks.length - 1);
     }
 
@@ -275,7 +273,7 @@ contract TaskBoard is AragonApp {
         if (oldBalance > 0) {
             tokenManager.transfer(this, tasks[_taskId].issuer, oldBalance);
         }
-        TaskKilled(_taskId, msg.sender);
+        emit TaskKilled(_taskId, msg.sender);
     }
 
     function killMultipleTask(uint[] _taskId) external
@@ -370,10 +368,8 @@ contract TaskBoard is AragonApp {
    * Public functions
    */
     /// @dev TaskBoard(): instantiates
-    /// @param _owner the issuer of the TaskBoard contract, who has the
     /// ability to remove tasks
-    function initialize(address _owner, IMembers _members, IRewardTokenManager _tokenManager) public onlyInit {
-        owner = _owner;
+    function initialize(IMembers _members, IRewardTokenManager _tokenManager) public onlyInit {
         members = _members;
         tokenManager = _tokenManager;
         stages = [TaskStages.Unassigned, TaskStages.Assigned, TaskStages.InProgress,
@@ -408,7 +404,7 @@ contract TaskBoard is AragonApp {
         isAtStage(_taskId, TaskStages.Unassigned)
     {
         tasks[_taskId].arbiter = _newArbiter;
-        TaskChanged(_taskId);
+        emit TaskChanged(_taskId);
     }
 
     /// @dev getFulfillment(): Returns the fulfillment at a given index
@@ -423,8 +419,7 @@ contract TaskBoard is AragonApp {
         return (tasks[_taskId].balance);
     }
 
-    function setTokenManager(IRewardTokenManager _tokenManager) public {
-        require(msg.sender == owner);
+    function setTokenManager(IRewardTokenManager _tokenManager) public auth(TASKBOARD_MANAGER_ROLE) {
         tokenManager = _tokenManager;
     }
 
@@ -438,7 +433,7 @@ contract TaskBoard is AragonApp {
     {
         tasks[_taskId].assignee = _assignee;
         transitionToState(_taskId, TaskStages.Assigned);
-        TaskAssigned(_taskId, _assignee);
+        emit TaskAssigned(_taskId, _assignee);
     }
 
     /*
@@ -460,7 +455,7 @@ contract TaskBoard is AragonApp {
             tasks[_taskId].assignee = address(0);
         }
         tasks[_taskId].taskStage = _newStage;
-        TaskStageChange(_taskId, _newStage);
+        emit TaskStageChange(_taskId, _newStage);
     }
 
     function _createTask(
@@ -470,7 +465,7 @@ contract TaskBoard is AragonApp {
         uint256 _amount
     ) internal validateNotTooManyTasks returns (uint) {
         tasks.push(Task(_issuer, _assignee, _arbiter, TaskStages.Unassigned, _amount));
-        TaskIssued(tasks.length - 1);
+        emit TaskIssued(tasks.length - 1);
     }
 
     /// @dev contribute(): a function allowing anyone to contribute tokens to a
@@ -485,7 +480,7 @@ contract TaskBoard is AragonApp {
         amountIsNotZero(_amount)
     {
         tasks[_taskId].balance = tasks[_taskId].balance.add(_amount);
-        ContributionAdded(_taskId, msg.sender, _amount);
+        emit ContributionAdded(_taskId, msg.sender, _amount);
     }
 
     /// @dev killTask(): drains the contract of it's remaining
@@ -499,7 +494,7 @@ contract TaskBoard is AragonApp {
     {
         transitionToState(_taskId, TaskStages.Archive);
         tasks[_taskId].balance = 0;
-        TaskKilled(_taskId, msg.sender);
+        emit TaskKilled(_taskId, msg.sender);
     }
 
     function _giveReward(uint _taskId) internal
@@ -509,7 +504,7 @@ contract TaskBoard is AragonApp {
         enoughFundsToPay(_taskId)
     {
         transitionToState(_taskId, TaskStages.Done);
-        Rewarded(_taskId, tasks[_taskId].assignee);
+        emit Rewarded(_taskId, tasks[_taskId].assignee);
     }
 
     /// @dev changeData(): allows the issuer to change a Task's data
@@ -521,7 +516,7 @@ contract TaskBoard is AragonApp {
         isBeforeStage(_taskId)
     {
         data[_taskId] = Multihash(_digest, _hashFunction, _size);
-        TaskChanged(_taskId);
+        emit TaskChanged(_taskId);
     }
 
     function _transferTokensToContract(uint _amount) private {

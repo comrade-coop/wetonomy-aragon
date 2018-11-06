@@ -15,13 +15,16 @@ env:
 before_install:
   - npm i -g npm 
   - npm i -g lerna
-  
 install:
   - npm install
   - npm run bootstrap
   - npm run publish
 before_script:
   - npm prune
+  - wget https://dist.ipfs.io/go-ipfs/v0.4.17/go-ipfs_v0.4.17_linux-amd64.tar.gz -O go-ipfs.tar.gz
+  - tar xvfz go-ipfs.tar.gz
+  - cd go-ipfs
+  - sudo ./install.sh
 script:
   - npm run $TASK
 after_success:

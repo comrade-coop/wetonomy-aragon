@@ -1,7 +1,7 @@
 {
   "appName": "members.aragonpm.eth",
   "version": "1.0.0",
-  "roles": [    
+  "roles": [
     {
       "name": "Manage members of the DAO",
       "id": "MANAGE_MEMBERS_ROLE",

@@ -3,38 +3,47 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
+    "@aragon/apps-shared-minime": "^1.0.0",
+    "@aragon/apps-voting": "^2.0.0-beta.2",
     "@aragon/client": "^1.0.0-beta.8",
-    "@aragon/os": "3.1.9",
-    "@aragon/ui": "^0.11.0"
+    "@aragon/os": "^4.0.0-beta.3",
+    "@aragon/ui": "^0.11.0",
+    "minimetoken": "^0.2.0",
+    "opn": "^5.4.0",
+    "truffle": "^4.1.14"
   },
   "devDependencies": {
-    "@aragon/cli": "^4.0.6",
+    "@aragon/cli": "^5.2.0-beta.4",
     "@aragon/test-helpers": "^1.0.1",
     "babel-plugin-styled-components": "^1.5.1",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
     "coveralls": "^3.0.1",
+    "cross-env": "^5.2.0",
     "ganache-cli": "^6.1.5",
     "lcov-result-merger": "^1.2.0",
     "lerna": "^2.11.0",
     "parcel-bundler": "^1.8.1",
     "solhint": "^1.2.1",
-    "truffle": "4.0.5"
+    "typedarray-to-buffer": "^3.1.5"
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --no-hoist=@aragon/os",
     "clean": "git clean -fdxi",
-    "start": "npm run build:project && npm run publish && npm run start:kit",
-    "start:nb": "npm run publish && npm run start:kit",
-    "start:kit": "aragon run --kit WetonomyKit --kit-init @ARAGON_ENS",
-    "test": "lerna run --scope=wetonomy-* --concurrency=1 --stream test",
+    "start": "npm run publish && npm run start:kit",
+    "start:kit": "./scripts/run-kit.sh",
+    "test:kit": "cross-env CI=false ./scripts/test-kit.sh",
+    "test": "lerna run --scope=wetonomy-* --concurrency=1 --stream test && npm run test:kit",
     "coverage": "lerna run --scope=wetonomy-* --concurrency=1 --stream coverage",
     "lint": "solhint apps/**/contracts/*.sol contracts/*.sol",
     "compile": "aragon contracts compile && npm run lint",
-    "build:project": "npm run compile && lerna run --stream build:project",
+    "build:project": "npm run compile && lerna run --stream build",
     "publish": "lerna run --concurrency=1 --stream publish",
-    "devchain": "ganache-cli --db ~/.aragon/ganache-db-8545 --mnemonic \"explain tackle mirror kit van hammer degree position ginger unfair soup bonus\" --gasLimit 50000000"
+    "publish:rinkeby": "lerna run --concurrency=1 --stream publish:rinkeby",
+    "deploy:kit": "truffle deploy --network rpc",
+    "deploy:kit:rinkeby": "cross-env ENS=\"0xfbae32d1cde62858bc45f51efc8cc4fa1415447e\" truffle deploy --network rinkeby",
+    "devchain": "aragon devchain"
   },
   "keywords": [],
   "license": "MIT"

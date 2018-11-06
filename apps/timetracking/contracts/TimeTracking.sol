@@ -1,7 +1,7 @@
-pragma solidity 0.4.18;
+pragma solidity 0.4.24;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
-import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
+import "@aragon/os/contracts/lib/math/SafeMath.sol";
 import "./interfaces/IUnitsOfWork.sol";
 import "../../members/contracts/interfaces/IMembers.sol";
 
@@ -28,7 +28,8 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
 
     modifier onlyMember() {
         if (members != address(0)) {
-            var (accountAddress,) = members.getMemberByAddress(msg.sender);
+            address accountAddress;
+            (accountAddress, , , ) = members.getMemberByAddress(msg.sender);
             require(accountAddress != address(0));
         }
         _;
@@ -118,7 +119,7 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
         Period memory newPeriod = Period(now.add(periodLength), 0);
         uint periodsCount = periods.push(newPeriod);
 
-        PeriodCreated(_forAddress, periodsCount, newPeriod.endTimestamp);
+        emit PeriodCreated(_forAddress, periodsCount, newPeriod.endTimestamp);
     }
 
     function _trackWork(uint _hours) internal {
@@ -131,6 +132,6 @@ contract TimeTracking is IUnitsOfWork, AragonApp {
         lastPeriod.trackedHours = lastPeriod.trackedHours.add(_hours);
         addressToTrackedHours[msg.sender] = addressToTrackedHours[msg.sender].add(_hours);
 
-        HoursTracked(msg.sender, _hours);
+        emit HoursTracked(msg.sender, _hours);
     }
 }

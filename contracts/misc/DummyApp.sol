@@ -1,4 +1,4 @@
-pragma solidity 0.4.18;
+pragma solidity 0.4.24;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
 
@@ -8,8 +8,8 @@ import "@aragon/os/contracts/apps/AragonApp.sol";
 // which isn't considered to be a "valid" Aragon project.
 // It requires us to have an arrap.json file pointing to the contract
 // and a manifest.json file which describes the front-end structure.
-contract DummyApp is AragonApp {    
-    function initialize(string _name) onlyInit {
+contract DummyApp is AragonApp {
+    function initialize() onlyInit {
         initialized();
     }
 }

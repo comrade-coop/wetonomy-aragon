@@ -2,6 +2,7 @@
   "extends": "default",
   "rules": {
     "not-rely-on-time": false,
-    "separate-by-one-line-in-contract": false
+    "separate-by-one-line-in-contract": false,
+    "no-empty-blocks": false
   }
 }

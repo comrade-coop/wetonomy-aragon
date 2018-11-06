@@ -4,7 +4,10 @@ build
 dist
 .solhintignore
 lerna-debug.log
+*.log
 
+apps/*/app/public/script.js
+apps/*/app/public/script.map
 apps/*/build
 apps/*/app/build
 apps/*/dist

@@ -1,8 +1,8 @@
-pragma solidity 0.4.18;
+pragma solidity 0.4.24;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
-import "@aragon/os/contracts/lib/minime/MiniMeToken.sol";
-import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
+import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
+import "@aragon/os/contracts/lib/math/SafeMath.sol";
 import "./interfaces/IRewardTokenManager.sol";
 import "../../members/contracts/interfaces/IMembers.sol";
 
@@ -21,7 +21,7 @@ contract TokenRewardsManager is IRewardTokenManager, AragonApp {
     bytes32 constant public BURN_ROLE = keccak256("BURN_ROLE");
     bytes32 constant public TRANSFER_ROLE = keccak256("TRANSFER_ROLE");
     bytes32 constant public REWARD_ROLE = keccak256("REWARD_ROLE");
-    bytes32 constant public MANAGE_TOKENMANAGER_ROLE = keccak256("MANAGE_TOKENMANAGER_ROLE");
+    bytes32 constant public MANAGE_TOKEN_MANAGER_ROLE = keccak256("MANAGE_TOKEN_MANAGER_ROLE");
 
     IMembers public members;
     MiniMeToken public rewardToken;
@@ -69,7 +69,7 @@ contract TokenRewardsManager is IRewardTokenManager, AragonApp {
     function changeInflationMultiplier(uint _inflationMultiplier)
         external
         isInitialized
-        // auth(MANAGE_TOKENMANAGER_ROLE)
+        auth(MANAGE_TOKEN_MANAGER_ROLE)
     {
         inflationMultiplier = _inflationMultiplier;
     }
@@ -77,7 +77,7 @@ contract TokenRewardsManager is IRewardTokenManager, AragonApp {
     function changeRewardToDaoCourse(uint _rewardToDaoCourse)
         external
         isInitialized
-        // auth(MANAGE_TOKENMANAGER_ROLE)
+        auth(MANAGE_TOKEN_MANAGER_ROLE)
     {
         rewardToDaoCourse = _rewardToDaoCourse;
     }
@@ -117,7 +117,7 @@ contract TokenRewardsManager is IRewardTokenManager, AragonApp {
     function transfer(address _from, address _to, uint _amount)
         external
         isInitialized
-        //auth(TRANSFER_ROLE)
+        auth(TRANSFER_ROLE)
         returns (bool)
     {
         return rewardToken.transferFrom(_from, _to, _amount);
@@ -131,7 +131,7 @@ contract TokenRewardsManager is IRewardTokenManager, AragonApp {
     function reward(address _rewarder, address _receiver, uint _amount)
         external
         isInitialized
-        // auth(REWARD_ROLE)
+        auth(REWARD_ROLE)
         returns (bool)
     {
         require(_rewarder != _receiver);
@@ -140,13 +140,15 @@ contract TokenRewardsManager is IRewardTokenManager, AragonApp {
         uint daoTokensAmount = _amount.mul(rewardToDaoCourse);
         _mintDaoTokens(_receiver, daoTokensAmount);
 
-        RewardGiven(_rewarder, _receiver, _amount, rewardToDaoCourse);
+        emit RewardGiven(_rewarder, _receiver, _amount, rewardToDaoCourse);
         return true;
     }
 
     /// @notice Called when a member wants to claim his share of reward tokens
     function claimRewardTokens(address sender) external returns (bool) {
-        var (memberAddress, , , memberReputation) = members.getMemberByAddress(sender);
+        address memberAddress;
+        uint memberReputation;
+        (memberAddress, , , memberReputation) = members.getMemberByAddress(sender);
         uint membersCount = members.getMembersCount();
 
         require(memberAddress != address(0));
@@ -216,28 +218,28 @@ contract TokenRewardsManager is IRewardTokenManager, AragonApp {
         require(inflation > 0);
 
         inflationBalance = inflationBalance.add(inflation);
-        InflationGenerated(inflation);
+        emit InflationGenerated(inflation);
         return true;
     }
 
     function _mintRewardTokens(address _receiver, uint _amount) internal returns (bool) {
         require(rewardToken.generateTokens(_receiver, _amount));
-        RewardTokensMinted(_receiver, _amount);
+        emit RewardTokensMinted(_receiver, _amount);
         return true;
     }
 
     function _burnRewardTokens(address _owner, uint _amount) internal {
         rewardToken.destroyTokens(_owner, _amount);
-        RewardTokensBurned(_owner, _amount);
+        emit RewardTokensBurned(_owner, _amount);
     }
 
     function _mintDaoTokens(address _receiver, uint _amount) internal {
         daoToken.generateTokens(_receiver, _amount);
-        DaoTokensMinted(_receiver, _amount);
+        emit DaoTokensMinted(_receiver, _amount);
     }
 
     function _burnDaoTokens(address _owner, uint _amount) internal {
         daoToken.destroyTokens(_owner, _amount);
-        DaoTokensBurned(_owner, _amount);
+        emit DaoTokensBurned(_owner, _amount);
     }
 }
