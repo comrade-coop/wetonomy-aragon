@@ -29,7 +29,7 @@
     },
     {
       "name": "Gives Rights to manage the Token Manager",
-      "id": "MANAGE_TOKENMANAGER_ROLE",
+      "id": "MANAGE_TOKEN_MANAGER_ROLE",
       "params": []
     }
   ],

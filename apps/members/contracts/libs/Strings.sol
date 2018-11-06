@@ -1,4 +1,4 @@
-pragma solidity 0.4.18;
+pragma solidity 0.4.24;
 
 
 /**
@@ -173,7 +173,7 @@ library Strings {
 
         uint j = 0;
         for (uint i = uint(_offset); i < uint(_offset+_length); i++) {
-          _tmpBytes[j++] = _baseBytes[i];
+            _tmpBytes[j++] = _baseBytes[i];
         }
 
         return string(_tmpBytes);

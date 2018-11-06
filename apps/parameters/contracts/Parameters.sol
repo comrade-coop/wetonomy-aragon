@@ -1,8 +1,8 @@
-pragma solidity 0.4.18;
+pragma solidity 0.4.24;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
 import "@aragon/apps-voting/contracts/Voting.sol";
-import "@aragon/os/contracts/lib/minime/MiniMeToken.sol";
+import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
 import "../../members/contracts/Members.sol";
 import "../../timetracking/contracts/InflationTimeTracking.sol";
 import "../../token-rewards-manager/contracts/TokenRewardsManager.sol";

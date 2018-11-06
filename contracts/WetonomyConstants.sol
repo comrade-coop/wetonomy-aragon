@@ -1,6 +1,6 @@
-pragma solidity 0.4.18;
+pragma solidity 0.4.24;
 
-import "@aragon/os/contracts/apm/APMNamehash.sol";
+import "./misc/APMNamehashOpen.sol";
 
 
 contract WetonomyConstants is APMNamehash {
@@ -12,10 +12,11 @@ contract WetonomyConstants is APMNamehash {
     uint constant public DEFAULT_TIME_TRACKING_PERIOD_LENGTH_SECONDS = 30 * 60 * 60 * 24;
     uint constant public DEFAULT_MAX_HOURS_PER_PERIOD = 160;
 
-    bytes32 public tokenManagerId = apmNamehash("token-rewards-manager");
-    bytes32 public membersId = apmNamehash("members");
-    bytes32 public timetrackingId = apmNamehash("timetracking");
     bytes32 public votingId = apmNamehash("voting");
+    
+    bytes32 public membersId = apmNamehash("members");
+    bytes32 public tokenManagerId = apmNamehash("token-rewards-manager");
+    bytes32 public timeTrackingId = apmNamehash("timetracking");
     bytes32 public taskBoardId = apmNamehash("taskboard");
     bytes32 public parametersId = apmNamehash("parameters");
 }

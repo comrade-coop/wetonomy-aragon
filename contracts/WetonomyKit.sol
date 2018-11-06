@@ -1,11 +1,9 @@
-pragma solidity 0.4.18;
-
+pragma solidity 0.4.24;
 
 import "@aragon/apps-voting/contracts/Voting.sol";
-import "@aragon/apps-finance/contracts/Finance.sol";
-import "@aragon/os/contracts/lib/minime/MiniMeToken.sol";
+import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
 
-import "./KitBase.sol";
+import "./RewardsKitBase.sol";
 import "./WetonomyConstants.sol";
 import "../apps/members/contracts/Members.sol";
 import "../apps/timetracking/contracts/InflationTimeTracking.sol";
@@ -14,81 +12,83 @@ import "../apps/token-rewards-manager/contracts/TokenRewardsManager.sol";
 import "../apps/parameters/contracts/Parameters.sol";
 
 
-contract WetonomyKit is KitBase, WetonomyConstants {
+contract WetonomyKit is RewardsKitBase, WetonomyConstants {
 
-    MiniMeTokenFactory public tokenFactory;
+    constructor(DAOFactory _fac, ENS _ens, MiniMeTokenFactory _tokenFactory)
+        public RewardsKitBase(_fac, _ens, _tokenFactory) {}
 
-    function WetonomyKit(ENS ens) public KitBase(DAOFactory(0), ens) {
-        tokenFactory = new MiniMeTokenFactory();
-    }
-
-    function newInstance() public {
-        Kernel dao = fac.newDAO(this);
-        ACL acl = ACL(dao.acl());
-        acl.createPermission(this, dao, dao.APP_MANAGER_ROLE(), this);
-
-        address root = msg.sender;
+    function newInstance(MiniMeToken _rewardToken, MiniMeToken _daoToken) external returns(Kernel) {
+        Kernel dao = _createDAO();
 
         Members members = installMembersApp(dao);
-        TokenRewardsManager tokenManager = installTokenManager(dao, members);
-        TimeTracking timeTracking = installTimeTracking(dao, tokenManager, members);
-        TaskBoard taskBoard = installTaskBoard(dao, root, members, tokenManager);
-        //Change this to tokenManager.daoToken() 
-        MiniMeToken debtToken = tokenManager.rewardToken();
+        TokenRewardsManager tokenManager = installTokenManagerApp(
+            dao,
+            members,
+            _rewardToken,
+            _daoToken
+        );
+        Voting voting = installVotingApp(dao, tokenManager.daoToken());
 
-        Voting voting = installVotingApp(dao, debtToken);
-        Parameters parameters = installParametersApp(dao, voting, members, timeTracking, tokenManager);
-        
-        acl.createPermission(root, members, members.MANAGE_MEMBERS_ROLE(), root);
+        TimeTracking timeTracking = installTimeTrackingApp(
+            dao,
+            tokenManager,
+            members
+        );
+        TaskBoard taskBoard = installTaskBoardApp(
+            dao,
+            members,
+            tokenManager
+        );
+        Parameters parameters = installParametersApp(
+            dao,
+            voting,
+            members,
+            timeTracking,
+            tokenManager
+        );
 
-        acl.createPermission(root, parameters, parameters.CHANGE_PARAMETERS_ROLE(), root);
-        // acl.createPermission(parameters, members, members.MANAGE_MEMBERS_ROLE(), root);
-        // acl.createPermission(parameters, timeTracking, timeTracking.MANAGE_TRACKING_ROLE(), root);
-        acl.createPermission(parameters, tokenManager, tokenManager.MANAGE_TOKENMANAGER_ROLE(), root);
+        _configurePermissions(
+            dao,
+            msg.sender,
+            members,
+            tokenManager,
+            voting,
+            timeTracking,
+            taskBoard,
+            parameters
+        );
 
-        acl.createPermission(timeTracking, tokenManager, tokenManager.MINT_ROLE(), root);
-        
-        acl.createPermission(taskBoard, tokenManager, tokenManager.TRANSFER_ROLE(), root);
-        acl.createPermission(taskBoard, tokenManager, tokenManager.REWARD_ROLE(), root);
+        emit DeployInstance(dao);
 
-        acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root);
-
-        acl.createPermission(root, timeTracking, timeTracking.MANAGE_TRACKING_ROLE(), root);
-
-        acl.createPermission(root, taskBoard, taskBoard.INCREMENT_ROLE(), root);
-
-        // Clean up permissions
-        acl.grantPermission(root, dao, dao.APP_MANAGER_ROLE());
-        acl.revokePermission(this, dao, dao.APP_MANAGER_ROLE());
-        acl.setPermissionManager(root, dao, dao.APP_MANAGER_ROLE());
-
-        acl.grantPermission(root, acl, acl.CREATE_PERMISSIONS_ROLE());
-        acl.revokePermission(this, acl, acl.CREATE_PERMISSIONS_ROLE());
-        acl.setPermissionManager(root, acl, acl.CREATE_PERMISSIONS_ROLE());
-
-        DeployInstance(dao);
+        return dao;
     }
 
     function installMembersApp(Kernel _dao) public returns (Members) {
-        Members members = Members(_dao.newAppInstance(membersId, latestVersionAppBase(membersId)));
+        Members members = Members(_installApp(_dao, membersId));
         members.initialize(members.DEFAULT_INITIAL_REPUTATION());
         return members;
     }
 
-    function installTokenManager(Kernel _dao, IMembers _members) public returns (TokenRewardsManager) {
-        TokenRewardsManager tokenManager = TokenRewardsManager(
-            _dao.newAppInstance(tokenManagerId, latestVersionAppBase(tokenManagerId))
-        );
+    function installTokenManagerApp(
+        Kernel _dao,
+        IMembers _members,
+        MiniMeToken _rewardToken,
+        MiniMeToken _daoToken)
+        public
+        returns (TokenRewardsManager) 
+    {
+        require(_rewardToken != MiniMeToken(0), "The reward token contract should be valid");
+        require(_daoToken != MiniMeToken(0), "The DAO token contract should be valid");
 
-        MiniMeToken rewardToken = tokenFactory.createCloneToken(address(0), 0, "Reward token", 18, "RWD", true);
-        MiniMeToken debtToken = tokenFactory.createCloneToken(address(0), 0, "Debt token", 18, "DBT", true);
-        rewardToken.changeController(tokenManager);
-        debtToken.changeController(tokenManager);
+        TokenRewardsManager tokenManager = TokenRewardsManager(_installApp(_dao, tokenManagerId));
+        
+        _rewardToken.changeController(tokenManager);
+        _daoToken.changeController(tokenManager);
 
         tokenManager.initialize(
             _members,
-            rewardToken,
-            debtToken,
+            _rewardToken,
+            _daoToken,
             DEFAULT_REWARD_TO_DAO_COURSE,
             DEFAULT_INFLATION_MULTIPLIER
         );
@@ -96,18 +96,14 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         return tokenManager;
     }
 
-    function installTimeTracking(
+    function installTimeTrackingApp(
         Kernel _dao, 
         IRewardTokenManager _tokenManager, 
         IMembers _members) 
-        public 
+        public
         returns (TimeTracking)
     {
-        InflationTimeTracking timeTracking = InflationTimeTracking(
-            _dao.newAppInstance(timetrackingId,
-            latestVersionAppBase(timetrackingId))
-        );
-
+        InflationTimeTracking timeTracking = InflationTimeTracking(_installApp(_dao, timeTrackingId));
         timeTracking.initialize(
             _tokenManager,
             _members,
@@ -118,31 +114,24 @@ contract WetonomyKit is KitBase, WetonomyConstants {
         return timeTracking;
     }
     
-    function installTaskBoard(
+    function installTaskBoardApp(
         Kernel _dao, 
-        address _root,
         IMembers _members,
-        IRewardTokenManager _tokenManager
-        ) public returns (TaskBoard) 
+        IRewardTokenManager _tokenManager)
+        public
+        returns (TaskBoard)
     {
-
-        TaskBoard taskBoard = TaskBoard(
-            _dao.newAppInstance(taskBoardId, latestVersionAppBase(taskBoardId)));
-
+        TaskBoard taskBoard = TaskBoard(_installApp(_dao, taskBoardId));
         taskBoard.initialize(
-            _root,
             _members,
             _tokenManager
         );
-
         return taskBoard;
     }
     function installParametersApp(Kernel _dao, Voting _voting, Members _members, TimeTracking _timeTracking, 
             TokenRewardsManager _tokenManager) public returns (Parameters) 
     {
-
-        Parameters parameters = Parameters(
-            _dao.newAppInstance(parametersId, latestVersionAppBase(parametersId)));
+        Parameters parameters = Parameters(_installApp(_dao, parametersId));
 
         parameters.initialize(_voting, _members, _timeTracking, _tokenManager);
 
@@ -150,10 +139,57 @@ contract WetonomyKit is KitBase, WetonomyConstants {
     }
 
     function installVotingApp(Kernel _dao, MiniMeToken _token) public returns(Voting) {
-        Voting voting = Voting(_dao.newAppInstance(votingId, latestVersionAppBase(votingId)));
-        voting.initialize(_token, 50 * PCT, 20 * PCT, 1 days);
-
+        Voting voting = Voting(_installApp(_dao, votingId));
+        voting.initialize(_token, uint64(50 * PCT), uint64(20 * PCT), 1 days);
         return voting;
     }
 
+    function _configurePermissions(
+        Kernel _dao,
+        address _root,
+        Members _members,
+        TokenRewardsManager _tokenManager,
+        Voting _voting,
+        TimeTracking _timeTracking,
+        TaskBoard _taskBoard,
+        Parameters _parameters
+    ) internal
+    {
+        ACL acl = ACL(_dao.acl());
+
+        // Members
+        acl.createPermission(_root, _members, _members.MANAGE_MEMBERS_ROLE(), this);
+        acl.grantPermission(_voting, _members, _members.MANAGE_MEMBERS_ROLE());
+
+        // TimeTracking
+        acl.createPermission(_root, _timeTracking, _timeTracking.MANAGE_TRACKING_ROLE(), this);
+        acl.grantPermission(_voting, _timeTracking, _timeTracking.MANAGE_TRACKING_ROLE());
+        
+        // // TaskBoard
+        acl.createPermission(_voting, _taskBoard, _taskBoard.TASKBOARD_MANAGER_ROLE(), _root);
+
+        // // // Voting
+        acl.createPermission(ANY_ENTITY, _voting, _voting.CREATE_VOTES_ROLE(), _root);
+        
+        // // // TokenManager
+        acl.createPermission(_timeTracking, _tokenManager, _tokenManager.MINT_ROLE(), _root);
+        acl.createPermission(_taskBoard, _tokenManager, _tokenManager.TRANSFER_ROLE(), _root);
+        acl.createPermission(_taskBoard, _tokenManager, _tokenManager.REWARD_ROLE(), _root);
+        acl.createPermission(_voting, _tokenManager, _tokenManager.MANAGE_TOKEN_MANAGER_ROLE(), _root);
+
+        // Parameters
+        acl.createPermission(_root, _parameters, _parameters.CHANGE_PARAMETERS_ROLE(), _root);
+
+        // Clean up permissions
+        acl.grantPermission(_root, _dao, _dao.APP_MANAGER_ROLE());
+        acl.revokePermission(this, _dao, _dao.APP_MANAGER_ROLE());
+        acl.setPermissionManager(_root, _dao, _dao.APP_MANAGER_ROLE());
+
+        acl.grantPermission(_root, acl, acl.CREATE_PERMISSIONS_ROLE());
+        acl.revokePermission(this, acl, acl.CREATE_PERMISSIONS_ROLE());
+        acl.setPermissionManager(_root, acl, acl.CREATE_PERMISSIONS_ROLE());
+
+        acl.setPermissionManager(_root, _members, _members.MANAGE_MEMBERS_ROLE());
+        acl.setPermissionManager(_root, _timeTracking, _timeTracking.MANAGE_TRACKING_ROLE());
+    }
 }
