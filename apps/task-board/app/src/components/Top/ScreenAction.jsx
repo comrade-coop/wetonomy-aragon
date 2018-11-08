@@ -8,7 +8,7 @@ const ScreenAction = ({ onNewTaskClick }) => (
   <ScreenActionRoot>
     <NavMenu />
     <ActionButtonsContainer>
-      <MarginedButton mode="outline">Post an Achievment</MarginedButton>
+      <MarginedButton mode="outline">Post an Achievеment</MarginedButton>
       <MarginedButton mode="strong" onClick={onNewTaskClick}>Add a New Task</MarginedButton>
     </ActionButtonsContainer>
   </ScreenActionRoot>

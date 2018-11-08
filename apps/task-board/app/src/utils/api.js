@@ -26,11 +26,28 @@ export const callReadMethod = (method, ...args) => {
     }
   })
 }
+export const loadCurrentAccount = async() => {
+  return new Promise((resolve, reject) => {
+    try {
+      app.accounts().subscribe(accounts => {
+        const currentAccount = accounts[0]
+        if (currentAccount) {
+          resolve(currentAccount)
+        } else {
+          reject('A valid account address wasn\'t found')
+        }
 
+      })
+    } catch (error) {
+      reject(error)
+    }    
+  })
+}
 
-export const addTask = task => {
+export const addTask = async (task) => {
   if (Task.isValidTask(task)) {
-    app.issueTask('0xb4124ceb3451635dacedd11767f004d8a28c6ee7','0x7c4bc6d00000000000000000000000000000000000000000000000000000000000000004',40,'0xb4124ceb3451635dacedd11767f004d8a28c6ee7')
+    const issuer = await loadCurrentAccount()
+    app.issueTask(issuer,'0x7c4bc6d00000000000000000000000000000000000000000000000000000000000000004',40,'0xb4124ceb3451635dacedd11767f004d8a28c6ee7')
   }
 }
 
@@ -41,15 +58,16 @@ export const syncActivities = (activities) => {
   // syncContributeActivities(activities)
   encodeActivities(activities)
 }
-export const encodeActivities = (activities) => {
-  let iaa = ['0xb4124ceb3451635dacedd11767f004d8a28c6ee7']
+export const encodeActivities = async (activities) => {
+  const issuer = await loadCurrentAccount()
+  let iaa = [issuer]
   let ia = []
   let hs = []
   let digest = []
   ia.push(activities.crudActivity.filter((task) => task.type === TASK_TYPES.NEW).length)
   activities.crudActivity.forEach((task) => {
     if (task.type === TASK_TYPES.NEW) {
-      iaa.push('0xb4124ceb3451635dacedd11767f004d8a28c6ee7')
+      iaa.push(issuer)
       iaa.push('0x0')
       const data = getBytes32FromMultiash('QmejGNNbBk62b51KVXCYNJKjPnhx7t6BckAzicSqKKqRtE')
       digest.push(data.digest)
@@ -87,12 +105,13 @@ export const encodeActivities = (activities) => {
   console.log(iaa, ia, hs, digest)
   app.sync(iaa, ia, hs, digest)
 }
-export const syncCreateActivities = (activities) => {
-  const issuer = '0xb4124ceb3451635dacedd11767f004d8a28c6ee7'
+export const syncCreateActivities = async(activities) => {
+  const issuer = await loadCurrentAccount()
   const data = activities.crudActivity.map(() => getBytes32FromMultiash('QmejGNNbBk62b51KVXCYNJKjPnhx7t6BckAzicSqKKqRtE'))
   const digest = data.map(d => d.digest)
   const hashFunction = data.map(d => d.hashFunction)
   const size = data.map(d => d.size)
+  // TODO REMOVE
   const arbiter = activities.crudActivity.map(() => '0xb4124ceb3451635dacedd11767f004d8a28c6ee7')
   const balance = activities.crudActivity.map(task => task.tokens)
   app.issueMultipleTasks(issuer, digest, hashFunction, size, arbiter, balance)
@@ -122,16 +141,14 @@ export const syncContributeActivities = (activities) => {
 
 export const updateTask = (oldTask, newTask) => {
   if (!Task.isValidTask(newTask) || Task.equals(oldTask, newTask)) {
-}
-
-  const taskId = oldTask.id
-
-  app.updateTask(
-    taskId,
-    newTask.address,
-    newTask.name,
-    newTask.level
-  )
+    const taskId = oldTask.id
+    app.updateTask(
+      taskId,
+      newTask.address,
+      newTask.name,
+      newTask.level
+    )
+  }
 }
 
 export const removeTask = task => {
@@ -146,9 +163,10 @@ export const contributeTokens = (task, tokens) => {
   }
 }
 
-export const acceptTask = task => {
+export const acceptTask = async(task) => {
+  const user = await loadCurrentAccount()
   if (Task.isValidTask(task)) {
-    app.assignTask(task.id, '0xd526444d0bf1f1d5c3c7fab0185ddeb255200562')
+    app.assignTask(task.id, user)
   }
 }
 

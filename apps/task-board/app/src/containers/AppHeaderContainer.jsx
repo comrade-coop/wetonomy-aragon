@@ -22,7 +22,8 @@ class AppHeaderContainer extends Component {
   render() {
     return (
       <AppHeader
-        rewardTokens={this.props.rewardTokens}
+        rewardTokens={this.props.userTokens.reward}
+        daoTokens={this.props.userTokens.dao}
         currentMember={this.props.currentMember}
         opened={this.props.opened}
         onNewTask={this.handleNewTask}
@@ -34,7 +35,7 @@ class AppHeaderContainer extends Component {
 
 
 const mapStateToProps = state => ({
-  rewardTokens: state.tasks.balance,
+  userTokens: state.tasks.userTokens,
   currentMember: state.tasks.currentUser,
   opened: state.activities.opened
 })

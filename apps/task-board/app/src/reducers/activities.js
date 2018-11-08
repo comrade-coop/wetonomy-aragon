@@ -55,7 +55,7 @@ const handleRemove = (state, payload) => {
       return item
     }
     check = true
-    var real = state.crudActivity.filter(task => task.id = payload.task.id)[0]
+    var real = state.crudActivity.find(task => task.id = payload.task.id)
     console.log(real)
     const task = new Task(real._id, real._workField, real._heading, real._description, real._project,
       real._tags, real._difficulty, real._column, real._tokens, real._assignee, real._issuer, TASK_TYPES.DELETED)
@@ -130,7 +130,7 @@ const handleStateChange = (state, payload) => {
 }
 
 const handleDelete = (state, payload) => {
-  const index = state[payload.type].indexOf(state[payload.type].filter(task => task.id === payload.task.id)[0])
+  const index = state[payload.type].indexOf(state[payload.type].find(task => task.id === payload.task.id))
   return {
     ...state, [payload.type]: [...state[payload.type].slice(0, index),
       ...state[payload.type].slice(index + 1)], count: state.count-1
