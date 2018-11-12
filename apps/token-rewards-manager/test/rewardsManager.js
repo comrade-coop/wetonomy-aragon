@@ -62,14 +62,14 @@ contract('TokenRewardsManager', async (accounts) => {
 
     await app.mint(mintPerMember)
 
-    await app.claimRewardTokens(accounts[0])
+    await app.claimRewardTokensFor(accounts[0])
 
     const balance = await rewardTokenInstance.balanceOf.call(accounts[0])
     assert.equal(mintPerMember * newMemberReputation * INFLATION_MULTIPLIER,
       balance.toNumber(),
       'The account\'s balance should have increased in the Reward Token contract')
 
-    await  app.claimRewardTokens(accounts[1])
+    await  app.claimRewardTokensFor(accounts[1])
 
     const balanceSecond = await rewardTokenInstance.balanceOf.call(accounts[1])
     assert.equal(mintPerMember * INFLATION_MULTIPLIER, balanceSecond.toNumber(),
@@ -82,8 +82,8 @@ contract('TokenRewardsManager', async (accounts) => {
     const rewardTokenInstance = MiniMeToken.at(rewardTokenAddress)
 
     await app.mint(mintPerMember)
-    await app.claimRewardTokens(accounts[0])
-    await app.claimRewardTokens(accounts[1])
+    await app.claimRewardTokensFor(accounts[0])
+    await app.claimRewardTokensFor(accounts[1])
 
     const balanceFrom = (await rewardTokenInstance.balanceOf.call(accounts[0])).toNumber()
     const balanceTo = (await rewardTokenInstance.balanceOf.call(accounts[1])).toNumber()
@@ -111,7 +111,7 @@ contract('TokenRewardsManager', async (accounts) => {
     const daoTokenAddress = await app.daoToken.call()
     const daoTokenInstance = MiniMeToken.at(daoTokenAddress)
 
-    await app.claimRewardTokens(accounts[0])
+    await app.claimRewardTokensFor(accounts[0])
 
     const initialRewardBalanceRewarder = (await rewardTokenInstance.balanceOf.call(rewarder)).toNumber()
     const initialDaoBalanceReceiver = (await daoTokenInstance.balanceOf.call(receiver)).toNumber()
@@ -137,15 +137,15 @@ contract('TokenRewardsManager', async (accounts) => {
     const account = accounts[0]
     const rewardAmount = 100
 
-    await app.claimRewardTokens(accounts[0])
+    await app.claimRewardTokensFor(accounts[0])
     await assertRevert(() => app.reward(account, account, rewardAmount))
   })
 
   it('shouldn\'t allow an address to claim his reward tokens more than once', async () => {
     await app.mint(10)
 
-    await app.claimRewardTokens(accounts[0])
-    await assertRevert(() => app.claimRewardTokens(accounts[0]))
+    await app.claimRewardTokensFor(accounts[0])
+    await assertRevert(() => app.claimRewardTokensFor(accounts[0]))
   })
 
 })

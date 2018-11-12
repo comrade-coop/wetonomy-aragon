@@ -77,7 +77,7 @@ contract('TaskBoard', async accounts => {
     await addMembers(membersApp, accounts)
     await membersApp.setMemberReputation(0, NEW_MEMBER_REPUTATION)
     await tokenManagerApp.mint(MINT_PER_MEMBER)
-    await tokenManagerApp.claimRewardTokens(accounts[0])
+    await tokenManagerApp.claimRewardTokensFor(accounts[0])
 
     const balance = await rewardTokenInstance.balanceOf.call(accounts[0])
     assert.equal(
@@ -86,7 +86,7 @@ contract('TaskBoard', async accounts => {
       "The account's balance should have increased in the Reward Token contract"
     )
 
-    await tokenManagerApp.claimRewardTokens(accounts[1])
+    await tokenManagerApp.claimRewardTokensFor(accounts[1])
 
     const balanceSecond = await rewardTokenInstance.balanceOf.call(accounts[1])
     assert.equal(
@@ -854,15 +854,15 @@ contract('TaskBoard', async accounts => {
   //   const account = accounts[0]
   //   const rewardAmount = 100
 
-  //   await tokenManagerApp.claimRewardTokens(accounts[0])
+  //   await tokenManagerApp.claimRewardTokensFor(accounts[0])
   //   await assertRevert(() => tokenManagerApp.reward(account, account, rewardAmount))
   // })
 
   // it('shouldn\'t allow an address to claim his reward tokens more than once', async () => {
   //   await tokenManagerApp.mint(10)
 
-  //   await tokenManagerApp.claimRewardTokens(accounts[0])
-  //   await assertRevert(() => tokenManagerApp.claimRewardTokens(accounts[0]))
+  //   await tokenManagerApp.claimRewardTokensFor(accounts[0])
+  //   await assertRevert(() => tokenManagerApp.claimRewardTokensFor(accounts[0]))
   // })
 })
 

@@ -35,7 +35,7 @@ contract InflationTimeTracking is TimeTracking {
     }
 
     function claim() external isInitialized onlyMember {
-        require(tokenManager.claimRewardTokens(msg.sender));
+        require(tokenManager.claimRewardTokensFor(msg.sender));
         emit TokensClaimed(msg.sender);
     }
 

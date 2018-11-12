@@ -145,10 +145,12 @@ contract TokenRewardsManager is IRewardTokenManager, AragonApp {
     }
 
     /// @notice Called when a member wants to claim his share of reward tokens
-    function claimRewardTokens(address sender) external returns (bool) {
+    /// @param _receiver Address of the member to claim tokens for
+    /// @return True if there are tokens for claiming
+    function claimRewardTokensFor(address _receiver) external returns (bool) {
         address memberAddress;
         uint memberReputation;
-        (memberAddress, , , memberReputation) = members.getMemberByAddress(sender);
+        (memberAddress, , , memberReputation) = members.getMemberByAddress(_receiver);
         uint membersCount = members.getMembersCount();
 
         require(memberAddress != address(0));
