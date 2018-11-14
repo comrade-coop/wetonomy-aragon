@@ -75,3 +75,6 @@ test
 - [**@aragon/os**](https://github.com/aragon/aragonos): Aragon interfaces
 - [**@aragon/client**](https://github.com/aragon/aragon.js/tree/master/packages/aragon-client): Wrapper for Aragon application RPC
 - [**@aragon/ui**](https://github.com/aragon/aragon-ui): Aragon UI components (in React)
+
+### Wiki
+- check out the [Wiki](https://github.com/comrade-coop/wetonomy/wiki) for more info on Wetonomy
