@@ -1,5 +1,6 @@
 import * as Api from '../utils/api'
 
+export const LOAD_FULL_STATE = 'LOAD_FULL_STATE'
 export const LOAD_PARAMETERS = 'LOAD_PARAMETERS'
 export const TOKEN_CHANGE = 'TOKEN_CHANGE'
 export const NOTIFICATIONS_ENABLED = 'NOTIFICATIONS_ENABLED'
@@ -16,8 +17,6 @@ export const tokenChartChange = (type) => dispatch =>(
     payload: type 
   })
 )
-
-export const LOAD_FULL_STATE = 'LOAD_FULL_STATE'
 
 export const loadFullState = (window) => async(dispatch) => {
   Api.initializeApp(window, state => {

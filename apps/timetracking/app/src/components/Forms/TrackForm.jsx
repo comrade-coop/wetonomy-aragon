@@ -1,39 +1,32 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import BaseTrackForm from "./BaseTrackForm"
-import TrackedHour from '../../models/TrackedHour'
-const initialState = {
-  id: 0,
-  description: '',
-  project: 0,
-  hours: 0,
-  minutes: 0,
-  error: null,
-}
+import BaseTrackForm from './BaseTrackForm'
 
-class TrackForm extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      ...initialState,
-    }
+export const TrackForm = (props) => {
+  const initialState = {
+    id: 0,
+    description: '',
+    project: 0,
+    hours: 0,
+    minutes: 0,
+    error: null,
   }
-
-  render() {
-    return (
-      <BaseTrackForm 
-        delete = {false} 
-        handleTrackHour={this.props.handleTrackHour}
-        day = { this.props.day }
-        onClose={this.props.onClose}
-        state = {this.state}
-      />
-    )
-  }
+  return (
+    <BaseTrackForm 
+      delete = {false} 
+      onTrackHour={props.onTrackHour}
+      day = { props.selectedDay }
+      onClose={props.onClose}
+      state = {initialState}
+    />
+  )
+  
 }
 
 TrackForm.propTypes = {
-  onClose: PropTypes.func.isRequired
+  selectedDay: PropTypes.instanceOf(Date),
+  onClose: PropTypes.func.isRequired,
+  onTrackHour: PropTypes.func.isRequired
 }
 
 export default TrackForm
