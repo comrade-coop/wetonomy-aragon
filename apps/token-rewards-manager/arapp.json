@@ -1,6 +1,4 @@
 {
-  "appName": "token-rewards-manager.aragonpm.eth",
-  "version": "1.0.0",
   "dependencies": [{
     "appName": "members.aragonpm.eth",
     "version": "^1.0.0",
@@ -33,5 +31,21 @@
       "params": []
     }
   ],
+  "environments": {
+    "rinkeby": {
+      "wsRPC": "wss://rinkeby.eth.aragon.network/ws",
+      "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
+      "appName": "token-rewards-manager.open.aragonpm.eth",
+      "network": "rinkeby"
+    },
+    "rpc": {
+      "network": "rpc",
+      "appName": "token-rewards-manager.aragonpm.eth"
+    },
+    "default": {
+      "network": "rpc",
+      "appName": "token-rewards-manager.aragonpm.eth"
+    }
+  },
   "path": "contracts/TokenRewardsManager.sol"
 }

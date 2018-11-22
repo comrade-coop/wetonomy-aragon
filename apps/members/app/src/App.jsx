@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import './utils/globalStyle'
 import MembersMain from './components/MembersMain'
 import NoMembersContainer from './containers/NoMembersContainer'
-import AppHeader from './components/AppHeader'
+import AppHeaderContainer from './containers/AppHeaderContainer'
 import MemberPanelContainer from './containers/MemberPanelContainer'
 
 class App extends React.Component {
@@ -18,7 +18,7 @@ class App extends React.Component {
   render() {
     return (
       <AragonApp>
-        <AppHeader currentMember={this.props.currentMember} />
+        <AppHeaderContainer />
         {this.renderMainContent()}
         <MemberPanelContainer />
       </AragonApp>
@@ -28,7 +28,6 @@ class App extends React.Component {
 
 const mapStateToProps = state => ({
   members: state.members.members,
-  currentMember: state.members.currentMember
 })
 
 export default connect(mapStateToProps)(App)

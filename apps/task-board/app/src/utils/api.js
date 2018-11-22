@@ -2,8 +2,10 @@ import Aragon, { providers } from '@aragon/client'
 import Task from '../models/Task'
 import { getBytes32FromMultiash } from './multihash'
 import { TASK_TYPES } from './appConstants'
+import IMembers from '../assets/IMembers.json'
 
 let app = null
+let members = null
 
 export const initializeApp = (window, subscription) => {
   app = new Aragon(new providers.WindowMessage(window))
@@ -11,7 +13,16 @@ export const initializeApp = (window, subscription) => {
     .map(state => ({ ...state }))
     .subscribe(subscription)
 }
-
+export const loadMember = async(member) =>{
+  app.call('members').subscribe(result => {
+    // console.log(result)
+    // console.log([IMembers])
+    members = app.external(result,IMembers.abi)
+    members.getMemberByAddress(member).subscribe(obj => console.log(obj))
+    
+  })
+  
+}
 export const callReadMethod = (method, ...args) => {
   return new Promise((resolve, reject) => {
     try {

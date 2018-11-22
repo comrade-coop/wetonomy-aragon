@@ -1,7 +1,9 @@
 const _ = require('lodash')
 const TokenRewardsManager = artifacts.require('TokenRewardsManager.sol')
-const MembersMock = artifacts.require('MembersMock.sol')
-
+const Members = artifacts.require('Members.sol')
+const Kernel = artifacts.require('Kernel')
+const ACL = artifacts.require('ACL')
+const DAOFactory = artifacts.require('DAOFactory')
 const MiniMeToken = artifacts.require('MiniMeToken.sol')
 const { assertRevert } = require('@aragon/test-helpers/assertThrow')
 
@@ -9,24 +11,66 @@ const REWARD_TO_DAO_COURSE = 2
 const INFLATION_MULTIPLIER = 100
 const MEMBERS_INITIAL_REPUTATION = 1
 
+const MEMBERS_ID = '0x01'
+const TOKEN_MANAGER_ID = '0x02'
+
 contract('TokenRewardsManager', async (accounts) => {
   let app
   let membersApp
+  const root = accounts[0]
+  const NULL_ADDRESS = '0x00'
+
+  before(async () => {
+    const kernelBase = await Kernel.new(true) // petrify immediately
+    const aclBase = await ACL.new()
+    daoFactory = await DAOFactory.new(
+      kernelBase.address,
+      aclBase.address,
+      NULL_ADDRESS
+    )
+
+    // Setup constants
+    APP_MANAGER_ROLE = await kernelBase.APP_MANAGER_ROLE()
+  })
 
   beforeEach(async () => {
+    const daoTx = await daoFactory.newDAO(root)
+    const dao = Kernel.at(
+      daoTx.logs.filter(log => log.event == 'DeployDAO')[0].args.dao
+    )
+    const acl = ACL.at(await dao.acl())
+
+    await acl.createPermission(root, dao.address, APP_MANAGER_ROLE, root, {
+      from: root
+    })
+
     const rewardTokenInstance = await createToken('Reward Token', 18, 'RWD', false)
     const daoTokenInstance = await createToken('DAO Token', 18, 'DAO', false)
 
-    membersApp = await MembersMock.new()
-    app = await TokenRewardsManager.new()
-
-    await membersApp.initialize(MEMBERS_INITIAL_REPUTATION, { from: accounts[0] })
-    await app.initialize(
+    membersApp = await installApp(
+      dao,
+      Members,
+      MEMBERS_ID,
+      root,
+      MEMBERS_INITIAL_REPUTATION
+    )
+    app = await installApp(
+      dao,
+      TokenRewardsManager,
+      TOKEN_MANAGER_ID,
+      root,
       membersApp.address,
       rewardTokenInstance.address,
       daoTokenInstance.address,
       REWARD_TO_DAO_COURSE,
-      INFLATION_MULTIPLIER)
+      INFLATION_MULTIPLIER
+    )
+
+    await configurePermissions(
+      acl,
+      membersApp,
+      app
+    )
 
     const appAddress = app.address
     const contractRewardToken = await app.rewardToken.call()
@@ -147,7 +191,41 @@ contract('TokenRewardsManager', async (accounts) => {
     await app.claimRewardTokensFor(accounts[0])
     await assertRevert(() => app.claimRewardTokensFor(accounts[0]))
   })
+  const installApp = async (dao, contractClass, appId, root, ...initArgs) => {
+    const baseContract = await contractClass.new()
 
+    const receipt = await dao.newAppInstance(
+      appId,
+      baseContract.address,
+      '0x',
+      false,
+      {
+        from: root
+      }
+    )
+    const proxyAddress = receipt.logs.filter(log => log.event == 'NewAppProxy')[0]
+      .args.proxy
+
+    const appInstance = contractClass.at(proxyAddress)
+    appInstance.initialize(...initArgs, { from: root })
+
+    return appInstance
+  }
+  const configurePermissions = async (
+    acl,
+    membersApp,
+    tokenManager
+  ) => {
+    const MANAGE_MEMBERS_ROLE = await membersApp.MANAGE_MEMBERS_ROLE()
+    const TRANSFER_ROLE = await tokenManager.TRANSFER_ROLE()
+    const REWARD_ROLE = await tokenManager.REWARD_ROLE()
+    const MINT_ROLE = await tokenManager.MINT_ROLE()
+    await acl.createPermission(root,   membersApp.address,   MANAGE_MEMBERS_ROLE, root, { from: root })
+    await acl.createPermission(root, tokenManager.address, TRANSFER_ROLE,         root, { from: root });
+    await acl.createPermission(root, tokenManager.address, REWARD_ROLE,           root, { from: root });
+    await acl.createPermission(root, tokenManager.address, MINT_ROLE,             root, { from: root })
+    
+  }
 })
 
 const addMembers = async (membersApp, accounts) => {

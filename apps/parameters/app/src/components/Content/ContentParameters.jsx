@@ -36,9 +36,9 @@ const ContentParameters = (props) => (
           <Text size="large" weight="bold" color={theme.accent}> x{props.inflationMultiplier} </Text>
         </Parameter>
 
-        <Parameter onClick={() => props.onPannelToggle(PanelMode.REWARD_TO_DAO_COURSE)}>
-          <Text size="large" color={theme.textSecondary}>Reward To Dao Course: </Text>
-          <Text size="large" weight="bold" color={theme.accent}> x{props.rewardToDaoCourse}</Text>
+        <Parameter onClick={() => props.onPannelToggle(PanelMode.REWARD_TO_DEBT_COURSE)}>
+          <Text size="large" color={theme.textSecondary}>Reward To Debt Course: </Text>
+          <Text size="large" weight="bold" color={theme.accent}> x{props.rewardToDebtCourse}</Text>
         </Parameter>
       </ParametersBody>
     </Parameters>

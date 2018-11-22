@@ -25,7 +25,7 @@ export const WeekDay = (props) => {
       </Header>
       
       {WorkedHours}
-      <TrackWork onClick = {()=>props.onPanelToggle(PanelMode.ADD, props.day)} mode="normal"><Text size="xlarge">+ Track Work</Text></TrackWork>
+      <TrackWork onClick = {()=>props.onPanelToggle(PanelMode.ADD, props.day)} mode="normal"><Text size="large">+ Track Work</Text></TrackWork>
 
     </DayCell>
   )

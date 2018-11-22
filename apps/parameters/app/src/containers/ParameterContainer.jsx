@@ -28,21 +28,21 @@ class ParameterContainer extends Component {
   } 
   render() {
     let userRewardTokens = 0
-    let userDaoTokens = 0
+    let userDebtTokens = 0
     let labels = []
     let tokens = []
     
     if(this.props.rewardTokenHistory && this.props.rewardTokenHistory.length && this.props.rewardTokenHistory[this.props.rewardTokenHistory.length-1].tokens)
       userRewardTokens = this.props.userTokens.reward/this.props.rewardTokenHistory[this.props.rewardTokenHistory.length-1].tokens
-    if(this.props.daoTokenHistory && this.props.daoTokenHistory.length && this.props.daoTokenHistory[this.props.daoTokenHistory.length-1].tokens) 
-      userDaoTokens = this.props.userTokens.dao/this.props.daoTokenHistory[this.props.daoTokenHistory.length-1].tokens
+    if(this.props.debtTokenHistory && this.props.debtTokenHistory.length && this.props.debtTokenHistory[this.props.debtTokenHistory.length-1].tokens) 
+      userDebtTokens = this.props.userTokens.debt/this.props.debtTokenHistory[this.props.debtTokenHistory.length-1].tokens
     
     if(this.props.tokenChart === TokenType.REWARD ) {
       labels = this.props.rewardTokenHistory.map(data => data.block)
       tokens = this.props.rewardTokenHistory.map(data => data.tokens)
     } else {
-      labels = this.props.daoTokenHistory.map(data => data.block)
-      tokens = this.props.daoTokenHistory.map(data => data.tokens)
+      labels = this.props.debtTokenHistory.map(data => data.block)
+      tokens = this.props.debtTokenHistory.map(data => data.tokens)
     }
     
     return (
@@ -50,11 +50,11 @@ class ParameterContainer extends Component {
         <ProfilData>
           <ContentUserProfile
             userRewardTokens = {userRewardTokens}
-            userDaoTokens = {userDaoTokens}
+            userDebtTokens = {userDebtTokens}
           />
           <ContentData 
             rewardTokenHistory = {this.props.rewardTokenHistory}
-            daoTokenHistory = {this.props.daoTokenHistory}
+            debtTokenHistory = {this.props.debtTokenHistory}
             userTokens = {this.props.userTokens}
             onTokenChartChange = {this.handleTokenChartChange}
 
@@ -66,7 +66,7 @@ class ParameterContainer extends Component {
         <ContentParameters 
           initialReputation = {this.props.initialReputation}
           inflationMultiplier = {this.props.inflationMultiplier}
-          rewardToDaoCourse = {this.props.rewardToDaoCourse}
+          rewardToDebtCourse = {this.props.rewardToDebtCourse}
           periodLength = {this.props.periodLength}
           maxHoursPerPeriod = {this.props.maxHoursPerPeriod}
           onPannelToggle = {this.handlePanelToggle}
@@ -91,11 +91,11 @@ const ProfilData = styled.div`
 const mapStateToProps = state => ({
   initialReputation: state.parameters.initialReputation,
   inflationMultiplier: state.parameters.inflationMultiplier,
-  rewardToDaoCourse: state.parameters.rewardToDaoCourse,
+  rewardToDebtCourse: state.parameters.rewardToDebtCourse,
   periodLength: state.parameters.periodLength,
   maxHoursPerPeriod: state.parameters.maxHoursPerPeriod,
   rewardTokenHistory: state.parameters.rewardTokenHistory,
-  daoTokenHistory: state.parameters.daoTokenHistory,
+  debtTokenHistory: state.parameters.debtTokenHistory,
   userTokens: state.parameters.userTokens,
   tokenChart: state.parameters.tokenChart
 })

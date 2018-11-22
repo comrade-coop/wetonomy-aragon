@@ -50,14 +50,14 @@ const _getPanelContent = (mode, onParameterChange, onClose) => {
           parameter="Default Inflation Multiplayer:"  />
       )
     }
-    case PanelMode.REWARD_TO_DAO_COURSE: {
+    case PanelMode.REWARD_TO_DEBT_COURSE: {
       return (
         <BaseForm
           onClose = {onClose} 
           value = {40}
           mode = { mode }
           onParameterChange = { onParameterChange }
-          parameter="Reward To Dao Course:"  />
+          parameter="Reward To Debt Course:"  />
       )
     }
     default: {

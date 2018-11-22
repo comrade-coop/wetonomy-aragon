@@ -44,11 +44,11 @@ const ContentData = (props) => (
     {chart(props)}
     <FlexCircle>
       <TokenBox>
-        <Tokens onClick={() => props.onTokenChartChange(TokenType.DAO)}>
-          <Text size="xlarge" color={theme.textSecondary}>Dao Tokens: </Text>
+        <Tokens onClick={() => props.onTokenChartChange(TokenType.DEBT)}>
+          <Text size="xlarge" color={theme.textSecondary}>Debt Tokens: </Text>
           <Text size="xlarge" weight="bold" color={theme.accent}> 
-            {props.daoTokenHistory.length === 0? '0':(
-              props.daoTokenHistory[props.daoTokenHistory.length-1].tokens
+            {props.debtTokenHistory.length === 0? '0':(
+              props.debtTokenHistory[props.debtTokenHistory.length-1].tokens
             )}
           </Text>
         </Tokens>

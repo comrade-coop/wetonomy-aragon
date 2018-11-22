@@ -4,12 +4,12 @@ import "@aragon/os/contracts/factory/DAOFactory.sol";
 import "@aragon/os/contracts/apm/Repo.sol";
 import "@aragon/os/contracts/lib/ens/ENS.sol";
 import "@aragon/os/contracts/lib/ens/PublicResolver.sol";
-import "@aragon/os/contracts/apm/APMNamehash.sol";
-
+// import "@aragon/os/contracts/apm/APMNamehash.sol";
+import "./misc/APMNamehashOpen.sol";
 import "./interfaces/IRewardsKit.sol";
 
 
-contract RewardsKitBase is APMNamehash, IRewardsKit {
+contract RewardsKitBase is APMNamehashOpen, IRewardsKit {
     event DeployInstance(address dao);
     event InstalledApp(address dao, address appProxy, bytes32 appId);
     event CreateTokens(MiniMeToken rewardToken, MiniMeToken daoToken);

@@ -9,13 +9,13 @@ export const PanelMode = {
   TIMETRACKING_PERIOD: 'Change Period Lenght',
   TIMETRACKING_MAX_HOURS: 'Change Max Hours per Month',
   TOKEN_MULTIPLAYER: 'Change Default Inflation Multiplayer',
-  REWARD_TO_DAO_COURSE: 'Change Reward To Dao Course',
+  REWARD_TO_DEBT_COURSE: 'Change Reward To Debt Course',
   BASE: 'BASE'
   
 }
 export const TokenType = {
   REWARD: 'Reward',
-  DAO: 'Dao'
+  DEBT: 'Debt'
 }
 export const _getAddress = (type, parameters) => {
   switch(type) {
@@ -23,7 +23,7 @@ export const _getAddress = (type, parameters) => {
     case PanelMode.TIMETRACKING_PERIOD: {return parameters.timeTrackingAddress}
     case PanelMode.TIMETRACKING_MAX_HOURS: {return parameters.timeTrackingAddress}
     case PanelMode.TOKEN_MULTIPLAYER: {return parameters.tokenManagerAddress}
-    case PanelMode.REWARD_TO_DAO_COURSE: {return parameters.tokenManagerAddress}
+    case PanelMode.REWARD_TO_DEBT_COURSE: {return parameters.tokenManagerAddress}
     default: return ''
   }
 }
@@ -72,7 +72,7 @@ export const functionsStructurs = (type, parameter) => {
         }]
       }, [parameter])
     }
-    case PanelMode.REWARD_TO_DAO_COURSE: {
+    case PanelMode.REWARD_TO_DEBT_COURSE: {
       return abi.encodeFunctionCall({
         name: 'changeRewardToDaoCourse',
         type: 'function',

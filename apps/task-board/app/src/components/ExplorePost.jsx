@@ -19,9 +19,7 @@ const _assignee = (user, task) => {
   }
   if(task.assignee !== null) {
     return (
-      <UserAvatar>
-        <Avatar seed={task.assignee} />
-      </UserAvatar>
+      <Avatar seed={task.assignee} />
     )
   }
   else return ''
@@ -63,7 +61,7 @@ const ExplorePost = ({ task, user, onAcceptClick }) => (
             {task.tokens} DAO Tokens
           </Text>
         </Rewards>
-        {task.assignee === null && task.issuer !== user ? (
+        {task.assignee === null ? (
           <Button mode="strong" onClick={() => onAcceptClick(task)}>
             Accept Task
           </Button>
@@ -172,16 +170,12 @@ const Finish = styled.div`
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.26), 0 0 5px rgba(0, 0, 0, 0.33);
   }
 `
-const UserAvatar = styled.div`
-  position: absolute;
-  right: 5px;
-  bottom: 0px;
-`
+
 const ActivityBottomContainer = styled.div`
   display: flex;
   align-items: center;
 
-  & > button:last-child {
+  & > :last-child {
     margin-left: auto;
   }
 `

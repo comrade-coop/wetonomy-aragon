@@ -43,29 +43,29 @@ const log = async(event, state, returnValues) => {
   return state
 }
 
-const loadCurrentBalance = async(from) => {
-  const balanceResult = await callReadMethod('getAccount', from)
-  console.log('getBalance', balanceResult)
-  const balance = parseInt(balanceResult)
-  return balance
-}
-const loadCurrentAccount = () => {
-  return new Promise((resolve, reject) => {
-    try {
-      app.accounts().subscribe(accounts => {
-        const currentAccount = accounts[0]
-        if (currentAccount) {
-          resolve(currentAccount)
-        } else {
-          reject('A valid account address wasn\'t found')
-        }
+// const loadCurrentBalance = async(from) => {
+//   const balanceResult = await callReadMethod('getAccount', from)
+//   console.log('getBalance', balanceResult)
+//   const balance = parseInt(balanceResult)
+//   return balance
+// }
+// const loadCurrentAccount = () => {
+//   return new Promise((resolve, reject) => {
+//     try {
+//       app.accounts().subscribe(accounts => {
+//         const currentAccount = accounts[0]
+//         if (currentAccount) {
+//           resolve(currentAccount)
+//         } else {
+//           reject('A valid account address wasn\'t found')
+//         }
 
-      })
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
+//       })
+//     } catch (error) {
+//       reject(error)
+//     }
+//   })
+// }
 
 const callReadMethod = (method, ...args) => {
   return new Promise((resolve, reject) => {

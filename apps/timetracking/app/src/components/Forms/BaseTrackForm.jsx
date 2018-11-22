@@ -95,7 +95,7 @@ class BaseTrackForm extends React.Component {
             onChange={this.handleProjectChange}
           />            
         </Field>
-        {/* <NewButton onClick={this.newProject}>New Project</NewButton> */}
+        <NewButton onClick={this.newProject}>New Project</NewButton>
         <NewField id="new">
           <Field label="NewProject">
             <TextInput
@@ -145,7 +145,7 @@ BaseTrackForm.propTypes = {
   delete: PropTypes.bool.isRequired
 }
 const Description = styled(TextInput.Multiline)`
-  min-height: 100px;
+  min-height: 120px;
 `
 
 const CancelButton = styled(Button)`
@@ -168,11 +168,16 @@ const ActionButtonsContainer = styled.div `
 const Inbox = styled(Text)`
   margin: 15px;
 `
-// const NewButton = styled(Button)`
-//   display: block;
-//   margin-left: auto;
-//   margin-right: auto;
-// `
+const NewButton = styled(Button)`
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+  :hover {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+`
+
 const NewField = styled.div`
   margin-left: auto;
   margin-right: auto;

@@ -6,7 +6,6 @@ import { PanelMode } from '../../utils/appConstants'
 import TrackedHour from '../../models/TrackedHour'
 
 export const WorkBox = (props) =>{
-  // console.log({...props.workedHour})
   const obj = new TrackedHour(props.workedHour._id, props.workedHour._description, props.workedHour._project, props.workedHour._hours, props.workedHour._date, props.workedHour._tokens,  props.workedHour._synced)
   let hours = parseFloat(obj.hours)
   if(hours<=2) hours = 2
@@ -21,15 +20,20 @@ export const WorkBox = (props) =>{
     h = (obj.hours).toFixed(2).replace('.',':')
   }
   return (
-    <div>
-      <WButton style={{background: background ,height: hours*60+'px' }}
-        onClick = {()=>props.onPanelToggle(PanelMode.EDIT , props.workedHour)} >
-        <Description><Text size="large">{description}</Text></Description>
-        <div style={{marginTop: hours*5+'px' }}><Text size="normal">Project: {obj.project}</Text></div>
-        <Hours size="large">{h}h</Hours>
-        <Tokens size="large">{obj.tokens} Tokens</Tokens>
-      </WButton>
-    </div>
+    <Work style={{background: background ,height: hours*60+'px' }}
+      onClick = {()=>props.onPanelToggle(PanelMode.EDIT , props.workedHour)} >
+      <Description><Text size="normal">{description}</Text></Description>
+      <div style={{marginTop: hours*5+'px' }}>
+        <Text size="small">Project: </Text>
+        <Text size="small" weight="bold">{obj.project}</Text>
+      </div>
+      <Hours>
+        <Text size="normal" weight="bold">{h}h</Text>
+      </Hours>
+      <Tokens>
+        <Text size="normal" weight="bold">{obj.tokens} Tokens</Text>
+      </Tokens>
+    </Work>
   )
   
 }
@@ -52,7 +56,7 @@ const Tokens = styled.div`
 const Description = styled.div`
   overflow: hidden;
 `
-const WButton = styled.div`
+const Work = styled.div`
   color:white;
   position: relative;
   border-radius:5px;
