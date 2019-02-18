@@ -50,7 +50,8 @@ contract WetonomyKit is RewardsKitBase, WetonomyConstants {
         _configurePermissions(
             dao,
             msg.sender,
-            members,
+            members
+            ,
             tokenManager,
             voting,
             timeTracking,
@@ -147,7 +148,8 @@ contract WetonomyKit is RewardsKitBase, WetonomyConstants {
     function _configurePermissions(
         Kernel _dao,
         address _root,
-        Members _members,
+        Members _members
+        ,
         TokenRewardsManager _tokenManager,
         Voting _voting,
         TimeTracking _timeTracking,
@@ -165,13 +167,13 @@ contract WetonomyKit is RewardsKitBase, WetonomyConstants {
         acl.createPermission(_root, _timeTracking, _timeTracking.MANAGE_TRACKING_ROLE(), this);
         acl.grantPermission(_voting, _timeTracking, _timeTracking.MANAGE_TRACKING_ROLE());
         
-        // // TaskBoard
+        // TaskBoard
         acl.createPermission(_voting, _taskBoard, _taskBoard.TASKBOARD_MANAGER_ROLE(), _root);
 
-        // // // Voting
+        // Voting
         acl.createPermission(ANY_ENTITY, _voting, _voting.CREATE_VOTES_ROLE(), _root);
         
-        // // // TokenManager
+        // TokenManager
         acl.createPermission(_timeTracking, _tokenManager, _tokenManager.MINT_ROLE(), _root);
         acl.createPermission(_taskBoard, _tokenManager, _tokenManager.TRANSFER_ROLE(), _root);
         acl.createPermission(_taskBoard, _tokenManager, _tokenManager.REWARD_ROLE(), _root);

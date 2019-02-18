@@ -35,11 +35,11 @@ const pct16 = x =>
   new web3.BigNumber(x).times(new web3.BigNumber(10).toPower(16))
 
 contract('Parameters', async accounts => {
-  let daoFactory, counterBase, parametersInstance
+  let daoFactory, parametersInstance
 
   const root = accounts[0]
   const NULL_ADDRESS = '0x00'
-  let APP_MANAGER_ROLE, CHANGE_PARAMETERS_ROLE
+  let APP_MANAGER_ROLE
 
   const votingTime = 1000
   const neededSupport = pct16(50)
@@ -74,12 +74,7 @@ contract('Parameters', async accounts => {
       from: root
     })
 
-    const rewardTokenInstance = await createToken(
-      'Reward Token',
-      18,
-      'RWD',
-      true
-    )
+    const rewardTokenInstance = await createToken( 'Reward Token', 18, 'RWD', true)
     const daoTokenInstance = await createToken('DAO Token', 18, 'DAO', true)
 
     membersApp = await installApp(

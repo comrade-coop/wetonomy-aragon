@@ -1,6 +1,20 @@
 {
-  "appName": "dummy.aragonpm.eth",
-  "version": "1.0.0",
+  "environments": {
+    "rinkeby": {
+      "wsRPC": "wss://rinkeby.eth.aragon.network/ws",
+      "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
+      "appName": "dummy.open.aragonpm.eth",
+      "network": "rinkeby"
+    },
+    "rpc": {
+      "network": "rpc",
+      "appName": "dummy.aragonpm.eth"
+    },
+    "default": {
+      "network": "rpc",
+      "appName": "dummy.aragonpm.eth"
+    }
+  },
   "roles": [],
   "path": "contracts/misc/DummyApp.sol"
 }

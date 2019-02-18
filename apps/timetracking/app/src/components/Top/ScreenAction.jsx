@@ -9,6 +9,18 @@ const getWeek = (date) =>{
   var millisecsInDay = 86400000
   return Math.ceil((((date - firstJan) /millisecsInDay) + firstJan.getDay()+1)/7)
 }
+const syncNotification = (workForSync, onSyncAndClaim) => {
+  let element = document.getElementById('newVote')
+  if(workForSync) {
+    onSyncAndClaim(workForSync)
+  }
+  else{
+    element.style.opacity = 1
+    setTimeout(() => {
+      element.style.opacity = 0
+    }, 3000)
+  }
+}
 export const ScreenAction = (props) => { 
   var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan']
@@ -26,6 +38,9 @@ export const ScreenAction = (props) => {
   })
   return (
     <Actions>
+      <NewVote id="newVote">
+        <Text size='xlarge' color={theme.accent} weight="bold">Hours Already Synced</Text>
+      </NewVote>
       <LeftContainer>
         <WeekButton onClick = {() => props.onWeekChange(-1)}> <Arrow> &lsaquo; </Arrow> </WeekButton>
         <Container>
@@ -41,9 +56,11 @@ export const ScreenAction = (props) => {
         <Actions>
           <TimeLogged>Time Logged (Week)</TimeLogged>
           <RgihtContainer>
-            <SyncButtonLeft onClick={() => props.onSyncAction(workForSync)}>Sync</SyncButtonLeft>
-            <SyncButtonRight onClick={() => props.onClaimAction()}>Claim</SyncButtonRight>
-            <Combine onClick={() => props.onSyncAndClaim(workForSync)}> &amp; </Combine>
+            <SyncButton onClick={() => syncNotification(workForSync, props.onSyncAndClaim)}>
+            Sync
+              <Text color="#00B4E6"> &amp; </Text>
+            Claim
+            </SyncButton>
           </RgihtContainer>
         </Actions>
         <div>
@@ -57,11 +74,26 @@ export const ScreenAction = (props) => {
 ScreenAction.propTypes = {
   workedHours: PropTypes.array.isRequired,
   onWeekChange: PropTypes.func.isRequired,
-  onSyncAction: PropTypes.func.isRequired,
-  onClaimAction: PropTypes.func.isRequired,
   onSyncAndClaim: PropTypes.func.isRequired,
   days: PropTypes.array.isRequired
 }
+
+const NewVote = styled.div`
+  position: absolute;
+  width: 300px;
+  background: white;
+  height: 50px;
+  border-radius: 15px;
+  border: 1px solid #e6e6e6;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding-top: 8px;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s linear;
+`
 
 const Week = styled.div`
   cursor: pointer
@@ -98,53 +130,28 @@ const TimeLogged = styled.div`
   display: inline-block;
 `
 const HoursLogged = styled(Text)`
-  font-size: 45px;
+  font-size: 35px;
   font-weight: 300;
   color: #00B4E6;
   display: inline-block;
   margin-top: 5px;
 `
 const TokensGen = styled(Text)`
-  font-size: 45px;
+  font-size: 35px;
   font-weight: 300;
   color: #707070a6;
   display: inline-block;
   margin-top: 5px
 `
-const SyncButtonLeft = styled(Button)`
-  width: 80px;
-  border-radius: 15px  0 0 15px;
+const SyncButton = styled(Button)`
+  width: 160px;
+  font-size: 16px;
+  border-radius: 15px 15px 15px 15px;
   box-shadow: 0 1px 1px rgba(0,0,0,0.1), 0 1px 1px rgba(0,0,0,0.1);
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
   :hover {
     box-shadow: 0 2px 5px rgba(0,0,0,0.26), 0 2px 5px rgba(0,0,0,0.23);
     border-right:1px solid #e6e6e6;
-  }
-`
-const SyncButtonRight = styled(Button)`
-  width: 80px;
-  border-radius:  0 15px  15px 0; 
-  box-shadow: 0 1px 1px rgba(0,0,0,0.1), 0 1px 1px rgba(0,0,0,0.1);
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-  :hover {
-    box-shadow: 0 2px 2px rgba(0,0,0,0.16), 0 2px 2px rgba(0,0,0,0.23);
-    border-left:1px solid #e6e6e6;
-  }
-`
-const Combine = styled.div`
-  position: absolute;
-  cursor: pointer;
-  top: 5px;
-  padding-top: 3px;
-  left: 65px;
-  border-radius: 10px;
-  height: 30px;
-  width: 30px;
-  background: white;
-  color: #00B4E6;
-  font-size: large;
-  :hover {
-    box-shadow: 0 2px 2px rgba(0,0,0,0.16), 0 2px 2px rgba(0,0,0,0.23);
   }
 `
 const WeekButton = styled.div`

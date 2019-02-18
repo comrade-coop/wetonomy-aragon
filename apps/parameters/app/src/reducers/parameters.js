@@ -4,16 +4,16 @@ export const initialState = {
   currentUser: '',
   initialReputation: 0,
   inflationMultiplier: 0,
-  rewardToDaoCourse: 0,
+  rewardToDebtCourse: 0,
   periodLength: 0,
   maxHoursPerPeriod: 0,
   membersAddress: '',
   timeTrackingAddress: '',
   tokenManagerAddress: '',
   rewardTokenHistory: [],
-  daoTokenHistory: [],
-  userTokens: {reward: 0, dao: 0},
-  tokenChart: TokenType.DAO,
+  debtTokenHistory: [],
+  userTokens: {reward: 0, debt: 0},
+  tokenChart: TokenType.DEBT,
   notification: false
 }
 

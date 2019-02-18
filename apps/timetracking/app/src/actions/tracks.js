@@ -4,8 +4,6 @@ export const LOAD_FULL_STATE = 'LOAD_FULL_STATE'
 export const LOAD_ACCOUNT = 'LOAD_ACCOUNT'
 export const WEEK_CHANGE = 'WEEK_CHANGE'
 export const SYNC_HOURS = 'SYNC_HOURS'
-export const CLAIM_TOKENS = 'CLAIM_TOKENS'
-export const SYNC_AND_CLAIM = 'SYNC_AND_CLAIM'
 export const SELECTED_WORK = 'SELECTED_WORK'
 export const SELECTED_DAY = 'SELECTED_DAY'
 export const UPDATE_WORK = 'UPDATE_WORK'
@@ -39,21 +37,6 @@ export const changeWeek = (direction, today) => dispatch => {
   dispatch({
     type: WEEK_CHANGE,
     payload: today.getTime() 
-  })
-}
-
-export const syncHours = (hours) => dispatch => {
-  Api.syncHours(hours)
-  // ipfs sync here
-  dispatch({
-    type: SYNC_HOURS,
-    payload: hours
-  })
-}
-export const claimTokens = () => dispatch => {
-  Api.claimTokens()
-  dispatch({
-    type: CLAIM_TOKENS
   })
 }
 

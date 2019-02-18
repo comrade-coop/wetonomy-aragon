@@ -24,15 +24,6 @@ export const callReadMethod = (method, ...args) => {
   })
 }
 
-export const syncHours = (hours) => {
-  if(hours)
-    app.trackWork(hours)
-}
-
-export const claimTokens = () => {
-  app.claim()
-}
-
 export const syncAndClaim = (hours) => {
   if(hours)
     app.trackAndClaim(hours)

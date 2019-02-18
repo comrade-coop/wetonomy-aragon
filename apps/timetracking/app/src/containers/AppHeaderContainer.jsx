@@ -2,24 +2,19 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { AppBar, } from '@aragon/ui'
-import styled from 'styled-components'
-import { APP_NAME } from '../utils/appConstants'
-import MemberProfile from '../components/Top/MemberProfile'
+import AppHeader from '../components/Top/AppHeader'
+import NavBar from '../components/Top/NavBar'
 
 class AppHeaderContainer extends Component {
-
-  getEndContent = () => (
-    <EndContent>
-      <MemberProfile
-        debt={this.props.debtTokens}
-        rewardTokens={this.props.rewardTokens}
-        member={this.props.currentMember} />
-    </EndContent>
-  )
-
+  
   render() {
-    return ( <AppBar title={APP_NAME} endContent={this.getEndContent()} />)
+    const appHeader = <AppHeader
+      rewardTokens={this.props.rewardTokens}
+      debtTokens={this.props.debtTokens}
+      currentMember={this.props.currentMember}/>
+    return (
+      <NavBar AppBar={ appHeader }  />
+    )
   }
 }
 AppHeaderContainer.propTypes = {
@@ -27,10 +22,6 @@ AppHeaderContainer.propTypes = {
   rewardTokens: PropTypes.number.isRequired,
   currentMember: PropTypes.string.isRequired
 }
-
-const EndContent = styled.div`
-  display: flex;
-`
 
 const mapStateToProps = state => ({
   debtTokens: state.tracks.userTokens.debt,

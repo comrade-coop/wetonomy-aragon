@@ -3,7 +3,7 @@ pragma solidity 0.4.24;
 import "./misc/APMNamehashOpen.sol";
 
 
-contract WetonomyConstants is APMNamehash {
+contract WetonomyConstants is APMNamehashOpen {
     uint constant public PCT = 10 ** 16;
     address constant public ANY_ENTITY = address(-1);
 

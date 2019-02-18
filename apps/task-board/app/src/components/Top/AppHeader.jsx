@@ -5,42 +5,31 @@ import PropTypes from 'prop-types'
 import { APP_NAME } from '../../utils/appConstants'
 import MemberProfile from './MemberProfile'
 
-class AppHeader extends React.Component {
-
-  static propTypes = {
-    rewardTokens: PropTypes.number,
-    daoTokens: PropTypes.number,
-    currentMember: PropTypes.string,
-    opened: PropTypes.bool,
-    onActivityClick: PropTypes.func.isRequired,
-    onOutsideClick: PropTypes.func.isRequired
-  }
-
-  getEndContent = () => (
-    <EndContent>
-      {<MemberProfile
-        onActivityClick={this.props.onActivityClick}
-        onOutsideClick={this.props.onOutsideClick}
-        debt={this.props.daoTokens}
-        rewardTokens={this.props.rewardTokens}
-        member={this.props.currentMember} />}
-    </EndContent>
-  )
-
-
-  render() {
-    return <FixedAppBar title={APP_NAME} endContent={this.getEndContent()} />
-  }
+const  AppHeader = (props) => { 
+  const endContent =  <EndContent>
+    {<MemberProfile
+      onActivityClick={props.onActivityClick}
+      onOutsideClick={props.onOutsideClick}
+      debt={props.daoTokens}
+      rewardTokens={props.rewardTokens}
+      member={props.currentMember} />}
+  </EndContent>
+  
+  return <AppBar title={APP_NAME} endContent={endContent} />
+  
+}
+AppHeader.propTypes =  {
+  rewardTokens: PropTypes.number,
+  daoTokens: PropTypes.number,
+  currentMember: PropTypes.string,
+  opened: PropTypes.bool,
+  onActivityClick: PropTypes.func.isRequired,
+  onOutsideClick: PropTypes.func.isRequired
 }
 
 const EndContent = styled.div`
   display: flex;
 `
 
-const FixedAppBar = styled(AppBar)`
-  position: fixed;
-  top: 0;
-  z-index: 3;
-`
 
 export default AppHeader

@@ -1,6 +1,4 @@
 {
-  "appName": "timetracking.aragonpm.eth",
-  "version": "1.0.0",
   "dependencies": [
     {
       "appName": "members.aragonpm.eth",
@@ -16,5 +14,21 @@
       "params": []
     }
   ],
+  "environments": {
+    "rinkeby": {
+      "wsRPC": "wss://rinkeby.eth.aragon.network/ws",
+      "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
+      "appName": "timetracking.open.aragonpm.eth",
+      "network": "rinkeby"
+    },
+    "rpc": {
+      "network": "rpc",
+      "appName": "timetracking.aragonpm.eth"
+    },
+    "default": {
+      "network": "rpc",
+      "appName": "timetracking.aragonpm.eth"
+    }
+  },
   "path": "contracts/InflationTimeTracking.sol"
 }

@@ -28,8 +28,8 @@ const ContentUserProfile = (props) => (
         <CircleGraph value={props.userRewardTokens} />
       </div>
       <div>
-        <Text>Dao</Text><br/>
-        <CircleGraph value={props.userDaoTokens} />
+        <Text>Debt</Text><br/>
+        <CircleGraph value={props.userDebtTokens} />
       </div>
     </Flex>
   </UserBox>

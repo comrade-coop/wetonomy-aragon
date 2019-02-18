@@ -147,8 +147,9 @@ class BaseTaskForm extends React.Component {
           />
         </Field>
         <Field label="Heading:">
-          <TextInput
+          <HeadingInput
             wide
+            height='120px'
             type="text"
             name="heading"
             value={this.state.heading}
@@ -156,7 +157,7 @@ class BaseTaskForm extends React.Component {
           />
         </Field>
         <Field label="Description:">
-          <TextInput.Multiline
+          <DescriptionInput
             wide
             type="text"
             name="description"
@@ -277,6 +278,13 @@ const Reward = styled.div`
   margin: 10px 0 0 10px;
   position: relative;
 `
+const DescriptionInput = styled(TextInput.Multiline)`
+  height: 100px;
+`
+const HeadingInput = styled(TextInput.Multiline)`
+  height: 70px;
+`
+
 const NotPriority = styled.div`
   height: 45px;
   width: 45px;

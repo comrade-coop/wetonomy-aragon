@@ -1,10 +1,12 @@
 const _ = require('lodash')
 
-const TokenRewardsManagerMock = artifacts.require('TokenRewardsManagerMock.sol')
-const MembersMock = artifacts.require('MembersMock.sol')
+const TokenRewardsManager = artifacts.require('TokenRewardsManager.sol')
+const Members = artifacts.require('Members.sol')
 const TaskBoard = artifacts.require('TaskBoard.sol')
-
 const MiniMeToken = artifacts.require('MiniMeToken.sol')
+const Kernel = artifacts.require('Kernel')
+const ACL = artifacts.require('ACL')
+const DAOFactory = artifacts.require('DAOFactory')
 
 const REWARD_TO_DAO_COURSE = 2
 const INFLATION_MULTIPLIER = 100
@@ -13,29 +15,56 @@ const MEMBERS_INITIAL_REPUTATION = 1
 const NEW_MEMBER_REPUTATION = 8
 const MINT_PER_MEMBER = 10
 
-contract('TaskBoard', async accounts => {
+const MEMBERS_ID = '0x01'
+const TOKEN_MANAGER_ID = '0x02'
+const TASK_BOARD_ID = '0x03'
+
+contract('TaskBoard', async (accounts) => {
   let app
   let membersApp
   let tokenManagerApp
+  const root = accounts[0]
+  const NULL_ADDRESS = '0x00'
+
+  before(async () => {
+    const kernelBase = await Kernel.new(true) // petrify immediately
+    const aclBase = await ACL.new()
+    daoFactory = await DAOFactory.new(
+      kernelBase.address,
+      aclBase.address,
+      NULL_ADDRESS
+    )
+
+    // Setup constants
+    APP_MANAGER_ROLE = await kernelBase.APP_MANAGER_ROLE()
+  })
 
   beforeEach(async () => {
-    const rewardTokenInstance = await createToken(
-      'Reward Token',
-      18,
-      'RWD',
-      false
+    const daoTx = await daoFactory.newDAO(root)
+    const dao = Kernel.at(
+      daoTx.logs.filter(log => log.event == 'DeployDAO')[0].args.dao
     )
-    const daoTokenInstance = await createToken('DAO Token', 18, 'DAO', false)
+    const acl = ACL.at(await dao.acl())
 
-    membersApp = await MembersMock.new()
-    tokenManagerApp = await TokenRewardsManagerMock.new()
-    app = await TaskBoard.new()
-
-    await membersApp.initialize(MEMBERS_INITIAL_REPUTATION, {
-      from: accounts[0]
+    await acl.createPermission(root, dao.address, APP_MANAGER_ROLE, root, {
+      from: root
     })
 
-    await tokenManagerApp.initialize(
+    const rewardTokenInstance = await createToken('Reward Token', 18, 'RWD', false)
+    const daoTokenInstance = await createToken('DAO Token', 18, 'DAO', false)
+
+    membersApp = await installApp(
+      dao,
+      Members,
+      MEMBERS_ID,
+      root,
+      MEMBERS_INITIAL_REPUTATION
+    )
+    tokenManagerApp = await installApp(
+      dao,
+      TokenRewardsManager,
+      TOKEN_MANAGER_ID,
+      root,
       membersApp.address,
       rewardTokenInstance.address,
       daoTokenInstance.address,
@@ -43,7 +72,15 @@ contract('TaskBoard', async accounts => {
       INFLATION_MULTIPLIER
     )
 
-    await app.initialize(membersApp.address, tokenManagerApp.address)
+    app = await installApp(dao, TaskBoard, TASK_BOARD_ID, root, membersApp.address, tokenManagerApp.address)
+
+    await configurePermissions(
+      acl,
+      membersApp,
+      app,
+      tokenManagerApp
+    )
+    
 
     const tokenManager = tokenManagerApp.address
     const contractMembers = await app.members.call()
@@ -125,13 +162,14 @@ contract('TaskBoard', async accounts => {
     )
 
     var task = await app.getTask(0)
+    // console.log(task)
     var check = compareTask(
       task[0],
-      task[1].c[0],
-      task[2].c[0],
+      task[1].toNumber(),
+      task[2].toNumber(),
       task[3],
-      task[4].c[0],
-      task[5].c[0],
+      task[4].toNumber(),
+      task[5].toNumber(),
       task[6],
       accounts[0],
       reward,
@@ -154,11 +192,11 @@ contract('TaskBoard', async accounts => {
     task = await app.getTask(1)
     check = compareTask(
       task[0],
-      task[1].c[0],
-      task[2].c[0],
+      task[1].toNumber(),
+      task[2].toNumber(),
       task[3],
-      task[4].c[0],
-      task[5].c[0],
+      task[4].toNumber(),
+      task[5].toNumber(),
       task[6],
       accounts[0],
       reward,
@@ -172,11 +210,11 @@ contract('TaskBoard', async accounts => {
     task = await app.getTask(2)
     check = compareTask(
       task[0],
-      task[1].c[0],
-      task[2].c[0],
+      task[1].toNumber(),
+      task[2].toNumber(),
       task[3],
-      task[4].c[0],
-      task[5].c[0],
+      task[4].toNumber(),
+      task[5].toNumber(),
       task[6],
       accounts[0],
       reward,
@@ -190,11 +228,11 @@ contract('TaskBoard', async accounts => {
     task = await app.getTask(3)
     check = compareTask(
       task[0],
-      task[1].c[0],
-      task[2].c[0],
+      task[1].toNumber(),
+      task[2].toNumber(),
       task[3],
-      task[4].c[0],
-      task[5].c[0],
+      task[4].toNumber(),
+      task[5].toNumber(),
       task[6],
       accounts[0],
       reward,
@@ -216,11 +254,11 @@ contract('TaskBoard', async accounts => {
     task = await app.getTask(4)
     check = compareTask(
       task[0],
-      task[1].c[0],
-      task[2].c[0],
+      task[1].toNumber(),
+      task[2].toNumber(),
       task[3],
-      task[4].c[0],
-      task[5].c[0],
+      task[4].toNumber(),
+      task[5].toNumber(),
       task[6],
       accounts[0],
       reward,
@@ -234,11 +272,11 @@ contract('TaskBoard', async accounts => {
     task = await app.getTask(5)
     check = compareTask(
       task[0],
-      task[1].c[0],
-      task[2].c[0],
+      task[1].toNumber(),
+      task[2].toNumber(),
       task[3],
-      task[4].c[0],
-      task[5].c[0],
+      task[4].toNumber(),
+      task[5].toNumber(),
       task[6],
       accounts[0],
       reward,
@@ -252,11 +290,11 @@ contract('TaskBoard', async accounts => {
     task = await app.getTask(6)
     check = compareTask(
       task[0],
-      task[1].c[0],
-      task[2].c[0],
+      task[1].toNumber(),
+      task[2].toNumber(),
       task[3],
-      task[4].c[0],
-      task[5].c[0],
+      task[4].toNumber(),
+      task[5].toNumber(),
       task[6],
       accounts[0],
       reward,
@@ -291,7 +329,7 @@ contract('TaskBoard', async accounts => {
     const check1 = await app.singleContribute(0, contribution)
     var task = await app.getTask(0)
     assert.equal(
-      task[1].c[0],
+      task[1].toNumber(),
       reward + contribution,
       'The contribution should have been added'
     )
@@ -315,13 +353,13 @@ contract('TaskBoard', async accounts => {
     const check2 = await app.multipleContribute([1, 2], [40, 40])
     task = await app.getTask(1)
     assert.equal(
-      task[1].c[0],
+      task[1].toNumber(),
       reward + contribution,
       'The contribution should have been added'
     )
     task = await app.getTask(1)
     assert.equal(
-      task[1].c[0],
+      task[1].toNumber(),
       reward + contribution,
       'The contribution should have been added'
     )
@@ -333,19 +371,19 @@ contract('TaskBoard', async accounts => {
     )
     task = await app.getTask(0)
     assert.equal(
-      task[1].c[0],
+      task[1].toNumber(),
       reward * 2 + contribution,
       'The contribution should have been added'
     )
     task = await app.getTask(1)
     assert.equal(
-      task[1].c[0],
+      task[1].toNumber(),
       reward * 2 + contribution,
       'The contribution should have been added'
     )
     task = await app.getTask(2)
     assert.equal(
-      task[1].c[0],
+      task[1].toNumber(),
       reward * 2 + contribution,
       'The contribution should have been added'
     )
@@ -359,13 +397,13 @@ contract('TaskBoard', async accounts => {
     )
     task = await app.getTask(0)
     assert.equal(
-      task[1].c[0],
+      task[1].toNumber(),
       reward * 3 + contribution,
       'The contribution should have been added'
     )
     task = await app.getTask(1)
     assert.equal(
-      task[1].c[0],
+      task[1].toNumber(),
       reward * 3 + contribution,
       'The contribution should have been added'
     )
@@ -393,7 +431,7 @@ contract('TaskBoard', async accounts => {
     var task = await app.getTask(0)
     assert.equal(task[6], accounts[1], 'ThetTask should have had assignee')
     assert.equal(
-      task[2].c[0],
+      task[2].toNumber(),
       1,
       'The task should have been mooved in stage assigned'
     )
@@ -422,14 +460,14 @@ contract('TaskBoard', async accounts => {
     task = await app.getTask(1)
     assert.equal(task[6], accounts[1], 'ThetTask should have had assignee')
     assert.equal(
-      task[2].c[0],
+      task[2].toNumber(),
       1,
       'The task should have been mooved in stage assigned'
     )
     task = await app.getTask(2)
     assert.equal(task[6], accounts[1], 'ThetTask should have had assignee')
     assert.equal(
-      task[2].c[0],
+      task[2].toNumber(),
       1,
       'The task should have been mooved in stage assigned'
     )
@@ -459,14 +497,14 @@ contract('TaskBoard', async accounts => {
     task = await app.getTask(3)
     assert.equal(task[6], accounts[0], 'ThetTask should have had assignee')
     assert.equal(
-      task[2].c[0],
+      task[2].toNumber(),
       1,
       'The task should have been mooved in stage assigned'
     )
     task = await app.getTask(4)
     assert.equal(task[6], accounts[0], 'ThetTask should have had assignee')
     assert.equal(
-      task[2].c[0],
+      task[2].toNumber(),
       1,
       'The task should have been mooved in stage assigned'
     )
@@ -499,15 +537,15 @@ contract('TaskBoard', async accounts => {
     const check1 = await app.changeSingleState(0, stage)
     var task = await app.getTask(0)
     assert.equal(
-      task[2].c[0],
+      task[2].toNumber(),
       stage,
       "The task's stage should have been changed"
     )
     const check2 = await app.changeMultipleState([1, 2], [2, 2])
     task = await app.getTask(1)
-    assert.equal(task[2].c[0], 2, "The task's stage should have been changed")
+    assert.equal(task[2].toNumber(), 2, "The task's stage should have been changed")
     task = await app.getTask(2)
-    assert.equal(task[2].c[0], 2, "The task's stage should have been changed")
+    assert.equal(task[2].toNumber(), 2, "The task's stage should have been changed")
 
     //sync
     const check3 = await app.sync(
@@ -519,13 +557,13 @@ contract('TaskBoard', async accounts => {
 
     task = await app.getTask(1)
     assert.equal(
-      task[2].c[0],
+      task[2].toNumber(),
       stage,
       "The task's stage should have been changed"
     )
     task = await app.getTask(0)
     assert.equal(
-      task[2].c[0],
+      task[2].toNumber(),
       stage,
       "The task's stage should have been changed"
     )
@@ -560,11 +598,11 @@ contract('TaskBoard', async accounts => {
     var task = await app.getTask(0)
     var check = compareTask(
       task[0],
-      task[1].c[0],
-      task[2].c[0],
+      task[1].toNumber(),
+      task[2].toNumber(),
       task[3],
-      task[4].c[0],
-      task[5].c[0],
+      task[4].toNumber(),
+      task[5].toNumber(),
       task[6],
       accounts[0],
       reward,
@@ -585,11 +623,11 @@ contract('TaskBoard', async accounts => {
     task = await app.getTask(1)
     check = compareTask(
       task[0],
-      task[1].c[0],
-      task[2].c[0],
+      task[1].toNumber(),
+      task[2].toNumber(),
       task[3],
-      task[4].c[0],
-      task[5].c[0],
+      task[4].toNumber(),
+      task[5].toNumber(),
       task[6],
       accounts[0],
       reward,
@@ -603,11 +641,11 @@ contract('TaskBoard', async accounts => {
     task = await app.getTask(2)
     check = compareTask(
       task[0],
-      task[1].c[0],
-      task[2].c[0],
+      task[1].toNumber(),
+      task[2].toNumber(),
       task[3],
-      task[4].c[0],
-      task[5].c[0],
+      task[4].toNumber(),
+      task[5].toNumber(),
       task[6],
       accounts[0],
       reward,
@@ -631,11 +669,11 @@ contract('TaskBoard', async accounts => {
     task = await app.getTask(0)
     var check = compareTask(
       task[0],
-      task[1].c[0],
-      task[2].c[0],
+      task[1].toNumber(),
+      task[2].toNumber(),
       task[3],
-      task[4].c[0],
-      task[5].c[0],
+      task[4].toNumber(),
+      task[5].toNumber(),
       task[6],
       accounts[0],
       reward,
@@ -649,11 +687,11 @@ contract('TaskBoard', async accounts => {
     task = await app.getTask(1)
     check = compareTask(
       task[0],
-      task[1].c[0],
-      task[2].c[0],
+      task[1].toNumber(),
+      task[2].toNumber(),
       task[3],
-      task[4].c[0],
-      task[5].c[0],
+      task[4].toNumber(),
+      task[5].toNumber(),
       task[6],
       accounts[0],
       reward,
@@ -667,11 +705,11 @@ contract('TaskBoard', async accounts => {
     task = await app.getTask(2)
     check = compareTask(
       task[0],
-      task[1].c[0],
-      task[2].c[0],
+      task[1].toNumber(),
+      task[2].toNumber(),
       task[3],
-      task[4].c[0],
-      task[5].c[0],
+      task[4].toNumber(),
+      task[5].toNumber(),
       task[6],
       accounts[0],
       reward,
@@ -704,8 +742,8 @@ contract('TaskBoard', async accounts => {
 
     const check1 = await app.killSingleTask(0)
     var task = await app.getTask(0)
-    assert.equal(task[2].c[0], 5, 'The task should have been deleted')
-    assert.equal(task[1].c[0], 0, 'The task should have been deleted')
+    assert.equal(task[2].toNumber(), 5, 'The task should have been deleted')
+    assert.equal(task[1].toNumber(), 0, 'The task should have been deleted')
 
     const rewardTokenAddress = await tokenManagerApp.rewardToken.call()
     const rewardTokenInstance = MiniMeToken.at(rewardTokenAddress)
@@ -717,11 +755,11 @@ contract('TaskBoard', async accounts => {
     )
     const check2 = await app.killMultipleTask([1, 2])
     task = await app.getTask(1)
-    assert.equal(task[2].c[0], 5, 'The task should have been deleted')
-    assert.equal(task[1].c[0], 0, 'The task should have been deleted')
+    assert.equal(task[2].toNumber(), 5, 'The task should have been deleted')
+    assert.equal(task[1].toNumber(), 0, 'The task should have been deleted')
     task = await app.getTask(2)
-    assert.equal(task[2].c[0], 5, 'The task should have been deleted')
-    assert.equal(task[1].c[0], 0, 'The task should have been deleted')
+    assert.equal(task[2].toNumber(), 5, 'The task should have been deleted')
+    assert.equal(task[1].toNumber(), 0, 'The task should have been deleted')
     contractBalance = await rewardTokenInstance.balanceOf.call(app.address)
     assert.equal(
       0,
@@ -754,11 +792,11 @@ contract('TaskBoard', async accounts => {
       []
     )
     task = await app.getTask(3)
-    assert.equal(task[2].c[0], 5, 'The task should have been deleted')
-    assert.equal(task[1].c[0], 0, 'The task should have been deleted')
+    assert.equal(task[2].toNumber(), 5, 'The task should have been deleted')
+    assert.equal(task[1].toNumber(), 0, 'The task should have been deleted')
     task = await app.getTask(4)
-    assert.equal(task[2].c[0], 5, 'The task should have been deleted')
-    assert.equal(task[1].c[0], 0, 'The task should have been deleted')
+    assert.equal(task[2].toNumber(), 5, 'The task should have been deleted')
+    assert.equal(task[1].toNumber(), 0, 'The task should have been deleted')
     contractBalance = await rewardTokenInstance.balanceOf.call(app.address)
     assert.equal(
       0,
@@ -797,26 +835,26 @@ contract('TaskBoard', async accounts => {
     )
     const check1 = await app.giveSingleReward(0)
     var task = await app.getTask(0)
-    assert.equal(task[2].c[0], 4, "The task's stage should have been changed")
+    assert.equal(task[2].toNumber(), 4, "The task's stage should have been changed")
     assert.equal(
-      task[1].c[0],
+      task[1].toNumber(),
       0,
       "The task's balance should have been changed to 0"
     )
 
     const check2 = await app.giveMultipleReward([1, 2])
     task = await app.getTask(1)
-    assert.equal(task[2].c[0], 4, "The task's stage should have been changed")
+    assert.equal(task[2].toNumber(), 4, "The task's stage should have been changed")
     assert.equal(
-      task[1].c[0],
+      task[1].toNumber(),
       0,
       "The task's balance should have been changed to 0"
     )
 
     task = await app.getTask(2)
-    assert.equal(task[2].c[0], 4, "The task's stage should have been changed")
+    assert.equal(task[2].toNumber(), 4, "The task's stage should have been changed")
     assert.equal(
-      task[1].c[0],
+      task[1].toNumber(),
       0,
       "The task's balance should have been changed to 0"
     )
@@ -829,17 +867,17 @@ contract('TaskBoard', async accounts => {
       []
     )
     task = await app.getTask(3)
-    assert.equal(task[2].c[0], 4, "The task's stage should have been changed")
+    assert.equal(task[2].toNumber(), 4, "The task's stage should have been changed")
     assert.equal(
-      task[1].c[0],
+      task[1].toNumber(),
       0,
       "The task's balance should have been changed to 0"
     )
 
     task = await app.getTask(4)
-    assert.equal(task[2].c[0], 4, "The task's stage should have been changed")
+    assert.equal(task[2].toNumber(), 4, "The task's stage should have been changed")
     assert.equal(
-      task[1].c[0],
+      task[1].toNumber(),
       0,
       "The task's balance should have been changed to 0"
     )
@@ -864,12 +902,50 @@ contract('TaskBoard', async accounts => {
   //   await tokenManagerApp.claimRewardTokensFor(accounts[0])
   //   await assertRevert(() => tokenManagerApp.claimRewardTokensFor(accounts[0]))
   // })
+  const installApp = async (dao, contractClass, appId, root, ...initArgs) => {
+    const baseContract = await contractClass.new()
+
+    const receipt = await dao.newAppInstance(
+      appId,
+      baseContract.address,
+      '0x',
+      false,
+      {
+        from: root
+      }
+    )
+    const proxyAddress = receipt.logs.filter(log => log.event == 'NewAppProxy')[0]
+      .args.proxy
+
+    const appInstance = contractClass.at(proxyAddress)
+    appInstance.initialize(...initArgs, { from: root })
+
+    return appInstance
+  }
+  const configurePermissions = async (
+    acl,
+    membersApp,
+    taskBoard,
+    tokenManager
+  ) => {
+    const MANAGE_MEMBERS_ROLE = await membersApp.MANAGE_MEMBERS_ROLE()
+    const TRANSFER_ROLE = await tokenManager.TRANSFER_ROLE()
+    const REWARD_ROLE = await tokenManager.REWARD_ROLE()
+    const MINT_ROLE = await tokenManagerApp.MINT_ROLE()
+    await acl.createPermission(root,      membersApp.address,   MANAGE_MEMBERS_ROLE, root, { from: root })
+    await acl.createPermission(taskBoard.address, tokenManager.address, TRANSFER_ROLE,       root, { from: root });
+    await acl.createPermission(taskBoard.address, tokenManager.address, REWARD_ROLE,         root, { from: root });
+    await acl.createPermission(root, tokenManagerApp.address, MINT_ROLE, root, { from: root })
+  }
+  
 })
 
 const addMembers = async (membersApp, accounts) => {
   await Promise.all(
     _.range(0, 5).map(
-      async i => await membersApp.addMember(accounts[i], 'Pesho', 2)
+      async i => await membersApp.addMember(accounts[i], 'Pesho', 2, {
+        from: accounts[0]
+      })
     )
   )
 }
@@ -915,3 +991,4 @@ const createToken = async (name, decimalUnits, symbol, transfersEnabled) => {
 
   return token
 }
+

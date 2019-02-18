@@ -138,8 +138,8 @@ const ActivityW = styled.div`
 	position:absolute;
 	width: 370px;
 	height: 600px;
-	top: 66px;
-	right: 180px;
+  top: 50px;
+  right: -115px;
 	z-index: 3;
 	border-radius: 10px;
 	box-shadow: 0 0 2px rgba(0,0,0,0.16), 0 0 2px rgba(0,0,0,0.23);

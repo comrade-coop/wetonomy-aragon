@@ -28,7 +28,7 @@ export const callReadMethod = (method, ...args) => {
   })
 }
 
-export const loadDaoTokenHistory = async() =>{
+export const loadDebtTokenHistory = async() =>{
   const startBlock = await callReadMethod('getDaoCreationBlockNumber')
   const blockTokens = await Promise.all(_.range(startBlock, currentBlock+1).map(async index => {
     let tokens = await callReadMethod('getDaoTokensAtBlock', index)
@@ -54,7 +54,7 @@ export const loadRewardTokenHistory = async() =>{
 export const loadUserTokens = async() =>{
   const user = await loadCurrentAccount()
   const tokens = await callReadMethod('getUserBalance', user)
-  return {reward: parseInt(tokens[0]), dao: parseInt(tokens[1])}
+  return {reward: parseInt(tokens[0]), debt: parseInt(tokens[1])}
 }
 
 export const parameterChange = (type, parameter) => {

@@ -141,7 +141,7 @@ const Task = props => (
           </TopContainer>
         </Div>
       </Absolut>
-      {props.task.assignee === null && props.task.issuer !== props.user ? (
+      {props.task.assignee === null? (
         <Accept onClick={props.onAcceptTask}>Accept Task</Accept>
       ) : (
         assignee(props.user, props)

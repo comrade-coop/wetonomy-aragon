@@ -1,6 +1,4 @@
 {
-  "appName": "taskboard.aragonpm.eth",
-  "version": "1.0.0",
   "roles": [
     {
       "name": "Manage TaskBoard parameters",
@@ -8,5 +6,21 @@
       "params": []
     }
   ],
+  "environments": {
+    "rinkeby": {
+      "wsRPC": "wss://rinkeby.eth.aragon.network/ws",
+      "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
+      "appName": "taskboard.open.aragonpm.eth",
+      "network": "rinkeby"
+    },
+    "rpc": {
+      "network": "rpc",
+      "appName": "taskboard.aragonpm.eth"
+    },
+    "default": {
+      "network": "rpc",
+      "appName": "taskboard.aragonpm.eth"
+    }
+  },
   "path": "contracts/TaskBoard.sol"
 }

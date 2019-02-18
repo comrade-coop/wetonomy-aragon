@@ -18,6 +18,8 @@ before_install:
 install:
   - npm install
   - npm run bootstrap
+  - aragon devchain 2> /dev/null 1> /dev/null &
+  - sleep 5
   - npm run publish
 before_script:
   - npm prune

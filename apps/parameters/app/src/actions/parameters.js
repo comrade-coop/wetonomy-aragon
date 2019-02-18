@@ -26,7 +26,7 @@ export const loadFullState = (window) => async(dispatch) => {
     })  
   })  
   const rewardTokenHistory = await Api.loadRewardTokenHistory()
-  const daoTokenHistory = await Api.loadDaoTokenHistory()
+  const debtTokenHistory = await Api.loadDebtTokenHistory()
   const userTokens = await Api.loadUserTokens()
   const memberParameters =  await Api.callReadMethod('getMemberesParameters')
   const tokenManagerParameters =  await Api.callReadMethod('getTokenManagerParameters')
@@ -40,11 +40,11 @@ export const loadFullState = (window) => async(dispatch) => {
     tokenManagerAddress: tokenManager,
     initialReputation: memberParameters,
     inflationMultiplier: tokenManagerParameters[0],
-    rewardToDaoCourse: tokenManagerParameters[1],
+    rewardToDebtCourse: tokenManagerParameters[1],
     periodLength: parseInt(timeTrackingParameters[0])/(60 * 60 * 24),
     maxHoursPerPeriod: timeTrackingParameters[1],
     rewardTokenHistory: rewardTokenHistory,
-    daoTokenHistory: daoTokenHistory,
+    debtTokenHistory: debtTokenHistory,
     userTokens: userTokens
   }
 

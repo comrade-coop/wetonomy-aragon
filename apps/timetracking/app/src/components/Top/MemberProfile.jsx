@@ -13,7 +13,7 @@ const MemberProfile = (props) => {
 
       <MemberInfoContainer>
         <BlueIcon src={debtLogo} alt="Debt:" />
-        <Text size="large" weight="bold" color={theme.accent}>${props.debt}</Text>
+        <Text size="large" weight="bold" color={theme.accent}>${props.debtTokens}</Text>
       </MemberInfoContainer>
 
       <MemberInfoContainer>
@@ -28,7 +28,7 @@ const MemberProfile = (props) => {
 }
 
 MemberProfile.propTypes = {
-  debt: PropTypes.number.isRequired,
+  debtTokens: PropTypes.number.isRequired,
   rewardTokens: PropTypes.number.isRequired,
   member: PropTypes.string.isRequired
 }

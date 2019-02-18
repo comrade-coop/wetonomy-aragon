@@ -5,7 +5,7 @@ import WeekTable from '../components/WeekTable/WeekTable'
 import { ScreenAction } from '../components/Top/ScreenAction'
 import styled from 'styled-components'
 import { togglePanelWithType } from '../actions/panel'
-import { changeWeek, syncHours, claimTokens, syncAndClaim, selectedWork, selectedDay, currentWeek } from '../actions/tracks'
+import { changeWeek, syncAndClaim, selectedWork, selectedDay, currentWeek } from '../actions/tracks'
 import TrackedHour from '../models/TrackedHour'
 
 
@@ -28,19 +28,7 @@ class WeekContainer extends Component {
     if(direction === 0) dispatch(currentWeek())
     else 
       dispatch(changeWeek(direction, new Date(this.props.today.getTime())))
-  } 
-
-  handleSyncAction = (hours) => {
-    if( hours > 0) {
-      const { dispatch } = this.props
-      dispatch(syncHours(hours))
-    }
   }
-
-  handleClaimAction = (direction) => {
-    const { dispatch } = this.props
-    dispatch(claimTokens(direction))
-  } 
 
   handleSyncAndClaim = (hours) => {
     if( hours > 0) {
@@ -59,8 +47,6 @@ class WeekContainer extends Component {
           today={this.props.today} 
           days = {this.props.days} 
           onWeekChange = {this.handleWeekChange}
-          onSyncAction = {this.handleSyncAction}
-          onClaimAction = {this.handleClaimAction}
           onSyncAndClaim = {this.handleSyncAndClaim}
         />
         <WeekTable 

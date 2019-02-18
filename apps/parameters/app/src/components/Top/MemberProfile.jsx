@@ -13,20 +13,6 @@ import rewardLogo from '../../assets/reward-token.svg'
 const MemberProfile = (props) => {
   return (
     <ProfileRoot>
-      {/* <OutsideAlerter outsideFunc={props.onOutsideClick}>
-        <MemberInfoContainer>
-          <Activity>
-            <i onClick={props.onActivityClick} className="fas fa-list-ul"></i>
-          </Activity>
-          {props.activities.count > 0 ? ((
-            <Count> {props.activities.count} </Count>
-          )) : ('')}
-          {props.activities.opened ? ((
-            <ActivityWindow activities={props.activities} />
-          )) : ('')}
-
-        </MemberInfoContainer>
-      </OutsideAlerter> */}
 
       <MemberInfoContainer>
         <BlueIcon src={debtLogo} alt="Debt:" />

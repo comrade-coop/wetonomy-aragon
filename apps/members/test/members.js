@@ -1,8 +1,9 @@
-const {
-  assertRevert,
-  assertInvalidOpcode
-} = require('@aragon/test-helpers/assertThrow')
+const { assertRevert } = require('@aragon/test-helpers/assertThrow')
 const Members = artifacts.require('Members')
+const Kernel = artifacts.require('Kernel')
+const ACL = artifacts.require('ACL')
+const DAOFactory = artifacts.require('DAOFactory')
+
 
 const MEMBER_INDEX_ADDRESS = 0
 const MEMBER_INDEX_NAME = 1
@@ -20,22 +21,50 @@ const MemberLevels = {
   EXPERT: 4,
 }
 
+const DEFAULT_MEMBERS_INITIAL_REPUTATION = 1
+const MEMBERS_ID = '0x01'
+
 contract('Members', async (accounts) => {
   let app
+  const root = accounts[0]
+  const NULL_ADDRESS = '0x00'
 
-  beforeEach(async () => {
-    app = await Members.new()
-
-    await app.initialize(MEMBER_INITIAL_REPUTATION)
-
-    const contractReputation = (await app.initialReputation.call()).toNumber()
-
-    assert.equal(
-      MEMBER_INITIAL_REPUTATION, 
-      contractReputation, 
-      'App didn\'t initialize with right reputation'
+  before(async () => {
+    const kernelBase = await Kernel.new(true) // petrify immediately
+    const aclBase = await ACL.new()
+    daoFactory = await DAOFactory.new(
+      kernelBase.address,
+      aclBase.address,
+      NULL_ADDRESS
     )
 
+    // Setup constants
+    APP_MANAGER_ROLE = await kernelBase.APP_MANAGER_ROLE()
+  })
+
+  beforeEach(async () => {
+    const daoTx = await daoFactory.newDAO(root)
+    const dao = Kernel.at(
+      daoTx.logs.filter(log => log.event == 'DeployDAO')[0].args.dao
+    )
+    const acl = ACL.at(await dao.acl())
+
+    await acl.createPermission(root, dao.address, APP_MANAGER_ROLE, root, {
+      from: root
+    })
+
+    app = await installApp(
+      dao,
+      Members,
+      MEMBERS_ID,
+      root,
+      DEFAULT_MEMBERS_INITIAL_REPUTATION
+    )
+
+    await configurePermissions(
+      acl,
+      app
+    )
     const newMemberAddress = accounts[0]
     const newMemberName = 'Pesho'
     const newMemberLevel = MemberLevels.INTERMEDIATE
@@ -62,6 +91,7 @@ contract('Members', async (accounts) => {
         from: accounts[0]
       }
     )
+    
 
     const initialReputation = (await app.initialReputation.call()).toNumber()
 
@@ -186,7 +216,7 @@ contract('Members', async (accounts) => {
 
     const updatedLevel = 34
 
-    assertInvalidOpcode(() =>
+    assertRevert(() =>
       app.setMemberLevel(updatedMemberIndex, updatedLevel, {
         from: accounts[0]
       }))
@@ -247,7 +277,7 @@ contract('Members', async (accounts) => {
     let newMemberCount = (await app.getMembersCount.call()).toNumber()
     assert.equal(newMemberCount + 1, memberCount, 'Member wasn\'t removed correctly')
 
-    await assertInvalidOpcode(() => app.getMember(memberToRemoveId))
+    await assertRevert(() => app.getMember(memberToRemoveId))
 
     const secondMemberToRemoveId = 0
     await app.removeMember(secondMemberToRemoveId)
@@ -255,7 +285,41 @@ contract('Members', async (accounts) => {
     newMemberCount = (await app.getMembersCount.call()).toNumber()
     assert.equal(newMemberCount + 2, memberCount, 'Second member wasn\'t removed correctly')
 
-    await assertInvalidOpcode(() => app.getMember(memberCount - 1))
+    await assertRevert(() => app.getMember(memberCount - 1))
   })
 
+  const installApp = async (dao, contractClass, appId, root, ...initArgs) => {
+    const baseContract = await contractClass.new()
+  
+    const receipt = await dao.newAppInstance(
+      appId,
+      baseContract.address,
+      '0x',
+      false,
+      {
+        from: root
+      }
+    )
+    const proxyAddress = receipt.logs.filter(log => log.event == 'NewAppProxy')[0]
+      .args.proxy
+  
+    const appInstance = contractClass.at(proxyAddress)
+    appInstance.initialize(...initArgs, { from: root })
+  
+    return appInstance
+  }
+
+  const configurePermissions = async (
+    acl,
+    membersApp
+  ) => {
+    const MANAGE_MEMBERS_ROLE = await membersApp.MANAGE_MEMBERS_ROLE()
+    await acl.createPermission(
+      root,
+      membersApp.address,
+      MANAGE_MEMBERS_ROLE,
+      root,
+      { from: root }
+    )
+  }
 })
