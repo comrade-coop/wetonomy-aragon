@@ -77,4 +77,4 @@ test
 - [**@aragon/ui**](https://github.com/aragon/aragon-ui): Aragon UI components (in React)
 
 ### Wiki
-- check out the [Wiki](https://github.com/comrade-coop/wetonomy/wiki) for more info on Wetonomy
+- check out the [Wiki](https://github.com/comrade-coop/wetonomy-aragon/wiki) for more info on Wetonomy
