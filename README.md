@@ -1,4 +1,4 @@
-# Wetonomy [![Build Status](https://travis-ci.com/comrade-coop/wetonomy.svg?branch=master)](https://travis-ci.com/comrade-coop/wetonomy)
+# Wetonomy [![Build Status](https://travis-ci.com/comrade-coop/wetonomy-aragon.svg?branch=master)](https://travis-ci.com/comrade-coop/wetonomy-aragon)
 
 Toolkit built on top of AragonOS that will give teams, companies, and organizations the ability to collaborate, share profits, finance ideas and award contributions, all governed by smart contracts on the blockchain.
 
